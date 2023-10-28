@@ -1,0 +1,31 @@
+구글 sheet : https://docs.google.com/spreadsheets/d/1X-C7iD7WzsldWQlqYkgNM2-3_hlTaevH7QeVwE4jMMs/edit#gid=1158005168
+
+create tabel : https://docs.google.com/document/d/1xqJf2zDfTlIOyGy6iZnGNEBOyZ7jfL7QONBM-faQsMo/edit
+
+insert query : https://docs.google.com/document/d/1ARceTE0zSStNFcRdtomldI9tO2KYMCA7DVyTcsOa1A8/edit
+
+공인 ip: 3.37.196.20
+----------------------------------------------------------------------------------------------------------------------------
+깃 자료
+깃허브 처음시작 참고 : https://bedmil.tistory.com/32
+
+sts에 github 프로젝트 insert하기 : https://powernote.tistory.com/40
+
+github에서 생성한 branch를 sts에 가져오기 : https://hanke-r.tistory.com/113
+
+github 인증토큰 가져오기 : https://westmino.tistory.com/40#google_vignette
+
+깃 기초 : https://youtube.com/watch?v=tocFib6Ytls&si=Zw9v4P-U54usLl5j
+
+깃 적용 : https://youtube.com/watch?v=lelVripbt2M&si=iTjaakP4SsDRGvdy
+
+깃 크라켄 활용 : https://youtube.com/playlist?list=PLH9_dpEPHSoKAfwZeAUurx366QwEt-f3g&si=YBANgfKApUn2ebnU
+
+----------------------------------------------------------------------------------------------------------------------------
+css 참고
+메인
+1. 헤더 푸터 :https://untree.co/demos/property/index.html
+2. 챌린지 목록  : https://themewagon.github.io/ogani/shop-grid.html
+3. 관리자 : https://themewagon.com/themes/celestial-free-responsive-bootstrap-4-admin-dashboard-template/
+
+부트스트랩 템플릿 모음 : https://inpa.tistory.com/entry/BootStrap5-%F0%9F%93%9A-%EB%B6%80%ED%8A%B8%EC%8A%A4%ED%8A%B8%EB%9E%A9-%ED%85%9C%ED%94%8C%EB%A6%BF-%EC%82%AC%EC%9D%B4%ED%8A%B8-%EC%A0%95%EB%A6%AC
