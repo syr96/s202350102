@@ -1,7 +1,9 @@
 package com.oracle.S202350102.controller;
 
 import org.springframework.stereotype.Controller;
+
 import org.springframework.web.bind.annotation.RequestMapping;
+
 
 
 import lombok.RequiredArgsConstructor;
@@ -13,11 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 public class MainController {
 	
 	
-	@RequestMapping(value ="index")
+	
+	@RequestMapping(value ="/")
 	public String index() {
 		System.out.println("MainController index Start...");
 		
-		return "redirect:/index.html";
+		return "home";
 	}
 	@RequestMapping(value ="listChallenge")
 	public String listChallenge() {
@@ -37,36 +40,30 @@ public class MainController {
 		
 		return "Sharing";
 	}
-	@RequestMapping(value ="community")
-	public String community() {
+	
+	@RequestMapping(value ="Community")
+	public String listCommunity() {
 		System.out.println("MainController community Start...");
+
 		
 		return "community";
 	}
-	@RequestMapping(value ="notice")
-	public String notice() {
-		System.out.println("MainController notice Start...");
-		
-		return "notice";
-	}
-	@RequestMapping(value ="event")
-	public String event() {
-		System.out.println("MainController event Start...");
-		
-		return "event";
-	}
+	
 	@RequestMapping(value ="introduce")
 	public String introduce() {
 		System.out.println("MainController introduce Start...");
 		
 		return "introduce";
 	}
-	@RequestMapping(value ="mypage")
-	public String mypage() {
-		System.out.println("MainController mypage Start...");
-		
-		return "mypage";
-	}
+
+	
+	/*
+	 * @RequestMapping(value ="mypage") public String mypage() {
+	 * System.out.println("MainController mypage Start...");
+	 * 
+	 * return "mypage"; }
+	 */
+	 
 	@RequestMapping(value ="master")
 	public String master() {
 		System.out.println("MainController master Start...");
@@ -109,10 +106,18 @@ public class MainController {
 		
 		return "personalQuestion";
 	}
+
 	@RequestMapping(value ="logIn")
 	public String logIn() {
 		System.out.println("MainController logIn Start...");
 		
 		return "logIn";
+	}
+	
+	@RequestMapping(value ="loginForm")
+	public String logInForm() {
+		System.out.println("MainController logIn Start...");
+		
+		return "loginForm";
 	}
 }

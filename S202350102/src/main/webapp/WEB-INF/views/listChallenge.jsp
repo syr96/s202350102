@@ -9,7 +9,7 @@
 <body>
 <h1>챌린지 목록</h1>
 <a href="/challengeDetail">챌린지 상세</a><p>
-
+<p>${sessionScope.user_id }님</p>
 
 </body>
 </html>
