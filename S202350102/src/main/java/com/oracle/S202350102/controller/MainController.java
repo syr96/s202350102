@@ -20,7 +20,7 @@ public class MainController {
 	public String index() {
 		System.out.println("MainController index Start...");
 		
-		return "home";
+		return "home2";
 	}
 	@RequestMapping(value ="listChallenge")
 	public String listChallenge() {
