@@ -4,8 +4,20 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="UTF-8">
-		<title>Insert title here</title>
+		<meta charset="utf-8" />
+	    <meta name="viewport" content="width=device-width, initial-scale=1" />
+	    
+	    <!-- Favicon -->
+	    <link rel="shortcut icon" href="./assets/favicon/favicon.ico" type="image/x-icon" />
+	    
+	    <!-- Libs CSS -->
+	    <link rel="stylesheet" href="./assets/css/libs.bundle.css" />
+	    
+	    <!-- Theme CSS -->
+	    <link rel="stylesheet" href="./assets/css/theme.bundle.css" />
+	    
+	    <!-- Title -->
+	    <title>챌린지 상세</title>
 		
 		<!-- jQuery 라이브러리를 불러옵니다. -->
 		<script type="text/javascript" src="js/jquery.js"></script>
@@ -88,25 +100,26 @@
 		</script>
 	</head>
 	<body>
-	<h1>챌린지 상세</h1>
-		<div>
-			<section data-role="챌린지-상세-게시판">
-				<section data-role="챌린지-게시판-글쓰기">
-				
+		<c:import url="/WEB-INF/views/header3.jsp"/>
+		<h1>챌린지 상세</h1>
+			<div>
+				<section data-role="챌린지-상세-게시판">
+					<section data-role="챌린지-게시판-글쓰기">
+					
+					</section>
+					<!-- Ajax로 가져온 데이터를 표시할 테이블 -->
+					<input type="button" onclick="certBoard()" value="후기 게시판">
+					<input type="text" id="content" placeholder="글을 작성해주세요">
+					<input type="button" onclick="writeCertBoard()" value="글쓰기 등록">
+					<table id="boardCertTable">
+						<tr>
+							<th>제목</th>
+							<th>내용</th>
+						</tr>
+					</table>
+					
 				</section>
-				<!-- Ajax로 가져온 데이터를 표시할 테이블 -->
-				<input type="button" onclick="certBoard()" value="후기 게시판">
-				<input type="text" id="content" placeholder="글을 작성해주세요">
-				<input type="button" onclick="writeCertBoard()" value="글쓰기 등록">
-				<table id="boardCertTable">
-					<tr>
-						<th>제목</th>
-						<th>내용</th>
-					</tr>
-				</table>
-				
-			</section>
-		</div>
-	
+			</div>
+		<c:import url="/WEB-INF/views/footer.jsp"/>
 	</body>
 </html>

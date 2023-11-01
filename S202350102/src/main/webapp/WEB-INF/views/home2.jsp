@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="./assets/css/theme.bundle.css" />
     
     <!-- Title -->
-    <title>Shopper</title>
+    <title>맛있게! 즐겁게! 건강한 습관 커뮤니티 + Life is the best game.</title>
 </head>
 <body>
 	<c:import url="/WEB-INF/views/header4.jsp"/>
