@@ -20,7 +20,7 @@
     <title>Shopper</title>
 </head>
 <body>
-	<c:import url="/WEB-INF/views/header3.jsp"/>
+	<c:import url="/WEB-INF/views/header4.jsp"/>
 	<h1>테스트</h1>
 	<c:import url="/WEB-INF/views/footer.jsp"/>
 </body>
