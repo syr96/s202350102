@@ -11,5 +11,7 @@
 <a href="/challengeDetail">챌린지 상세</a><p>
 <p>${sessionScope.user_id }님</p>
 
+<a href="/jhChgDetail">jh 챌린지 상세</a><p>
+
 </body>
 </html>

@@ -4,18 +4,8 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="utf-8" />
-	    <meta name="viewport" content="width=device-width, initial-scale=1" />
-	    
-	    <!-- Favicon -->
-	    <link rel="shortcut icon" href="./assets/favicon/favicon.ico" type="image/x-icon" />
-	    
-	    <!-- Libs CSS -->
-	    <link rel="stylesheet" href="./assets/css/libs.bundle.css" />
-	    
-	    <!-- Theme CSS -->
-	    <link rel="stylesheet" href="./assets/css/theme.bundle.css" />
-	    
+		<meta charset="utf-8">
+	
 	    <!-- Title -->
 	    <title>챌린지 상세</title>
 		
@@ -42,10 +32,12 @@
 									// 데이터를 화면에 표시할 HTML 요소를 선택
 									var table = $('#boardCertTable');
 									// alert("success ajax table ->" +table);
+									
 									// 결과에서 글 목록을 순회하면서 HTML을 생성
 									var html = "";
 									result.boardCert.forEach(function (item) {
-										html += "<tr><td>" + item.title + "</td><td>" + item.conts + "</td></tr>";
+										
+										html += "<tr><td>" + item.user_num + "</td><td>" + item.conts + "</td></tr>";
 									});
 									
 									// 생성한 HTML을 테이블에 추가	// text, value, html 세 가지 메소드
@@ -62,37 +54,41 @@
 			
 			function writeCertBoard() {
 				
-				// 사용자가 입력한 내용 가져오기
-				var content = $('#content').val();
+				alert("writeCertBoard Start");
 				
-				// 입력 내용이 비어있지 않은지 확인
-				if (content.trim() == "") {
-					alert("내용을 입력하세요.");
+				// 사용자가 입력한 내용 가져오기
+				var paramData = {
+								"conts"		: $('#content').val(),
+								"chg_Id"	: $('#chg_id').val(),
+								"user_num"	: $('#user_num').val()
+				};
+				console.log("paramData -> ", paramData);
+				//alert("paramData -> "+paramData);
+				alert("paramData $('#content').val() -> "+$('#content').val());
+				alert("paramData $('#chg_id').val() -> "+$('#chg_id').val());
+				alert("paramData $('#user_num').val() -> "+$('#user_num').val());
+				
+					
+				/* 아니면 content만 빠졌는지 확인할 지 고민
+				if(paramData.content.trim() == "") {
+					alert("내용을 입력하세요");
 					return;
 				}
+				*/
 				
 				// 서버로 데이터 전송
 				$.ajax({
-					url:"writeCertBoard",
-					type:"POST",
-					data:{
-						content:content
-					},
-					dataType:"json",
-					success:function(response) {
+					url		:"/writeCertBoard",
+					type	:"POST",
+					data	:paramData,
+					dataType:"text",
+					success	:function(rtnStr) {
+						alert("success ajax Data ->" +rtnStr);
 						// 서버 응답을 처리하는 코드
-						if (response.status == "OK") {
-							// 성공적으로 등록되었을 때 실행할 코드
-							alert("글이 등록되었습니다.");
-							// 여기에서 추가 작업을 수행할 수 있습니다
-						} else {
-							// 서버에서 오류 응답을 보낸 경우
-							alert("글 등록에 실패했습니다.");
-						}
-					},
+						},
 					error: function() {
 						// Ajax 요청 자체가 실패한 경우
-						alert("글 등록에 실패했습니다.");
+						alert("error: 글 등록에 실패했습니다.");
 					}
 				});
 			}
@@ -100,26 +96,28 @@
 		</script>
 	</head>
 	<body>
-		<c:import url="/WEB-INF/views/header3.jsp"/>
-		<h1>챌린지 상세</h1>
-			<div>
-				<section data-role="챌린지-상세-게시판">
-					<section data-role="챌린지-게시판-글쓰기">
-					
-					</section>
-					<!-- Ajax로 가져온 데이터를 표시할 테이블 -->
-					<input type="button" onclick="certBoard()" value="후기 게시판">
-					<input type="text" id="content" placeholder="글을 작성해주세요">
-					<input type="button" onclick="writeCertBoard()" value="글쓰기 등록">
-					<table id="boardCertTable">
-						<tr>
-							<th>제목</th>
-							<th>내용</th>
-						</tr>
-					</table>
-					
+	<c:import url="/WEB-INF/views/header3.jsp"/>
+	<h1>챌린지 상세</h1>
+		<div>
+			<section data-role="챌린지-상세-게시판">
+				<section data-role="챌린지-게시판-글쓰기">
+				
 				</section>
-			</div>
-		<c:import url="/WEB-INF/views/footer.jsp"/>
+				<!-- Ajax로 가져온 데이터를 표시할 테이블 -->
+				<input type="button" onclick="certBoard()" value="인증 게시판"><p>
+				글 작성             :<input type="text" id="content" placeholder="글을 작성해주세요" required="required">
+				챌린지 등록 번호:<input type="text" id="chg_id" placeholder="챌린지 등록 번호" required="required">
+				회원 번호          :<input type="text" id="user_num" placeholder="회원 번호" required="required">
+				<input type="button" onclick="writeCertBoard()" value="글쓰기 등록">
+				<table id="boardCertTable">
+					<tr>
+						<th>제목</th>
+						<th>내용</th>
+					</tr>
+				</table>
+				
+			</section>
+		</div>
+	<c:import url="/WEB-INF/views/footer.jsp"/>
 	</body>
 </html>

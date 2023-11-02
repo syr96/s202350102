@@ -9,4 +9,5 @@ public interface QBoardService {
 	Board 		qBoardSelect(int brd_num);
 	int 		qBoardInsert(Board board);
 	int 		qBoardDelete(int brd_num);
+	int 		readCnt(int brd_num);
 }

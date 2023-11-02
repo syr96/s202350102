@@ -10,8 +10,11 @@ public interface YaBoardDao {
 	Board        detailCommunity(int brd_num);
 	// 조회수 증가
 	void         upViewCnt(int brd_num);
-	//추후 다시 생각해보기
-	String       userNick(Integer user_num);
+	
+	int           getuserNum(String userId);
+	// 로그인만 회원만 게시글 작성
+	int         insertCommunity(Board board);
+
 	
 
 	

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
+<%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%> 
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,11 +9,13 @@
 </head>
 <body>
 <h3>게시글 상세내용 확인</h3>
-<form action="" method="post">
+<form action="/listCommunity" method="post">
 <input type="hidden" name="brd_num" value="${board.brd_num }">
-<input type="submit" value="수정">
-<a href="list">목록</a>
-<a href="delete?brd_num=${board.brd_num}">삭제</a>
+<c:if test="${loggedIn}">
+    <input type="submit" value="수정">
+    <a href="delete?brd_num=${board.brd_num}">삭제</a>
+</c:if>
+
 
 <!--제목, 닉네임,  조회수, 작성일자, 내용, 댓글창 수정 삭제, 목록이동 -->
 <table>

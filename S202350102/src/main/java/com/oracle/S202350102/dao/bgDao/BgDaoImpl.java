@@ -26,4 +26,20 @@ public class BgDaoImpl implements BgDao {
 		}
 		return certBoard;
 	}
+
+	
+	@Override
+	public int insertCertBrd(Board board) {
+		
+		int result = 0;
+		System.out.println("BgDaoImpl boardCert Start... ");
+		
+		try {
+			result = session.insert("insertCertBrd", board);
+		} catch (Exception e) {
+			System.out.println("BgDaoImpl insertCertBrd e.getMessage() -> " + e.getMessage());
+		}
+		
+		return result;
+	}
 }

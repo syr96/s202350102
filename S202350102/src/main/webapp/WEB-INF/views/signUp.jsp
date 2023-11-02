@@ -12,7 +12,7 @@
 <h1>회원가입</h1>
 <form method="post" action="/writeUser1">
 	<fieldset>
-	<input type="text" name="user_id" 	required placeholder="아이디"><p>
+	<input type="text" name="user_id" 	required placeholder="아이디"><p><p>
 	<input type="text" name="user_pswd" required placeholder="비밀번호"><p>
 	<input type="text" name="nick" 		required placeholder="닉네임"><p>
 	<input type="text" name="user_name" required placeholder="이름"><p>

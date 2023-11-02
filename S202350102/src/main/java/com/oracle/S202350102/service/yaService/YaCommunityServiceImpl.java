@@ -31,6 +31,7 @@ public class YaCommunityServiceImpl implements YaCommunityService {
 		board = ybd.detailCommunity(brd_num);
 		return board;
 	}
+	
 	//게시글 조회수 증가
 	@Override
 	public void upViewCnt(int brd_num) {
@@ -38,16 +39,21 @@ public class YaCommunityServiceImpl implements YaCommunityService {
 		ybd.upViewCnt(brd_num);
 	}
 
-	
-	
 	@Override
-	//추후에 다시 생각해보기
-	public String userNick(Integer user_num) {
-		System.out.println("YaCommunityServiceImpl userNick stat...");
-		
-		return ybd.userNick(user_num);
+	public int getuserNum(String userId) {
+		System.out.println("YaCommunityServiceImpl getUserNum start...");
+		return ybd.getuserNum(userId);
 	}
 
+	@Override
+	public int insertCommunity(Board board) {
+		int insertResult = 0;
+		System.out.println("YaCommunityServiceImpl insert start....");
+		insertResult = ybd.insertCommunity(board);
+		return insertResult;
+	}
 
+	
+	
 	
 }

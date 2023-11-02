@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,9 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class BgController {
-	
-	// test
-	
+	//작업 보경
 	private final BkService bs;
 
 	@ResponseBody
@@ -48,20 +47,36 @@ public class BgController {
 	
 	@ResponseBody
 	@RequestMapping(value = "writeCertBoard")
-	public Map<String, Object> writeCertBoard(@RequestParam("content") String content) {
+	public String writeCertBoard(Board board, Model model) {
 		System.out.println("BgController writeCertBoard Start...");
-		
-		Map<String, Object> result = new HashMap<String, Object>();
-		int insertresult = 0;
+		System.out.println("BgController writeCertBoard board.getConts() -> "+board.getConts());
+		System.out.println("BgController writeCertBoard board.getChg_Id() -> "+board.getChg_id());
+		System.out.println("BgController writeCertBoard board.getUser_num() -> "+board.getUser_num());
+		 List<Board> boardList = null;
+		//Map<String, Object> result = new HashMap<String, Object>();
+		 String rtnStr = "";
+		int insertResult = 0;
 		
 		try {
-//			insertresult = bs.insertCertBoard(content);	// ing
-			result.put("status", "OK");
+			 insertResult = bs.insertCertBrd(board);
+			 //if (insertResult > 0)	  boardList = bs.boardCert(board);
+				
+			 if (insertResult > 0) { 
+				 rtnStr = "입력 성공"; 
+			
+			 } else {
+				 rtnStr = "입력 실패";
+			 }
+				 			
+			 
 		} catch (Exception e) {
 			System.out.println("BgController writeCertBoard e.getMessage() -> "+e.getMessage());
 		}
 		
-		return result;
+		System.out.println("BgController writeCertBoard insertResult -> " + insertResult);
+		System.out.println("BgController writeCertBoard rtnStr -> " + rtnStr);
+		
+		return rtnStr;
 	}
 	
 }

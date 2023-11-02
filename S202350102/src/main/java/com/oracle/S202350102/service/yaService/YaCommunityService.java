@@ -11,9 +11,11 @@ public interface YaCommunityService {
 	Board detailCommunity(int brd_num);
 	//게시글 조회수 증가
 	void         upViewCnt(int brd_num);
-	
-	//추후에 다시 생각해보기
-	String       userNick(Integer user_num);
+	//userID를 통해 userNum 가져옴
+	int          getuserNum(String userId);
 
+	// 로그인만 회원만 게시글 작성
+	int         insertCommunity(Board board);
+	
 	
 }

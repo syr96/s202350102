@@ -10,4 +10,11 @@
 		where brd_lg=700 AND brd_md=100 AND brd_step=0
 	</select>
 	
+	<insert id="insertCertBrd" parameterType="Board">
+		Insert Into board (BRD_NUM, conts,  chg_id,   user_num, brd_step,
+		                   brd_lg,  brd_md, REG_DATE, BRD_GROUP)
+		        values     (BRD_NUM_SEQ.nextval, #{conts}, #{chg_id}, #{user_num}, 0,
+		                   700,      100,      sysdate, BRD_NUM_SEQ.currval)  
+	</insert>
+	
 </mapper>

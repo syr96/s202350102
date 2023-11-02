@@ -3,24 +3,25 @@
 <mapper namespace="com.oracle.S202350102.chBoardMapper">
 
 	<select id="noticeList" parameterType="int" resultType="Board">
-		Select brd_num, title, to_char(reg_date,'YYYY/MM/DD') reg_date, user_num, view_cnt
-		From board
+		Select b.brd_num, u.nick, b.title, to_char(b.reg_date,'YYYY/MM/DD') reg_date, b.user_num, b.view_cnt
+		From board b, user1 u
 		Where brd_md= #{brd_md}
 		and   brd_lg=700
+		and   b.user_num = u.user_num
 	</select>
 	
 	<insert id="noticeWrite" parameterType="Board">
 		Insert Into board
 			(brd_num, user_num, brd_lg, brd_md, title, conts, view_cnt, reg_date, brd_group, brd_step)
 		values
-			((Select Max(NVL(brd_num,0))+1 From board), #{user_num}, 700, #{brd_md}, #{title}, #{conts}, 0, sysdate,
-			 (Select Max(NVL(brd_num,0))+1 From board), 0)
+			(BRD_NUM_SEQ.nextval, #{user_num}, 700, #{brd_md}, #{title}, #{conts}, 0, sysdate, BRD_NUM_SEQ.CURRVAL, 0)
 	</insert>
 	
 	<select id="noticeCont" parameterType="int" resultType="Board">
-		Select *
-		From board
-		Where brd_num = #{brd_num}	
+		Select b.*, u.nick
+		From board b, user1 u
+		Where b.brd_num = #{brd_num}
+		and b.user_num = u.user_num	
 	</select>
 	
 	<update id="noticeUpdate" parameterType="Board">
@@ -43,11 +44,20 @@
 	<select id="popBoardList" resultType="Board">
 		Select ROWNUM, a.*
 		From    (Select *
-        From board
-        Where brd_lg = 700
-        and brd_md BETWEEN 100 and 103
-        and like_cnt is not null
-        ORDER BY like_cnt DESC) a
+			     From board
+			     Where brd_lg = 700
+			     and brd_md BETWEEN 100 and 103
+			     and like_cnt is not null
+			     ORDER BY like_cnt DESC) a
 		WHERE rownum BETWEEN 1 and 5   
 	</select>
+	
+	<select id="BrdResult" parameterType="java.lang.String" resultType="Board">
+		Select 	*
+		From  	Challenge
+		Where 	title 	  like '%' || #{srch_word} || '%'
+		Or	  	chg_conts like '%' || #{srch_word} || '%'    	
+		Order By reg_date DESC
+	</select>
+	
 </mapper>

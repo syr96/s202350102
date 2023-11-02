@@ -34,12 +34,12 @@ public class MainController {
 		
 		return "nearbySharing";
 	}
-	@RequestMapping(value ="Sharing")
-	public String Sharing() {
-		System.out.println("MainController Sharing Start...");
-		
-		return "Sharing";
-	}
+	/*
+	 * @RequestMapping(value ="Sharing") public String Sharing() {
+	 * System.out.println("MainController Sharing Start...");
+	 * 
+	 * return "Sharing"; }
+	 */
 	
 	@RequestMapping(value ="Community")
 	public String listCommunity() {

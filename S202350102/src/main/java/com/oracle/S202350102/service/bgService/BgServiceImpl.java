@@ -25,4 +25,14 @@ public class BgServiceImpl implements BkService {
 		return certBoard;
 	}
 
+	
+	@Override
+	public int insertCertBrd(Board board) {
+		
+		int result = bd.insertCertBrd(board);
+		System.out.println("BkServiceImpl insert Start...");
+		
+		return result;
+	}
+
 }

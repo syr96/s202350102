@@ -4,11 +4,21 @@
 
 <mapper namespace="com.oracle.S202350102.QBoardMapper">
 	<select id="qBoardList" parameterType="Board" resultType="Board">
-		SELECT * FROM Board WHERE brd_lg = 400
+	    SELECT rownum AS rnum, a.* 
+	    FROM (
+	      SELECT b.brd_num, u.user_num, b.title, u.nick, b.reg_date, b.view_cnt 
+	      FROM board b, user1 u 
+	      WHERE b.user_num = u.user_num 
+	      AND brd_lg = 400
+	    ) a 
+	    WHERE rownum BETWEEN 1 AND 5
 	</select>
 	
 	<select id="qBoardSelect" parameterType="int" resultType="Board">
-		SELECT * FROM Board WHERE brd_num = #{brd_num }
+		 SELECT  b.title, u.nick, b.reg_date, b.conts, b.view_cnt
+    	 FROM board b, user1 u
+    	 Where brd_num =#{brd_num}
+    	 AND b.user_num = u.user_num
 	</select>
 	
 	<insert id="qBoardInsert" parameterType="int">
@@ -19,4 +29,8 @@
 	<delete id="qBoardDelete" parameterType="int">
 		DELETE Board WHERE brd_num = #{brd_num}
 	</delete>
+	
+	<update id="qReadCount" parameterType="int">
+		UPDATE Board SET view_cnt = view_cnt+1 WHERE brd_num = #{brd_num}
+	</update>
 </mapper>

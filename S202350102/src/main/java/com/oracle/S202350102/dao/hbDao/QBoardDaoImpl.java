@@ -63,4 +63,16 @@ public class QBoardDaoImpl implements QBoardDao {
 		return result;
 	}
 
+
+	@Override
+	public int readCnt(int brd_num) {
+		int readCnt = 0;
+		try {
+			readCnt = session.update("qReadCount",brd_num);
+		} catch (Exception e) {
+			System.out.println("qbd dao readcnt exception->"+e.getMessage());
+		}
+		return readCnt;
+	}
+
 }

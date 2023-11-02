@@ -29,4 +29,9 @@ public class Challenge {
 	private Date 	create_date;	// 챌린지 개설일
 	private Date 	start_date;		// 챌린지시작일
 	private Date 	end_date;		// 챌린지마감일
+	
+	
+	//조회용
+	private String ctn; //챌린지 카테고리명
+	
 }

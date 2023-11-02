@@ -1,5 +1,8 @@
 package com.oracle.S202350102.dto;
 
+import lombok.Data;
+
+@Data
 public class Challenger {
 	private int user_num; // 회원번호
 	private int chg_id;   // 챌린지등록번호

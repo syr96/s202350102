@@ -20,7 +20,7 @@
 			</tr>
 			<tr>
 				<td>작성자</td>
-				<td><input type="hidden" name="user_num"  value="${user_num }">${user_num }</td>
+				<td><input type="hidden" name="user_num"  value="${user1.user_num }">${user1.nick }</td>
 			</tr>
 			<tr>
 				<td>내용</td>

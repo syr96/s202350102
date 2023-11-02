@@ -25,14 +25,17 @@
   		UPDATE board set view_cnt=view_cnt+1 
   		WHERE brd_num=#{brd_num}
   	</update>  
+	
+	<select id="YaBoardGetUserNum" parameterType="string" resultType="int">
+		 SELECT user_num 
+		 FROM user1
+		 WHERE user_id = #{userId}
+	</select>
+	
+    <insert id="YaBoardInsert" parameterType="Board">
+    	INSERT INTO board ( brd_num, user_num, brd_lg, brd_md, title, conts, reg_Date, brd_group)
+    	VALUES          ( BRD_NUM_SEQ.nextval,#{user_num},700, 103, #{title},#{conts},sysdate,BRD_NUM_SEQ.nextval)
+    </insert>
     
-    
-   <select id="CommunityWriteNick" parameterType="int" resultType="java.lang.String">
-   		SELECT u.nick 
-   		FROM board b
-   		INNER JOIN user1 u ON b.user_num = u.user_num
-   		WHERE  b.user_num=#{user_num}
-        AND b.brd_lg = 700
-        AND b.brd_md = 103 		
-   </select>
+  
 </mapper>

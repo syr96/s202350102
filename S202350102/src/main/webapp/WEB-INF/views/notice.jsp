@@ -9,7 +9,8 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h1>공지사항</h1>
+	<c:if test="${brd_md == 105 }"><h1>공지</h1></c:if>
+	<c:if test="${brd_md == 106 }"><h1>이벤트</h1></c:if>
 	
 	<table border="1">
 		<tr>
@@ -19,19 +20,22 @@
 			<tr>
 				<td>${noticeList.brd_num}</td>
 				<td><a href="noticeConts?brd_num=${noticeList.brd_num}">${noticeList.title}</a></td>
-				<td>${noticeList.user_num}</td>
+				<td>${noticeList.nick}</td>
 				<td>${noticeList.reg_date}</td>				
 				<td>${noticeList.view_cnt}</td>
 			</tr>
 		</c:forEach>
-		<tr><!-- id조회 혹은 권한 조회로 안보이게 구현하기 -> ID Session? 조회 user1, if 권한이 있으면 활성화 아니면 안보이게, 작성자 user_num 가져오기 -->
-			<td colspan="5">
-				<form action="noticeWriteForm" method="post">
-					<input type="hidden" value="${brd_md }" name="brd_md">
-					<input type="submit" value="글쓰기">
-				</form>
-			</td>
-		</tr>
+		
+		<c:if test="${status_md == 102 }">
+			<tr><!-- id조회 혹은 권한 조회로 안보이게 구현하기 -> ID Session? 조회 user1, if 권한이 있으면 활성화 아니면 안보이게, 작성자 user_num 가져오기 -->
+				<td colspan="5">
+					<form action="noticeWriteForm" method="post">
+						<input type="hidden" value="${brd_md }" name="brd_md">
+						<input type="submit" value="글쓰기">
+					</form>
+				</td>
+			</tr>
+		</c:if>
 	</table>
 	<c:choose>
 		<c:when test="${brd_md == 105 }">		

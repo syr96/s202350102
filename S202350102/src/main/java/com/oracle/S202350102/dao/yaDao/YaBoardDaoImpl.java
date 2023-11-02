@@ -56,23 +56,33 @@ public class YaBoardDaoImpl implements YaBoardDao {
 		}
 		
 	}
-
-
+	
+	//userid를 통해 usernum 가져옴
 	@Override
-	//추후 다시 생각해보기 (로그인한 정보로 닉네임 불러오기)
-	public String userNick(Integer user_num) {
-		System.out.println("YaBoarDaoImpl userNick start... ");
-		String result="";
-		try {
-			System.out.println("YaBoardDao userNick user_num?"+user_num);
-			result= session.selectOne("CommunityWriteNick", user_num);
-			System.out.println("YaBoardDao userNick result?"+result);
-		} catch (Exception e) {
-			System.out.println("YaBoardDao userNick Exception?"+e.getMessage());
-		}
-		return result;
+	public int getuserNum(String userId) {	
+		return session.selectOne("YaBoardGetUserNum",userId);
+	
 	}
 
+	@Override
+	public int insertCommunity(Board board) {
+		
+		int insertResult =0;
+		System.out.println("YaBoardDaoImpl insertCommunity start..");
+		try {
+			insertResult = 	session.insert("YaBoardInsert", board);
+		} catch (Exception e) {
+			System.out.println("YaBoarDaoImpl void upViewCnt e.getMessage)?"+e.getMessage());
+		}
+		return insertResult;
+		
+		
+	
+		
+	}
+
+	
+	
 
 
 	
