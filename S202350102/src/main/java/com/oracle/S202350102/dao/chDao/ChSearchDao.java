@@ -13,4 +13,6 @@ public interface ChSearchDao {
 	List<Board> 	brdSearching(String srch_word);
 	List<SearchHistory> sHistoryList(int user_num);
 	int				upDateHistory(SearchHistory sh);
+	int				deleteHis(SearchHistory sh);
+	List<Board>  	shareSearching(String srch_word);
 }

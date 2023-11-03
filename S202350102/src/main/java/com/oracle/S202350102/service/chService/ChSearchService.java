@@ -13,7 +13,8 @@ public interface ChSearchService {
 	int 				saveWord(SearchHistory sh);
 	List<Challenge> 	chgSearching(String srch_word);
 	List<Board> 		brdSearching(String srch_word);
+	List<Board> 		shareSearching(String srch_word);
 	List<SearchHistory> sHistoryList(int user_num);
 	void 				updateHistory(SearchHistory sh);
-	
+	void 				deleteHis(SearchHistory sh);	
 }

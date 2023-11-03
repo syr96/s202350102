@@ -3,6 +3,7 @@
 
 <mapper namespace="com.oracle.S202350102.JhChallengMapper">
 
+	<!-- 챌린지 테이블, 유저테이블, 공통 테이블 한번에 조인 -> 챌린지 상세정보, 닉네임, 카테고리명, 챌린지 진행상테 조회  -->
 	<select id="jhChgDetail" parameterType="int" resultType="Challenge">
 		SELECT u.nick, c1.ctn ctn, c2.ctn stateCtn, ch.*
 		FROM challenge ch 
@@ -13,6 +14,22 @@
 		WHERE ch.chg_id = #{chg_id}
 	</select>
 	
-	
+	<select id="">
+		SELECT ROWNUM AS rn, chgbrdrn.* 
+		FROM (
+		        SELECT * 
+		        FROM (
+		                SELECT b.brd_num , b.title, u.nick, b.view_cnt, b.reg_date
+		                FROM board b
+		                INNER JOIN user1 u ON b.user_num = u.user_num
+		                INNER JOIN challenge ch ON b.chg_id = ch.chg_id
+		                WHERE ch.chg_id = 1
+		                AND brd_lg = 700
+		                AND brd_md = 101
+		                AND b.brd_step = 0
+		             ) chgbrd
+		        ORDER BY chgbrd.reg_date
+		     ) chgbrdrn;
+	</select>
 	
 </mapper> 

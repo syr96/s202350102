@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>   
+<%@ include file="/WEB-INF/views/header4.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +10,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-<c:import url="/WEB-INF/views/header4.jsp"/>
 
 	<form action="noticeUpdateForm" onsubmit="return chk()">
 		<input type="hidden" value="${noticeConts.brd_num  }" name="brd_num">
@@ -51,6 +51,6 @@
 		</table>
 	</form>
 
-<c:import url="/WEB-INF/views/footer.jsp"/>	
 </body>
+<%@ include file="/WEB-INF/views/footer.jsp" %>
 </html>

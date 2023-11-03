@@ -191,13 +191,26 @@ public class ChController {
 	}
 	// 검색 기본 page
 	@GetMapping("search")
-	public String search(Model model) {
+	public String search(Model model, HttpSession session) {
 		System.out.println("ChController search Start...");
-		List<Challenge> popchgList = chChallengeService.popchgList();
-		List<Board> popBoardList = chBoardService.popBoardList();
+		List<Challenge> popchgList = chChallengeService.popchgList(); // 챌린지
+		List<Board> popBoardList = chBoardService.popBoardList(); // 자유개시판
+		List<Board> popShareList = chBoardService.popShareList();
 		
-		model.addAttribute("popchgList", popchgList);
+		// 검색기록 조회
+		int user_num = 0;
+		List<SearchHistory> sHList = null; 
+		// 로그인 회원이면
+		if(session.getAttribute("user_num") != null) {
+			user_num = (int) session.getAttribute("user_num");
+			sHList = chSearchService.sHistoryList(user_num);
+			
+		}
+		model.addAttribute("user_num", user_num);
+		model.addAttribute("popchgList", popchgList); 
 		model.addAttribute("popBoardList", popBoardList);
+		model.addAttribute("popShareList", popShareList);
+		model.addAttribute("hisList", sHList);
 		
 		return "search";
 	}
@@ -205,9 +218,12 @@ public class ChController {
 	@GetMapping("searching")
 	public String searching(String srch_word, HttpSession session, Model model) {
 		System.out.println("ChController searching Start...");
+		
 		int user_num = 0;
 		List<Challenge> srch_chgResult = null; // chg 검색 결과 List
 		List<Board> srch_brdResult = null; // brd 검색 결과 List 
+		List<Board> srch_shareResult = null;
+		
 		if(srch_word != "" && srch_word != null) { // 검색어가 null이 아니면 
 			if(session.getAttribute("user_num") != null) {
 				if(srch_word != null) {
@@ -221,32 +237,35 @@ public class ChController {
 						chSearchService.updateHistory(sh);
 					}
 				}
+				
+				
 			}
 			// 입력된 키워드에 따라 검색 
-			srch_chgResult = chSearchService.chgSearching(srch_word);
-			srch_brdResult = chSearchService.brdSearching(srch_word); //100~103
+			srch_chgResult = chSearchService.chgSearching(srch_word); // 챌린지
+			srch_brdResult = chSearchService.brdSearching(srch_word); // 자유게시판
+			srch_shareResult = chSearchService.shareSearching(srch_word);
 		}
+		
 		model.addAttribute("srch_word",srch_word);
 		model.addAttribute("srch_chgResult",srch_chgResult);
 		model.addAttribute("srch_brdResult",srch_brdResult);
+		model.addAttribute("srch_shareResult",srch_shareResult);
+	
 		
 		
 		return "/ch/srchResult";
 	}
 	
-	@ResponseBody
-	@GetMapping(value = "sHistoryList")
-	public List<SearchHistory> sHistoryList(HttpSession session) {
-		System.out.println("session.user_num->"+session.getAttribute("user_num"));
-		int user_num = 0;
-		List<SearchHistory> sHList = null;
-		if(session.getAttribute("user_num") != null) {
-			user_num = (int) session.getAttribute("user_num");
-			sHList = chSearchService.sHistoryList(user_num);
-		}
+	@RequestMapping(value = "deleteHis")
+	public String deleteHis(String srch_word, HttpSession session) {
+		System.out.println("ChController deleteHis Start...");
+		SearchHistory sh = new SearchHistory();
+		sh.setUser_num((int) session.getAttribute("user_num"));
+		sh.setSrch_word(srch_word);
+		chSearchService.deleteHis(sh);
 		
 		
-		return sHList;
+		return "redirect:search";
 	}
 	
 }

@@ -57,17 +57,41 @@
 			     From  board b, user1 u
 			     Where brd_lg = 700
 			     and   b.user_num = u.user_num
-			     and   b.brd_md BETWEEN 100 and 103
+			     and   b.brd_md = 103
 			     and   b.like_cnt is not null
 			     ORDER BY like_cnt DESC) a
 		WHERE rownum BETWEEN 1 and 5   
 	</select>
 	
+	<select id="popShareList" resultType="Board">
+		Select ROWNUM, a.*
+		From    (Select b.*, u.nick
+			     From  board b, user1 u
+			     Where brd_lg = 700
+			     and   b.user_num = u.user_num
+			     and   b.brd_md = 102
+			     and   b.like_cnt is not null
+			     ORDER BY like_cnt DESC) a
+		WHERE rownum BETWEEN 1 and 5   
+	</select>
+	
+	
 	<select id="BrdResult" parameterType="java.lang.String" resultType="Board">		
 		SELECT b.*, user1.nick
         FROM board b
         JOIN user1 ON b.user_num = user1.user_num
-        WHERE b.brd_md BETWEEN 100 AND 103
+        WHERE b.brd_md = 103
+        AND	  b.brd_Group = b.brd_num
+        AND   (b.title like '%' || #{srch_word} || '%' 
+        	Or b.conts like '%' || #{srch_word} || '%')
+        ORDER BY b.reg_date DESC
+	</select>
+	
+	<select id="shrResult" parameterType="java.lang.String" resultType="Board">		
+		SELECT b.*, user1.nick
+        FROM board b
+        JOIN user1 ON b.user_num = user1.user_num
+        WHERE b.brd_md = 102
         AND	  b.brd_Group = b.brd_num
         AND   (b.title like '%' || #{srch_word} || '%' 
         	Or b.conts like '%' || #{srch_word} || '%')

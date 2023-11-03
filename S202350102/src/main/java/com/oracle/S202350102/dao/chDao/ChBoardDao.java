@@ -13,5 +13,6 @@ public interface ChBoardDao {
 	void 		noticeViewUp(int brd_num);
 	List<Board> popBoardList();
 	int         noticeCount(int brd_md);
+	List<Board> popShareList();
 	
 }

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
   <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+  <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%> 
     <nav class="navbar navbar-expand-lg navbar-light bg-white">
       <div class="container">
 
@@ -180,3 +181,7 @@
 
 <!-- Theme JS -->
 <script src="./assets/js/theme.bundle.js"></script>
+
+<!--  jquery.js-->
+<script src="./js/jquery.js"></script>
+

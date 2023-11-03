@@ -20,4 +20,10 @@
 		and	  srch_word = #{srch_word}
 	</update>
 	
+	
+	<delete id="deleteHis" parameterType="SearchHistory">
+		Delete search_history
+		Where user_num = #{user_num}
+		and	  srch_word = #{srch_word}
+	</delete>
 </mapper>

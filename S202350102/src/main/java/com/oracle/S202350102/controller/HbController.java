@@ -185,7 +185,7 @@ public class HbController {
 					+ "&total_amount=2200"
 					+ "&vat_amount=200"
 					+ "&tax_free_amount=0"
-					+ "&approval_url=http://localhost/success"
+					+ "&approval_url=http://localhost:8222/success"
 					+ "&fail_url=http://localhost/fail"
 					+ "&cancel_url=http://localhost/cancel";
 			OutputStream outputStream = conn.getOutputStream();

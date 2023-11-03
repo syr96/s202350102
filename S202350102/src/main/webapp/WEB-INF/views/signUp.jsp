@@ -1,7 +1,6 @@
-
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ include file="header.jsp" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,6 +8,8 @@
 <title>Insert title here</title>
 </head>
 <body>
+<c:import url="/WEB-INF/views/header4.jsp"/>
+
 <h1>회원가입</h1>
 <form method="post" action="/writeUser1">
 	<fieldset>
@@ -28,6 +29,8 @@
 	<input type="submit" value="회원가입">	
 	<input type="reset" value="다시 입력">
 	</fieldset>
+	
+<c:import url="/WEB-INF/views/footer.jsp"/>
 </form>
 </body>
 </html>

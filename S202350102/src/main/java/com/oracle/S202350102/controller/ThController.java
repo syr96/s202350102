@@ -1,5 +1,15 @@
 package com.oracle.S202350102.controller;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -45,11 +55,8 @@ public class ThController {
 		if (loginResult != null) {
 			session = request.getSession();
 			session.setAttribute("user_num", loginResult.getUser_num());
-			
-			System.out.println("session.getAttribute(\"user_id\") -->" + session.getAttribute("user_id"));
-			System.out.println("session.getAttribute(\"status_md\") -->" + session.getAttribute("status_md"));
 			System.out.println("session.getAttribute(\"user_num\") -->" + session.getAttribute("user_num"));
-			return "home";
+			return "home2";
 		} else {
 			return "loginForm";
 		}
@@ -68,7 +75,7 @@ public class ThController {
 		System.out.println("ThController logout start... ");
 
 		session.invalidate();
-		return "home";
+		return "home2";
 	}
 	
 	@GetMapping(value = "/deleteUser1Form")
@@ -96,5 +103,82 @@ public class ThController {
 	@GetMapping(value = "userSubMng")
 	public String userSubMng() {
 		return "th/userSubMng";
+	}
+	
+	@GetMapping(value = "thkakaoPayForm")
+	public String kakaoPayForm() {
+		return "th/thkakaoPayForm";
+	}
+	
+	// 카카오페이 구현(단발 성)
+	@RequestMapping("thKakaoPay")
+	@ResponseBody
+	public String thKakaoPay() {
+		System.out.println("ThController thKaKaoPay Start...");
+		try {
+			URL apiAddress = new URL("https://kapi.kakao.com/v1/payment/ready"); // 주소
+			// httpURLConnection = 서버연결 : 요청하는 클라이언트와 카카오페이서버를 연결해주는 것이 HttpURLConnection
+			HttpURLConnection httpURLConnection = (HttpURLConnection) apiAddress.openConnection();
+			httpURLConnection.setRequestMethod("POST"); // POST메소드 사용(카카오에서 지정함) 
+			// 카카오에서 인증받은 요청인지 확인하는 증명하는 메소드 					저장해놓은 어드민 키
+			httpURLConnection.setRequestProperty("Authorization", "KakaoAK ae879700f909ee8b00f9eab914f15730");
+			// 컨텐츠 타입
+			httpURLConnection.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+			// 서버에 넣어야 할 것이 있다 하면 해당메소드사용(true) / 서버로부터 받을것이 있다는 Connection 생성시 갖는  default라 따로 설정할 필요 없음
+			httpURLConnection.setDoOutput(true);
+			String parameter = 	"cid=TC0ONETIME&"
+							+ 	"partner_order_id=partner_order_id"
+							+   "&partner_user_id=partner_user_id"
+							+ 	"&item_name=초코파이"
+							+ 	"&quantity=1"
+							+ 	"&total_amount=2200"
+							+ 	"&vat_amount=200"
+							+ 	"&tax_free_amount=0"
+							+ 	"&approval_url=http://localhost:8222/success"
+							+ 	"&fail_url=http://localhost:8222/fail"
+							+ 	"&cancel_url=http://localhost:8222/cancel";
+			// 파라미터를 전송하는 객체(주는애)  = 서버연결로부터 OutputStream을 받음
+			OutputStream outputStream = httpURLConnection.getOutputStream();
+			// 데이터 주는 객체(데이터주는애)
+			DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+			dataOutputStream.writeBytes(parameter);
+			dataOutputStream.close();
+			
+			int result = httpURLConnection.getResponseCode();
+			
+			// 데이터 받는 객체(데이터받는애)
+			InputStream inputStream;
+			
+			if(result == 200) {
+				// 성공시 데이터받음 
+				inputStream = httpURLConnection.getInputStream();
+			} else {
+				// 실패시 에러데이터 받음
+				inputStream = httpURLConnection.getErrorStream();
+			}
+			// 읽는애(받은값:inputStream 을 읽음)
+			InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+			// 형변환 하는애(형변환을 위해 존재하는 클래스는아니지만 형변환 용으로 사용)
+			BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+			// 값을 찍어내면서 본인 값은 비워지게 된다함
+			return bufferedReader.readLine();
+			
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return "{\"result\":\"No\"}";
+	}
+	
+	
+	@GetMapping("success")
+	public String kakaoSuccess() {
+		return "th/kakaoSuccess";
+	}
+	@GetMapping("cancel")
+	public String kakaoCancel() {
+		return "th/thkakaoPayForm";
 	}
 }

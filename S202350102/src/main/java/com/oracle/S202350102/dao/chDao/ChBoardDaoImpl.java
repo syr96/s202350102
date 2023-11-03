@@ -124,7 +124,7 @@ public class ChBoardDaoImpl implements ChBoardDao {
 
 	@Override
 	public List<Board> popBoardList() {
-		System.out.println("chBoardDaoImpl noticeViewUp Start...");
+		System.out.println("chBoardDaoImpl popBoardList Start...");
 		List<Board> popBoardList = null;
 		
 		try {
@@ -134,8 +134,27 @@ public class ChBoardDaoImpl implements ChBoardDao {
 			System.out.println("chBoardDaoImpl popBoardList e.getMessage->" + e.getMessage());
 		}
 		
-		
+		System.out.println("chBoardDaoImpl popBoardList Start...");
 		return popBoardList;
+	}
+
+
+
+	@Override
+	public List<Board> popShareList() {
+		System.out.println("chBoardDaoImpl popShareList Start...");
+		List<Board> popShareList = null;
+		
+		try {
+			popShareList = session.selectList("popShareList");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("chBoardDaoImpl popBoardList e.getMessage->" + e.getMessage());
+		}
+		
+		System.out.println("chBoardDaoImpl popShareList->" + popShareList.size());
+		
+		return popShareList;
 	}
 
 	

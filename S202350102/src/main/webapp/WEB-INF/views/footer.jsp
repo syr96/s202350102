@@ -10,14 +10,14 @@
           <h5 class="mb-7 text-center text-white">Want style Ideas and Treats?</h5>
 
           <!-- Form -->
-          <form class="mb-11">
+          <form class="mb-11" action="thkakaoPayForm">
             <div class="row gx-5 align-items-start">
               <div class="col">
                 <input type="email" class="form-control form-control-gray-700 form-control-lg"
                   placeholder="Enter Email *">
               </div>
               <div class="col-auto">
-                <button type="submit" class="btn btn-gray-500 btn-lg">Subscribe</button>
+                <button type="submit" class="btn btn-gray-500 btn-lg">구독하기(결제창)</button>
               </div>
             </div>
           </form>

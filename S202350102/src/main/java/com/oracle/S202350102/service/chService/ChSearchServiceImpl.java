@@ -44,7 +44,15 @@ public class ChSearchServiceImpl implements ChSearchService {
 		
 		return srch_brdResult;
 	}
-
+	
+	@Override
+	public List<Board> shareSearching(String srch_word) {
+		System.out.println("ChSearchServiceImpl shareSearching Start...");
+		
+		List<Board> srch_shrResult = chSearchDao.shareSearching(srch_word);
+		
+		return srch_shrResult;
+	}
 
 	@Override
 	public List<SearchHistory> sHistoryList(int user_num) {
@@ -60,5 +68,16 @@ public class ChSearchServiceImpl implements ChSearchService {
 		int result = chSearchDao.upDateHistory(sh);
 		
 	}
+
+
+	@Override
+	public void deleteHis(SearchHistory sh) {
+		System.out.println("ChSearchServiceImpl deleteHis Start...");
+		int result = chSearchDao.deleteHis(sh);
+		
+	}
+
+
+	
 
 }

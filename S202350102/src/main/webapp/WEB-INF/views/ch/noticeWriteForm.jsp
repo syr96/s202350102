@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>    
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>   
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%> 
+<%@ include file="/WEB-INF/views/header4.jsp" %>  
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,8 +10,6 @@
 <title>noticeWriteForm공지 및 이벤트 글 작성 </title>
 </head>
 <body>
-	<c:import url="/WEB-INF/views/header4.jsp"/>
-
 	
 	<c:if test="${brd_md == 105 }">공지</c:if>
 	<c:if test="${brd_md == 106 }">이벤트</c:if>
@@ -40,6 +39,7 @@
 		</table>	
 	</form>
 	
-	<c:import url="/WEB-INF/views/footer.jsp"/>
+
 </body>
+<%@ include file="/WEB-INF/views/footer.jsp" %>
 </html>
