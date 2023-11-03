@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.oracle.S202350102.dto.Board;
+import com.oracle.S202350102.dto.User1;
 import com.oracle.S202350102.service.yaService.YaCommunityService;
 
 import lombok.RequiredArgsConstructor;
@@ -40,34 +41,47 @@ public class YaController {
 		return "listCommunity";
 	}
 	
-	//게시글 제목을 누르면 자세히 보기 
-	// 로그인한 회원만 detailCommunity에서 수정/삭제 버튼 생김 추가
 	
+	//게시글 제목을 누르면 자세히 보기 
 	@GetMapping(value="detailCommunity")
 	public String detailCommunity(int brd_num, Model model, HttpSession session) {
 		System.out.println("YaController Start detailCommunity start...");
 		
+	    // 게시글 상세 정보 확인
 		Board board = ycs.detailCommunity(brd_num);
-		
-		int upViewCnt = 0;
-		ycs.upViewCnt(brd_num);
-		System.out.println("upViewCOunt?"+upViewCnt);
-		
-		model.addAttribute("board", board);
-		model.addAttribute("upViewCnt", upViewCnt);
 		
 		//로그인 상태 확인 
 		String userId = (String) session.getAttribute("user_id");
-		model.addAttribute("loggedIn", userId != null);
+
+		
+		//조회수 증가
+		int upViewCnt = 0;
+		ycs.upViewCnt(brd_num);
+		
+		
+		model.addAttribute("board", board);
+		model.addAttribute("upViewCnt", upViewCnt);	
+	    model.addAttribute("loggedIn", userId != null);
+		
+		
+	    System.out.println("nick: " + board.getNick());
+	    System.out.println("userName:"+board.getUser_name());
+	    System.out.println("user_num:"+board.getUser_num());
+	    System.out.println("user_id:"+board.getUser_id());
+	    System.out.println("sessionScope.userId: " + session.getAttribute("user_id"));
+		
+	    
+	 
+	
 		return"ya/detailCommunity";
 	}
 	
-	
-	
-	//로그인한 사용자만 회원번호를 가지고 커뮤니티 게시글 작성폼으로 이동, 폼에서 회원 닉네임 띄움
+
+	//로그인한 사용자  회원번호를 가지고 커뮤니티 게시글 작성폼으로 이동
 		@RequestMapping(value="/writeFormCommunity")
 		public String writeFormCommunity(HttpSession session, Model model ) {
 			System.out.println("YaController writeFormCommunity Start... ");
+		
 			String userId = (String) session.getAttribute("user_id");
 			System.out.println("userId?"+userId);
 			if (userId == null) {
@@ -88,16 +102,12 @@ public class YaController {
 
 			}
 
-	 // 게시글 작성,
+	 // 게시글 작성
 	
 		@PostMapping(value="/writeCommunity") 
 		public String insertCommunity(HttpSession session, @ModelAttribute Board board, Model model) {
 			System.out.println("YaController start insertCommunity... "); 
 			String userId = (String) session.getAttribute("user_id");
-
-		    if (userId == null) {
-		        return "redirect:/loginForm";
-		    }
 
 		    int userNum = ycs.getuserNum(userId);
 		    board.setUser_num(userNum);
@@ -113,9 +123,60 @@ public class YaController {
 			 return "forward:writeCommunity"; 
 		 }
 		
-
+		// 게시글 수정폼이동
+		@GetMapping(value="/updateCommunityForm")
+		public String updateCommunity(int brd_num, Model model) {
+			System.out.println("YaController updaetCommunityForm start...");
+			
+			Board board = ycs.detailCommunity(brd_num);
+			// 정전
+			System.out.println("title :"+board.getTitle());
+			System.out.println("conts :"+board.getConts());
+			
+			model.addAttribute("board", board);
+			
+			return "ya/updateCommunityForm";
+		}
 		
+		// 게시글 수정
+		@GetMapping(value="/updateCommunity")
+		public String updateCommunity(Board board, Model model) {
+	
+			
+			int updateCommunity = ycs.updateCommunity(board);
+			
+			System.out.println("YaController ycs.updateCommunity updateBoard updateCommunity?"+updateCommunity);
+			model.addAttribute("updateCommunity", updateCommunity);
+			//수정후
+			System.out.println("title update:"+board.getTitle());
+			System.out.println("conts update:"+board.getConts());
+			
+			return "forward:listCommunity";
+		}
 		
+		//게시글 삭제
+		@GetMapping(value="/deleteCommunity")
+		public String deleteCommuinty(int brd_num, Model model) {
+			
+			int deleteResult = ycs.deleteCommunity(brd_num);
+			System.out.println("YaController ycs.deleteCommunity start....");
+		
+			return "redirect:listCommunity";
+			
+		}
+		
+		//자유게시판 게시글 조건(이름,제목)검색
+		@RequestMapping(value="listBoardSearch")
+		public String listBoardSearch(Board board, Model model) {
+			System.out.println("YaController Start listCommunitySearch...");
+			
+			List<Board> listSerachBoard = ycs.listSearchBoard(board);
+			System.out.println("YaController listSearchBoard.size?"+listSerachBoard.size());
+			
+			model.addAttribute("listSearchBoard", listSerachBoard);
+			return "listCommunity";
+			
+		}
 		
 
 }

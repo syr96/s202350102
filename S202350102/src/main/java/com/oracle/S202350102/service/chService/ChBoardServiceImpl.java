@@ -16,11 +16,19 @@ public class ChBoardServiceImpl implements ChBoardService {
 	
 	private final ChBoardDao chBoardDao;
 	
+	@Override
+	public int noticeCount(int brd_md) {
+		System.out.println("chBoardServiceImpl noticeCount Start...");
+		
+		int noticeCount = chBoardDao.noticeCount(brd_md);
+		
+		return noticeCount;
+	}
 
 	@Override
-	public List<Board> noticeLIst(int brd_md) {
+	public List<Board> noticeLIst(Board board) {
 		System.out.println("chBoardServiceImpl noticeList Start...");
-		List<Board> noticeList = chBoardDao.noticeList(brd_md);
+		List<Board> noticeList = chBoardDao.noticeList(board);
 		
 		return noticeList;
 	}
@@ -88,6 +96,9 @@ public class ChBoardServiceImpl implements ChBoardService {
 		
 		return popBoardList;
 	}
+
+
+	
 
 
 

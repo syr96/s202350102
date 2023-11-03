@@ -34,4 +34,10 @@ public class YrController {
 		return "yr/ssjFriends";
 	}
 	
+	@RequestMapping(value = "chgJoin")
+	public String chgJoin(int user_num, int chg_id, Model model) {
+		System.out.println("YrController chgJoin Start...");
+		
+		return "yr/chgJoin";
+	}
 }

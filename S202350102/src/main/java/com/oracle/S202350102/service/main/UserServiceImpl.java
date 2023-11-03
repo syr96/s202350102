@@ -13,9 +13,15 @@ public class UserServiceImpl implements UserService {
 	private final UserDao ud;
 
 	@Override
-	public User1 userSelect(String user_id) {
-		User1 user = ud.userSelect(user_id);
-		return user;
+	public User1 userSelect(int user_num) {
+		if (user_num != 0) {
+			User1 user = new User1();
+			user = ud.userSelect(user_num);
+			return user;
+		} else {
+			return null;
+		}
+
 	}
 	
 }

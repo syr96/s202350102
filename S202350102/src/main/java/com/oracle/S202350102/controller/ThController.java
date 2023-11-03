@@ -44,11 +44,11 @@ public class ThController {
 		System.out.println("ThController loginResult -- >" + loginResult);
 		if (loginResult != null) {
 			session = request.getSession();
-			session.setAttribute("user_id", loginResult.getUser_id());
-			session.setAttribute("status_md", loginResult.getStatus_md());
-			System.out.println("session -->" + session);
+			session.setAttribute("user_num", loginResult.getUser_num());
+			
 			System.out.println("session.getAttribute(\"user_id\") -->" + session.getAttribute("user_id"));
 			System.out.println("session.getAttribute(\"status_md\") -->" + session.getAttribute("status_md"));
+			System.out.println("session.getAttribute(\"user_num\") -->" + session.getAttribute("user_num"));
 			return "home";
 		} else {
 			return "loginForm";
@@ -91,7 +91,10 @@ public class ThController {
 			model.addAttribute("deleteUserCnt",deleteUserCnt);
 			return "th/deleteUser1Form";
 		}
-		
-		
+	}
+	
+	@GetMapping(value = "userSubMng")
+	public String userSubMng() {
+		return "th/userSubMng";
 	}
 }

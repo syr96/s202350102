@@ -5,7 +5,7 @@
 <mapper namespace="com.oracle.S202350102.BoardMapper">
 
     <select id="listCommunity" parameterType="Board" resultType="Board">
-        SELECT b.brd_num, u.user_num, b.title, u.nick, b.reg_date, b.view_cnt
+        SELECT *
         FROM board b, user1 u
         WHERE b.user_num = u.user_num
         AND b.brd_lg = 700
@@ -13,8 +13,8 @@
     </select>
     
 
-    <select id="YaCommunityOne" parameterType="int" resultType="Board">
-    	 SELECT  b.title, u.nick, b.reg_date, b.conts, b.view_cnt
+   <select id="YaCommunityOne" parameterType="int" resultType="Board">
+    	 SELECT  *
     	 FROM board b, user1 u
     	 Where brd_num =#{brd_num}
     	 AND b.user_num = u.user_num
@@ -34,8 +34,30 @@
 	
     <insert id="YaBoardInsert" parameterType="Board">
     	INSERT INTO board ( brd_num, user_num, brd_lg, brd_md, title, conts, reg_Date, brd_group)
-    	VALUES          ( BRD_NUM_SEQ.nextval,#{user_num},700, 103, #{title},#{conts},sysdate,BRD_NUM_SEQ.nextval)
+    	VALUES          ( BRD_NUM_SEQ.nextval,#{user_num},700, 103, #{title},#{conts}, sysdate, BRD_NUM_SEQ.nextval)
     </insert>
     
+    <update id="YaBoardUpdate" parameterType="Board">
+    	UPDATE board SET title=#{title}, conts=#{conts}
+    	WHERE  brd_num = #{brd_num}
+    </update>
+    
+    <delete id="YaBoardDelete" parameterType="int">
+    	DELETE FROM board WHERE brd_num = #{brd_num} 
+    </delete>
+    
+    <select id="YaBoardSearhList" parameterType="Board" resultType="Board">
+    	SELECT *
+    	FROM board
+    	WHERE
+    	<choose>
+    		<when test="search == 'title' ">
+    			 title LIKE'%' || #{keyword} || '%'  
+    		</when>
+    		<when test="search == 'nick' ">
+    			 nick LIKE '%' || #{keyword} || '%'  
+    		</when>
+    	</choose>
+    </select>
   
 </mapper>

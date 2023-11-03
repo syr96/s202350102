@@ -7,11 +7,15 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -32,13 +36,40 @@ public class JkController {
 	private final JkUserService jus;
 	private final JkBoardService jbs;
 	
+	//좋아요 기능 컨트롤러
+	//좋아요 상태 가져오는 메소드
+	@GetMapping("/board/{brd_num}/like")
+	public ResponseEntity<String> getLikeStatus(@PathVariable int brd_num) {
+		System.out.println("JkController getlikestatus start...");
+	   
+	    return new ResponseEntity<>("Like status of Board with brd_num " + brd_num, HttpStatus.OK);
+	}
+
+	@PostMapping("/board/{brd_num}/like")
+	public ResponseEntity<String> updateLikeStatus(@PathVariable int brd_num) {
+		System.out.println("JkController updateLikeStatus start..." + brd_num);
+		
+		jbs.updateLikeStatus(brd_num);
+	    return new ResponseEntity<>("Updated like status of Board with brd_num " + brd_num, HttpStatus.OK);
+	}
+
+	
+	
 	//쉐어링 게시글 전체조회
 	@RequestMapping(value="/Sharing")
-	public String Sharing(Board board, Model model) {
+	public String Sharing(Board board, Model model, HttpSession session) {
 		System.out.println("JkController Sharing start...");
 		List<Board> Sharing = jbs.Sharing(board);
 		System.out.println("JkController list Sharing.size()?"+Sharing.size());
 		
+		int user_num = 0;
+		if(session.getAttribute("user_num") != null) {
+			user_num = (int) session.getAttribute("user_num");
+		}
+		
+		User1 user1 = jbs.userSelect(user_num);
+		
+		model.addAttribute("user1", user1);
 		model.addAttribute("Sharing", Sharing);
 		
 		return "Sharing";

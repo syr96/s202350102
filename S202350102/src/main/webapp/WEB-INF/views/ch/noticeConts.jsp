@@ -1,23 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ include file="../header.jsp" %>    
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>   
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<script type="text/javascript">
-	var board_id = "<c:out value='${noticeConts.user_num  }'/>";
-	var sess_id = "<c:out value='${user_num  }'/>";
-	function chk(){
-		if(board_id == sess+id){
-			return true;
-		}
-		return false;
-	}
-</script>
 </head>
 <body>
+<c:import url="/WEB-INF/views/header4.jsp"/>
+
 	<form action="noticeUpdateForm" onsubmit="return chk()">
 		<input type="hidden" value="${noticeConts.brd_num  }" name="brd_num">
 		<input type="hidden" value="${noticeConts.user_num  }" name="user_num">
@@ -57,5 +50,7 @@
 			</tr>
 		</table>
 	</form>
+
+<c:import url="/WEB-INF/views/footer.jsp"/>	
 </body>
 </html>

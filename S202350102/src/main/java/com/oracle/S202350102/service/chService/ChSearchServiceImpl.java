@@ -18,10 +18,11 @@ public class ChSearchServiceImpl implements ChSearchService {
 	
 
 	@Override
-	public void saveWord(SearchHistory sh) {
+	public int saveWord(SearchHistory sh) {
 		System.out.println("ChSearchServiceImpl saveWord Start...");
 		int result = chSearchDao.saveWord(sh);
 		
+		return result;
 	}
 
 
@@ -42,6 +43,22 @@ public class ChSearchServiceImpl implements ChSearchService {
 		List<Board> srch_brdResult = chSearchDao.brdSearching(srch_word);
 		
 		return srch_brdResult;
+	}
+
+
+	@Override
+	public List<SearchHistory> sHistoryList(int user_num) {
+		System.out.println("ChSearchServiceImpl sHistoryList Start...");
+		List<SearchHistory> shList = chSearchDao.sHistoryList(user_num);
+		return shList;
+	}
+
+
+	@Override
+	public void updateHistory(SearchHistory sh) {
+		System.out.println("ChSearchServiceImpl updateHistory");
+		int result = chSearchDao.upDateHistory(sh);
+		
 	}
 
 }

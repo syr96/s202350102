@@ -25,6 +25,11 @@ public class JkUserServiceImpl implements JkUserService {
 	public User1 getUserDetails(String user_id) {
 		return jud.getUserDetails(user_id);
 	}
+
+	@Override
+	public User1 userSelect(int user_num) {
+		return jud.userSelect(user_num);
+	}
 	
 
 	}

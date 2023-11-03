@@ -6,14 +6,14 @@ import com.oracle.S202350102.dto.Board;
 
 public interface YaBoardDao {
 	List<Board> listCommunity(Board board);
-	// 게시글 상세조회
+
 	Board        detailCommunity(int brd_num);
-	// 조회수 증가
-	void         upViewCnt(int brd_num);
-	
-	int           getuserNum(String userId);
-	// 로그인만 회원만 게시글 작성
-	int         insertCommunity(Board board);
+	void         upViewCnt(int brd_num);	
+	int          getuserNum(String userId);
+	int          insertCommunity(Board board);
+	int          updateCommunity(Board board);
+	int          deleteCommunity(int brd_num);
+	List<Board>  boardSearchList(Board board);
 
 	
 

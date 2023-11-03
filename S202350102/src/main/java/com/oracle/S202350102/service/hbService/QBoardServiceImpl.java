@@ -39,9 +39,14 @@ public class QBoardServiceImpl implements QBoardService {
 	}
 
 	@Override
-	public int readCnt(int brd_num) {
-		int readCnt = qbd.readCnt(brd_num);
-		return readCnt;
+	public void readCnt(int brd_num) {
+		qbd.readCnt(brd_num);
+	}
+
+	@Override
+	public int qBoardUpdate(Board board) {
+		int result = qbd.qBoardUpdate(board);
+		return result;
 	}
 
 }

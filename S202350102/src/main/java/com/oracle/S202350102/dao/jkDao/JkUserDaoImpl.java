@@ -30,7 +30,13 @@ public class JkUserDaoImpl implements JkUser1Dao {
 		  return session.selectOne("getUserDetails", user_id);
 	}
 
+	@Override
+	public User1 userSelect(int user_num) {
+		 return session.selectOne("userSelect", user_num);
+			}
+	}
+
 	
 
 	
-}
+

@@ -5,17 +5,15 @@ import java.util.List;
 import com.oracle.S202350102.dto.Board;
 
 public interface YaCommunityService {
-	//커뮤니티 게시글 전체
-	List<Board> listCommunity(Board board);
-	//커뮤니티 게시글 상세조회
-	Board detailCommunity(int brd_num);
-	//게시글 조회수 증가
+	
+	List<Board>  listCommunity(Board board);
+	Board        detailCommunity(int brd_num);
 	void         upViewCnt(int brd_num);
-	//userID를 통해 userNum 가져옴
 	int          getuserNum(String userId);
-
-	// 로그인만 회원만 게시글 작성
-	int         insertCommunity(Board board);
+	int          insertCommunity(Board board);
+	int          updateCommunity(Board board);
+	int          deleteCommunity(int brd_num);
+	List<Board>  listSearchBoard(Board board);
 	
 	
 }

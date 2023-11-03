@@ -4,13 +4,19 @@
 
 <mapper namespace="com.oracle.S202350102.YrUser1Mapper">
 	<select id="yrUser1ListSsj" parameterType="int" resultType="User1">
-		select u.user_num, u.nick, u.img, b.reg_date as brd_reg_date
-		from user1 u, board b
-		where u.user_num in (select user_num
-		                    from challenger
-		                    where chg_id = #{chg_id})
-		and b.chg_id = #{chg_id}
-		and b.brd_lg = 700
-		and b.brd_md = 100
+		select u.user_num, u.nick, u.img, b.conts, b.reg_date as brd_reg_date
+		from   challenge c1
+		     , challenger c2 
+		     , user1 u
+		     , (select * from board b1
+		        where b1.brd_lg = 700  
+		        and   b1.brd_md = 100
+		       ) b     
+		where c1.chg_id = #{chg_id}
+		and   c1.chg_id = c2.chg_id
+		and   c2.user_num = u.user_num
+		and   c1.chg_id = b.chg_id
+		and   u.user_num = b.user_num
+		order by b.reg_date desc
 	</select>
 </mapper>

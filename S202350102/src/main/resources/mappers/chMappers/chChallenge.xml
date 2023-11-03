@@ -10,11 +10,12 @@
 	</select>
 	
 	<select id="chgResult" parameterType="java.lang.String" resultType="Challenge">
-		Select 	*
-		From  	Challenge
-		Where 	title 	  like '%' || #{srch_word} || '%'
-		Or	  	chg_conts like '%' || #{srch_word} || '%'	
-		Order By reg_date DESC
+		Select 	c.*, user1.nick
+		From  	Challenge c 
+		JOIN    user1 On c.user_num = user1.user_num 
+		Where 	(c.title 	  like '%' || #{srch_word} || '%'
+		Or	  	 c.chg_conts  like '%' || #{srch_word} || '%')	
+		Order By c.reg_date DESC
 	</select>
 	
 </mapper>

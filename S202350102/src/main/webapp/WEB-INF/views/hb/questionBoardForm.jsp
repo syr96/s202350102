@@ -8,6 +8,7 @@
 <title>Insert title here</title>
 </head>
 <body>
+<c:import url="/WEB-INF/views/header4.jsp"/>
 	<h1>문의게시판</h1>
 	<div id="container">
 		<table border="1">
@@ -24,5 +25,6 @@
 		</table>
 		<a href="qBoardInsertForm" class="btn">글쓰기</a>
 	</div>
+<c:import url="/WEB-INF/views/footer.jsp"/>
 </body>
 </html>

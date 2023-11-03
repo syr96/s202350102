@@ -91,29 +91,8 @@
 
               <!-- Toggle -->
               <c:choose>
-              	<c:when test="${sessionScope.user_id == null}">
-	              <a class="nav-link" data-bs-toggle="dropdown" href="#" aria-expanded="false">
-	              	<i class="fe fe-user"></i>
-	              </a>
-	
-	              <!-- Menu -->
-	              <div class="dropdown-menu">
-	                <div class="card card-lg">
-	                  <div class="card-body">
-	                    <ul class="list-styled fs-sm">
-	                      <li class="list-styled-item">
-	                        <a class="list-styled-link" href="/loginForm">로그인</a>
-	                      </li>
-	                      <li class="list-styled-item">
-	                        <a class="list-styled-link" href="/signUp">회원가입</a>
-	                      </li>
-	                    </ul>
-	                  </div>
-	                </div>
-	              </div>
-	             </c:when>
 	              
-	             <c:when test="${sessionScope.user_id != null}"> 
+	             <c:when test="${sessionScope.user_num != null}"> 
 				  	<a class="nav-link" data-bs-toggle="dropdown" href="#" aria-expanded="false">
 	              		<i class="fa fa-user"></i>
 	              	</a>
@@ -134,6 +113,28 @@
 	                </div>
 	              </div>
 		  		 </c:when>
+		  		 
+		  		 <c:when test="${sessionScope.user_num == null}"> 
+	              <a class="nav-link" data-bs-toggle="dropdown" href="#" aria-expanded="false">
+	              	<i class="fe fe-user"></i>
+	              </a>
+	
+	              <!-- Menu -->
+	              <div class="dropdown-menu">
+	                <div class="card card-lg">
+	                  <div class="card-body">
+	                    <ul class="list-styled fs-sm">
+	                      <li class="list-styled-item">
+	                        <a class="list-styled-link" href="/loginForm">로그인</a>
+	                      </li>
+	                      <li class="list-styled-item">
+	                        <a class="list-styled-link" href="/signUp">회원가입</a>
+	                      </li>
+	                    </ul>
+	                  </div>
+	                </div>
+	              </div>
+	            </c:when>
               </c:choose>
             </li>
 

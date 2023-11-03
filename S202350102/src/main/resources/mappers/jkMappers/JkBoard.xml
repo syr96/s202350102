@@ -13,6 +13,19 @@
 		AND b.brd_step = 0
     </select>
    
+    <update id="updateLikeStatus" parameterType="Board">
+	   UPDATE board
+	   SET like_cnt = like_cnt + 1
+	   WHERE brd_num = #{brd_num}
+	</update>
+	
+	<select id="getboardBybrd_num" parameterType="int" resultType="Board">
+	    SELECT b.brd_num, u.user_num, b.title, b.conts, u.nick, b.img, b.view_cnt, b.reg_date, b.price, b.bank_info, b.bank_duedate, b.addr, b.applicants, b.participants, b.user_tel, b.like_cnt, b.brd_group, b.brd_step
+	    FROM board b, user1 u
+	    WHERE b.user_num = u.user_num
+	    AND b.brd_num = #{brd_num}
+	</select>
+   
     
 </mapper>
 

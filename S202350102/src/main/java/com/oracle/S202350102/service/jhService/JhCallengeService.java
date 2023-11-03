@@ -7,4 +7,5 @@ public interface JhCallengeService {
 	Challenge jhChgDetail(int chg_id);
 
 
+
 }

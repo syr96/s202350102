@@ -16,12 +16,28 @@ public class ChBoardDaoImpl implements ChBoardDao {
 	
 	private final SqlSession session;
 	
+	
 	@Override
-	public List<Board> noticeList(int brd_md) {
+	public int noticeCount(int brd_md) {
+		int noticeCount = 0;
+		
+		try {
+			noticeCount = session.selectOne("noticeCount", brd_md);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("chBoardDaoImpl noticeCount e.getMessage->" + e.getMessage());
+		}
+		return noticeCount;
+	}
+	
+	
+	
+	@Override
+	public List<Board> noticeList(Board board) {
 		System.out.println("chBoardDaoImpl noticeList Start...");
 		List<Board> noticeList =null;
 		try {
-			noticeList = session.selectList("noticeList",brd_md);
+			noticeList = session.selectList("noticeList",board);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("chBoardDaoImpl noticeList e.getMessage->" + e.getMessage());
@@ -121,6 +137,8 @@ public class ChBoardDaoImpl implements ChBoardDao {
 		
 		return popBoardList;
 	}
+
+	
 
 
 }

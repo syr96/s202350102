@@ -1,5 +1,7 @@
 package com.oracle.S202350102.dto;
 
+import java.util.Date;
+
 import lombok.Data;
 
 @Data
@@ -13,7 +15,7 @@ public class Board {
 	private String 	conts;			// 게시글내용
 	private String 	img;			// 게시글 첨부파일
 	private int 	view_cnt;		// 게시글 조회 수
-	private String 	reg_date;		// 게시글 작성일자
+	private Date 	reg_date;		// 게시글 작성일자
 	private int		price;			// 쉐어링 금액
 	private String 	bank_info;		// 쉐어링 은행,계좌번호
 	private String 	bank_duedate;	// 쉐어링 입금기한
@@ -34,5 +36,7 @@ public class Board {
 	private int start; 		 	private int end;
 	
 	//join_listCommunity
-	private String 	nick;			// 유저닉네임
+	private String nick;			// 유저닉네임
+	private String user_name;
+	private String user_id;
 }

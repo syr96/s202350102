@@ -44,6 +44,7 @@ public class QBoardDaoImpl implements QBoardDao {
 	public int qBoardInsert(Board board) {
 		int result = 0;
 		try {
+			System.out.println("board->"+board);
 			result = session.insert("qBoardInsert",board);
 		} catch (Exception e) {
 			System.out.println("qbd dao ins exception->"+e.getMessage());
@@ -65,14 +66,27 @@ public class QBoardDaoImpl implements QBoardDao {
 
 
 	@Override
-	public int readCnt(int brd_num) {
-		int readCnt = 0;
+	public void readCnt(int brd_num) {
 		try {
-			readCnt = session.update("qReadCount",brd_num);
+			session.update("qReadCount",brd_num);
 		} catch (Exception e) {
 			System.out.println("qbd dao readcnt exception->"+e.getMessage());
 		}
-		return readCnt;
+	}
+
+
+	@Override
+	public int qBoardUpdate(Board board) {
+		int result = 0;
+		try {
+			System.out.println("dao qboardupdate board->"+board);
+			result = session.update("qBoardUpdate",board);
+			System.out.println("dao qboardUpdate result->"+result);
+		} catch (Exception e) {
+			System.out.println("qbd dao qBoardUpdate exception->"+e.getMessage());
+		}
+		
+		return result;
 	}
 
 }

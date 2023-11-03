@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ include file="header.jsp" %>
+<%@ include file="header4.jsp" %>
 <link rel="stylesheet" type="text/css" href="yaCss/Community.css">
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%> 
 <!DOCTYPE html>
@@ -21,10 +21,10 @@
     <div id="board-search">
         <div class="container">
             <div class="search-window">
-                <form action=" ">
+                <form action="listBoardSearch" method="get">
                     <div class="search-wrap">
                         <label for="search" class="blind">게시글 검색</label>
-                        <input id="search" type="search" name="" placeholder="제목/작성자 검색" value="">
+                        <input id="search" type="search" name="keyword" placeholder="제목/작성자 검색">
                         <button type="submit" class="btn btn-dark">검색</button>
                     </div>
                 </form>
