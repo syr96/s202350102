@@ -22,9 +22,9 @@
 	
 	<insert id="noticeWrite" parameterType="Board">
 		Insert Into board
-			(brd_num, user_num, brd_lg, brd_md, title, conts, view_cnt, reg_date, brd_group, brd_step)
+			(brd_num, user_num, brd_lg, brd_md, title, conts, view_cnt, reg_date, brd_group, brd_step, img)
 		values
-			(BRD_NUM_SEQ.nextval, #{user_num}, 700, #{brd_md}, #{title}, #{conts}, 0, sysdate, BRD_NUM_SEQ.CURRVAL, 0)
+			(BRD_NUM_SEQ.nextval, #{user_num}, 700, #{brd_md}, #{title}, #{conts}, 0, sysdate, BRD_NUM_SEQ.CURRVAL, 0, #{img})
 	</insert>
 	
 	<select id="noticeCont" parameterType="int" resultType="Board">
@@ -94,8 +94,17 @@
         WHERE b.brd_md = 102
         AND	  b.brd_Group = b.brd_num
         AND   (b.title like '%' || #{srch_word} || '%' 
-        	Or b.conts like '%' || #{srch_word} || '%')
+        	Or b.conts  like '%' || #{srch_word} || '%')
         ORDER BY b.reg_date DESC
 	</select>
+	
+	<select id="alarmchk" parameterType="int" resultType="BoardReChk">
+		Select c.*, b.title
+		From   board_re_chk c, board b 
+		where  c.send_date= 1
+		and    c.brd_num = b.brd_num
+		and    c.user_num = #{user_num}
+	</select>
+	
 	
 </mapper>

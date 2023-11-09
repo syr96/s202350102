@@ -18,12 +18,17 @@ import org.apache.tomcat.util.buf.UDecoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.oracle.S202350102.dto.Board;
+import com.oracle.S202350102.dto.Level1;
 import com.oracle.S202350102.dto.User1;
+import com.oracle.S202350102.dto.UserLevel;
+import com.oracle.S202350102.service.hbService.Paging;
 import com.oracle.S202350102.service.hbService.QBoardService;
+import com.oracle.S202350102.service.main.Level1Service;
 import com.oracle.S202350102.service.main.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -36,21 +41,38 @@ import oracle.net.aso.l;
 public class HbController {
 	private final QBoardService qbs;
 	private final UserService   us;
+	private final Level1Service ls;
 	
 	@RequestMapping("qBoardList")
 	public String callInfo(Board board, Model model, String currentPage, HttpSession session) {
-		System.out.println("controller qBoardList  start..");
 		
+		// 전체 게시글 수
+		int total = qbs.totalQBoard();
+		
+		// Paging 작업
+		Paging page = new Paging(total, currentPage);
+		
+		board.setStart(page.getStart());   // 시작시 1
+		board.setEnd(page.getEnd());       // 시작시 10 
+		
+		// 보드 리스트 불러오기
 		List<Board> qBoardList = qbs.qBoardList(board);
 		
+		// 유저 세션 불러오기
 		int user_num = 0;
 		if(session.getAttribute("user_num") != null) {
 			user_num = (int) session.getAttribute("user_num");
 		}
 		System.out.println("controller qBoardList  qBoardList.size()->"+qBoardList.size());
 		
+		// 유저 정보 불러오기
 		User1 user1 = us.userSelect(user_num);
 		
+		// 게시판 유저 정보 BoardList에 저장하기
+		qBoardList = us.boardWriterLevelInfo(qBoardList);
+		
+		model.addAttribute("total", total);
+		model.addAttribute("page", page);		
 		model.addAttribute("user1", user1);
 		model.addAttribute("qBoardList", qBoardList);
 		
@@ -126,12 +148,16 @@ public class HbController {
 		int user_num = 0;
 		if (session.getAttribute("user_num") != null) {
 			user_num = (int) session.getAttribute("user_num");
+			ls.userExp(user_num, board.getBrd_lg(), board.getBrd_md());
+			ls.userLevelCheck(user_num);
+			
 		}
 		board.setUser_num(user_num);
 		int result = qbs.qBoardInsert(board);
 		User1 user1 = us.userSelect(user_num);
 		board.setNick(user1.getNick());
 		request.setAttribute("board", board);
+		System.out.println("user exp ->" + user1.getUser_exp());
 		
 		return "redirect:qBoardList";
 	}
@@ -147,73 +173,15 @@ public class HbController {
 		return "forward:qBoardList";
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	@RequestMapping("kakaoPay")
-	public String kakaopay() {
+	@RequestMapping("level")
+	public String levelView(Model model) {
 		
-		return "hb/kakaoPay";
-	}
-	
-	
-	
-	/*
-	 * 카카오페이 강한빛
-	 */
-	@RequestMapping("pay")
-	@ResponseBody
-	public String pay() {
-		try {
-			URL addr = new URL("https://kapi.kakao.com/v1/payment/ready");
-			HttpsURLConnection conn = (HttpsURLConnection) addr.openConnection();
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Authorization", "KakaoAK 2c42c8e868ab3f876a7395c28b625556");
-			conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-			conn.setDoOutput(true);
-			String parameter = "cid=TC0ONETIME&"
-					+ "partner_order_id=partner_order_id"
-					+ "&partner_user_id=partner_user_id"
-					+ "&item_name=초코파이"
-					+ "&quantity=1"
-					+ "&total_amount=2200"
-					+ "&vat_amount=200"
-					+ "&tax_free_amount=0"
-					+ "&approval_url=http://localhost:8222/success"
-					+ "&fail_url=http://localhost/fail"
-					+ "&cancel_url=http://localhost/cancel";
-			OutputStream outputStream = conn.getOutputStream();
-			DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-			dataOutputStream.writeBytes(parameter);
-			dataOutputStream.close();
-			
-			int dataResult = conn.getResponseCode();
-			InputStream inputStream;
-			
-			if(dataResult == 200) {
-				inputStream = conn.getInputStream();
-			} else {
-				inputStream = conn.getErrorStream();
-			}
-			InputStreamReader reader = new InputStreamReader(inputStream);
-			BufferedReader bufferedReader = new BufferedReader(reader);
-			return bufferedReader.readLine();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-//		return "";
-		return "{\"result\":\"NO\"}";
+		List<Level1> level1List = ls.level1List();
 		
+		model.addAttribute("level1List", level1List);
+		
+		return "hb/level";
 	}
-	
 	
 	
 }

@@ -11,4 +11,5 @@ public interface QBoardService {
 	int 		qBoardDelete(int brd_num);
 	void 		readCnt(int brd_num);
 	int 		qBoardUpdate(Board board);
+	int 		totalQBoard();
 }

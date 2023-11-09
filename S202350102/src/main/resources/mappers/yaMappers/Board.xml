@@ -10,6 +10,8 @@
         WHERE b.user_num = u.user_num
         AND b.brd_lg = 700
         AND b.brd_md = 103
+        AND b.brd_step =0
+        ORDER BY b.brd_num
     </select>
     
 
@@ -26,15 +28,10 @@
   		WHERE brd_num=#{brd_num}
   	</update>  
 	
-	<select id="YaBoardGetUserNum" parameterType="string" resultType="int">
-		 SELECT user_num 
-		 FROM user1
-		 WHERE user_id = #{userId}
-	</select>
 	
     <insert id="YaBoardInsert" parameterType="Board">
-    	INSERT INTO board ( brd_num, user_num, brd_lg, brd_md, title, conts, reg_Date, brd_group)
-    	VALUES          ( BRD_NUM_SEQ.nextval,#{user_num},700, 103, #{title},#{conts}, sysdate, BRD_NUM_SEQ.nextval)
+    	INSERT INTO board ( brd_num, user_num, brd_lg, brd_md, title, conts, reg_Date, brd_group, brd_step)
+    	VALUES          ( BRD_NUM_SEQ.nextval,#{user_num},#{brd_lg}, #{brd_md}, #{title},#{conts}, sysdate, BRD_NUM_SEQ.nextval,0)
     </insert>
     
     <update id="YaBoardUpdate" parameterType="Board">
@@ -46,18 +43,81 @@
     	DELETE FROM board WHERE brd_num = #{brd_num} 
     </delete>
     
-    <select id="YaBoardSearhList" parameterType="Board" resultType="Board">
-    	SELECT *
-    	FROM board
-    	WHERE
-    	<choose>
-    		<when test="search == 'title' ">
-    			 title LIKE'%' || #{keyword} || '%'  
-    		</when>
-    		<when test="search == 'nick' ">
-    			 nick LIKE '%' || #{keyword} || '%'  
-    		</when>
-    	</choose>
+    <select id="YaBoardSearhList" parameterType="String" resultType="Board">
+		SELECT *
+        FROM board b ,user1 u
+        WHERE b.user_num = u.user_num
+        AND b.brd_lg = 700
+        AND b.brd_md = 103
+        AND   (b.title like '%' || #{keyword} || '%' 
+        	Or u.nick  like '%' || #{keyword} || '%')
+        AND b.brd_step =0
+        ORDER BY b.reg_date DESC	    
     </select>
-  
+    
+	 <select id="sortByViewCnt" parameterType="String" resultType="Board">
+	    SELECT b.brd_num, b.title, u.nick, b.reg_date, b.view_cnt  
+	    FROM board b ,user1 u
+	    WHERE b.user_num = u.user_num
+        AND b.brd_lg = 700
+        AND b.brd_md = 103
+         AND b.brd_step =0
+	    ORDER BY b.view_cnt DESC
+	</select>
+	
+	<select id="sortByRegDate" parameterType="String" resultType="Board">
+	    SELECT b.brd_num, b.title, u.nick, b.reg_date, b.view_cnt 
+	    FROM board b ,user1 u
+	    WHERE b.user_num = u.user_num
+        AND b.brd_lg = 700
+        AND b.brd_md = 103
+        AND b.brd_step =0
+	    ORDER BY b.reg_date DESC
+	</select>
+	
+	<select id="listComment" resultType="Board" parameterType="int">
+		SELECT b.brd_num, b.user_num, b.conts, u.nick, b.reg_date, b.brd_step, b.brd_group
+		FROM board b, user1 u
+		Where b.brd_group = #{brd_num}
+		AND b.user_num = u.user_num
+		AND b.brd_lg = 700
+		AND b.brd_md = 103
+		AND b.brd_step>0
+		ORDER BY b.reg_date DESC
+	</select>
+  	
+	<insert id="YacommentWrite" parameterType="Board">
+	    INSERT INTO board (brd_num,   user_num, brd_lg, brd_md, conts,   reg_date,  brd_group, brd_step)
+	    VALUES (BRD_NUM_SEQ.nextval, #{user_num}, 700,   103,    #{conts}, sysdate, #{brd_num}, 
+	           (SELECT COALESCE(MAX(brd_step), 0) + 1 FROM board WHERE brd_group = #{brd_group}))
+	</insert>
+	
+	<select id="YaGetLatestBrdStep" resultType="int" parameterType="int">
+		SELECT MAX(brd_step) FROM board WHERE brd_group = #{brd_group}
+	</select>
+	
+	<select id="YaCommentSelect" resultType="Board">
+		SELECT  brd_num, user_num, brd_lg, brd_md, conts, reg_date, brd_group, brd_step
+		FROM    Board
+		WHERE   brd_num =#{brd_num}
+    	AND     b.user_num = u.user_num
+	</select>
+	
+	<update id="YaCommentUpdate" parameterType="Board">
+		UPDATE board SET conts=#{conts}
+		WHERE  user_num = #{user_num} 
+	</update>
+	
+	<update id="YaCommentCnt" parameterType="int">
+		update board set commentCnt = 
+	</update>
+	
+	<delete id="YaCommentDelete" parameterType="Board">
+		DELETE FROM board
+		WHERE brd_num = #{brd_num} 
+	</delete>
+	
+	
+	
+
 </mapper>

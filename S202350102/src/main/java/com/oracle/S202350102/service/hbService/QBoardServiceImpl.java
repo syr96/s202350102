@@ -49,4 +49,10 @@ public class QBoardServiceImpl implements QBoardService {
 		return result;
 	}
 
+	@Override
+	public int totalQBoard() {
+		int total = qbd.totalQBoard();
+		return total;
+	}
+
 }

@@ -37,7 +37,10 @@
 			</tr>
 			<tr>
 				<td>내용</td>
-				<td>${noticeConts.conts }</td>
+				<td>
+					<c:if test="${not empty noticeConts.img }"><img alt="UpLoad Image" src="${pageContext.request.contextPath}/upload/${noticeConts.img}"><p></c:if>
+					${noticeConts.conts }				
+				</td>
 			</tr>
 			<tr>
 				<td colspan="2">

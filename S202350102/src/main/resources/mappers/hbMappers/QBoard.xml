@@ -4,15 +4,29 @@
 
 <mapper namespace="com.oracle.S202350102.QBoardMapper">
 	<select id="qBoardList" parameterType="Board" resultType="Board">
-	    SELECT * 
-	    FROM (
-	      SELECT rownum rn, b.brd_num, u.user_num, b.title, u.nick, b.reg_date, b.view_cnt 
-	      FROM board b, user1 u 
-	      WHERE b.user_num = u.user_num 
-	      AND brd_lg = 400
-	      order by b.reg_date desc
-	    ) a 
-	    WHERE rn BETWEEN 1 AND 5
+	  	SELECT b.* 
+	    FROM 
+	    (
+	      SELECT rownum rn, m.* 
+	      FROM  
+          (
+              SELECT b.brd_num, u.user_num, b.title, u.nick, b.reg_date, b.view_cnt 
+              FROM   board b, user1 u 
+              WHERE  b.user_num = u.user_num 
+              AND    brd_lg = 400
+              order  by b.reg_date desc
+           ) m
+        ) b     
+        WHERE rn BETWEEN #{start} AND #{end}
+        	    
+<!-- 	    SELECT *
+		FROM
+		(
+		        SELECT rownum rn , a.*
+		        FROM
+		        (select * from board where brd_lg = 400 order by reg_date) a
+		 )   
+ 		WHERE  rn BETWEEN #{start} and #{end}  -->
 	</select>
 	
 	<select id="qBoardSelect" parameterType="int" resultType="Board">
@@ -42,4 +56,8 @@
 	<update id="qReadCount" parameterType="int">
 		UPDATE Board SET view_cnt = view_cnt+1 WHERE brd_num = #{brd_num}
 	</update>
+	
+	<select id="totalQBoard" resultType="int">
+		SELECT count(*) FROM board where brd_lg = 400
+	</select>
 </mapper>

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.oracle.S202350102.dao.yaDao.YaBoardDao;
 import com.oracle.S202350102.dto.Board;
+import com.oracle.S202350102.dto.User1;
 
 import lombok.RequiredArgsConstructor;
 @Service
@@ -39,11 +40,7 @@ public class YaCommunityServiceImpl implements YaCommunityService {
 		ybd.upViewCnt(brd_num);
 	}
 
-	@Override
-	public int getuserNum(String userId) {
-		System.out.println("YaCommunityServiceImpl getUserNum start...");
-		return ybd.getuserNum(userId);
-	}
+
 
 	@Override
 	public int insertCommunity(Board board) {
@@ -70,13 +67,81 @@ public class YaCommunityServiceImpl implements YaCommunityService {
 	}
 
 	@Override
-	public List<Board> listSearchBoard(Board board) {
+	public List<Board> listSearchBoard(String keyword) {
 		List<Board> boardSearchList = null;
 		System.out.println("YaCommunityServiceImpl listSearchBoard start...");
-		boardSearchList = ybd.boardSearchList(board);
+		boardSearchList = ybd.boardSearchList(keyword);
 		System.out.println("YaCommunityServiceImpl listSearchBoard boardSearchList.size()?"+boardSearchList.size());
 		return boardSearchList;
 	}
+	@Override
+	public List<Board> listBoardSort(String sort) {
+		List<Board> listBoardSort = null;
+		System.out.println("YaCommunityServiceImpl listBoardSort start...");
+		
+		if("view_cnt".contentEquals(sort)) {
+			return ybd.sortByViewCnt();
+		} else if ("reg_date".equals(sort)) {
+			return ybd.sortByRegDate();
+		} else {
+			return ybd.sortByRegDate();
+		}
+	}
+
+
+	@Override
+	public User1 userSelect(int user_num) {
+		if (user_num != 0) {
+			User1 user = new User1();
+			user = ybd.userSelect(user_num);
+			return user;
+		} else {
+			return null;
+		}
+	}	
+
+	@Override
+	public List<Board> listComment(int brd_num) {
+		List<Board> listComment = null;
+		System.out.println("YaCommunityServiceImpl listComment start...");
+		listComment = ybd.listComment(brd_num);
+		return listComment;
+	}
+
+	@Override
+	public void commentWrite(Board board) {
+		System.out.println("YaCommunityServiceImpl commentWrite start..");
+		ybd.commentWrite(board);
+	}
+
+	@Override
+	public Board commentSelect(int brd_num) {
+		Board board = null;
+		System.out.println("YaCommunityServiceImpl commentSelec start..");
+		board = ybd.commentSelect(brd_num);
+		return board;
+	}
+
+	@Override
+	public void commentUpdate(Board board) {
+		System.out.println("YaCommunityServiceImpl commentUpdat start..");
+		ybd.commentUpdate(board);
+	}
+
+	@Override
+	public void commentDelete(Board board) {
+		System.out.println("YaCommunityServiceImpl commentDelete start..");
+		ybd.commentDelete(board);
+	}
+
+	@Override
+	public int getLatestBrdStep(int brd_group) {
+		System.out.println("YaCommunityServiceImpl getLatestBrdStep start....");
+		int getLatestBrdStep = ybd.getLatestBrdStep(brd_group);
+		return getLatestBrdStep;
+		
+	}
+
 
 	
 	

@@ -9,23 +9,15 @@
 <link rel="shortcut icon" href="./assets/favicon/favicon.ico" type="image/x-icon" />
 <link rel="stylesheet" href="./assets/css/libs.bundle.css" />
 <link rel="stylesheet" href="./assets/css/theme.bundle.css" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
  <meta charset="UTF-8">
 <title>Insert title here</title>
 <style type="text/css">
 @import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css); 
     	body{
     	font-family: 'Noto Sans KR', sans-serif;} 
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(227px, 1fr));
-            gap: 20px;
-        }
-        .gallery-item {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: center;
-        }
- 
+			
     </style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
@@ -45,7 +37,21 @@ function likePost(brd_num) {
 	});
 }
 
+function sortPosts(sortType) {
+    $.ajax({
+        type: 'GET',
+        url: '/loadSortedPosts?sortType=' + sortType, // 정렬된 게시물을 불러오는 엔드포인트
+        success: function (response) {
+            // 서버로부터 받은 데이터를 이용하여 화면 업데이트
+            // 예를 들어, 받은 데이터를 화면의 특정 부분에 삽입
+        },
+        error: function (error) {
+            // 오류가 발생한 경우의 처리
+        }
+    });
+}
 </script>
+
 </head>
 <body>
    <section class="pt-7 pb-12">
@@ -64,40 +70,62 @@ function likePost(brd_num) {
             <!-- Nav -->
             <nav class="mb-10 mb-md-0">
               <div class="list-group list-group-sm list-group-strong list-group-flush-x">
-                <a class="list-group-item list-group-item-action dropend-toggle " href="account-orders.html">
+                <a class="list-group-item list-group-item-action dropend-toggle active" href="../sharing">
                   	전체 쉐어링
                 </a>
-                <a class="list-group-item list-group-item-action dropend-toggle active" href="account-wishlist.html">
+                <a class="list-group-item list-group-item-action dropend-toggle " href="account-wishlist.html">
                  	찜한 쉐어링
                 </a>
+                <a class="list-group-item list-group-item-action dropend-toggle " href="/mySharing">
+                 	내가 쓴 글
+                </a>
+               <a class="btn w-100 btn-dark mb-2" href="sharingUserDetail" style=" margin-top: 50px;">게시글 작성하기
+               </a>
+                
               </div>
             </nav>
-
+ 			<!-- Nav End -->
           </div>
+              
           <div class="col-12 col-md-9 col-lg-8 offset-lg-1">
-
-
+            <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between mb-3">
+                <!-- 공간을 벌리기 위해 클래스 추가 -->
+            </div>
+            <div class="d-flex justify-content-end mb-3">
+			<select class="form-select form-select-xxs w-auto" onchange="sortPosts(this.value)">
+			    <option value="recent">최근 게시물</option>
+			    <option value="popular">조회수 높은 순</option>
+			</select>
+            </div>
+            </div>
   <div class="row">
-    <c:forEach var="board" items="${Sharing}">
+    <c:forEach var="board" items="${sharing}">
+  
         <div class="col-6 col-md-4">
             <div class="card mb-7">
                 <div class="card-img">
                     <button class="btn btn-xs btn-circle btn-white-primary card-action card-action-end" onclick="likePost(${board.brd_num})">
                         <i class="fe fe-heart"></i>
                     </button>
-                   <button class="btn btn-xs w-100 btn-dark card-btn" onclick="location.href='detailCommunity?user_num=${board.user_num}&brd_num=${board.brd_num}'">
+                   <button class="btn btn-xs w-100 btn-dark card-btn" onclick="location.href='detailSharing?user_num=${board.user_num}&brd_num=${board.brd_num}'">
 				    <i class="fe fe-eye me-2 mb-1"></i> 자세히 보기
 					</button>
 
-                    <img class="card-img-top" src="${board.img}" alt="...">
-                </div>
+                  <img class="card-img-top" src="${pageContext.request.contextPath}/upload/${board.img}" alt="..." style="width: 100%; height: 250;">
+					 </div>
                 <div class="card-body fw-bold text-center">
-                    <a class="text-body" href="detailCommunity?user_num=${board.user_num}&brd_num=${board.brd_num}">
+                    <a class="text-body" href="detailSharing?user_num=${board.user_num}&brd_num=${board.brd_num}">
                         ${board.title}
                     </a><p>
-                    <a class="text-primary" href="detailCommunity?user_num=${board.user_num}&brd_num=${board.brd_num}">
-                        ${board.price}원</a>
-                </div>
+                    <a class="text-primary" href="detailSharing?user_num=${board.user_num}&brd_num=${board.brd_num}">
+                        ${board.price}원</a><p>
+                    <a class="text-primary"><i class="fas fa-heart me-1"></i> ${board.like_cnt}</a>
+                    						<i class="fe fe-eye me-1 mb-1" style="margin-left: 30px;"></i> ${board.view_cnt}
+                    				
+				</div>
+				 
             </div>
         </div>
     </c:forEach>

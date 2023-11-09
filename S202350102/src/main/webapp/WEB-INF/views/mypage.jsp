@@ -4,17 +4,19 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <link rel="shortcut icon" href="./assets/favicon/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="./assets/css/libs.bundle.css" />
+    <link rel="stylesheet" href="./assets/css/theme.bundle.css" />
     <title>Insert title here</title>
 </head>
 <body>
-    
     <p>${sessionScope.user_num } 님 환영합니다.</p>
 
-    <input type="button" value="챌린지 관리" class="btn" onclick="location.href='/challengeManagement'"><p>
-    <input type="button" value="팔로우 관리" class="btn" onclick="location.href='/followManagement'"><p>
-    <input type="button" value="구독 관리" class="btn" onclick="location.href='/subscriptionManagement'"><p>
-    <input type="button" value="쉐어링 관리" class="btn" onclick="location.href='/sharingManagement'"><p>
-    <input type="button" value="회원정보수정" class="btn" onclick="location.href='/userDetail'"><p>
+    <button type="button" class="btn btn-primary" onclick="location.href='/challengeManagement'">챌린지 관리</button><p>
+    <button type="button" class="btn btn-primary" onclick="location.href='/followManagement'">팔로우 관리</button><p>
+    <button type="button" class="btn btn-primary" onclick="location.href='/subscriptionManagement'">구독 관리</button><p>
+    <button type="button" class="btn btn-primary" onclick="location.href='/sharingManagement'">쉐어링 관리</button><p>
+    <button type="button" class="btn btn-primary" onclick="location.href='/userDetail'">회원정보수정</button><p>
 </body>
 <%@ include file="footer.jsp" %>
 </html>

@@ -15,6 +15,7 @@
 <c:import url="/WEB-INF/views/header4.jsp"/>
 	<h2>문의게시판 글쓰기폼</h2>
 	<form action="qBoardWrite">
+		<input type="hidden" name="brd_lg" value="400">
 		<table>
 			<tr>
 				<td>제목</td>
@@ -23,7 +24,7 @@
 			<tr>
 				<td>카테고리</td>					
 				<td><input type="hidden" name="brd_md" value="102"></td>
-				
+				<!-- 카테고리 수정해야됨 -->
 			</tr>
 			<tr>
 				<td>파일</td>

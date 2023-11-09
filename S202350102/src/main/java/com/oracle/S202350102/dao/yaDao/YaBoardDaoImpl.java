@@ -6,6 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
 import com.oracle.S202350102.dto.Board;
+import com.oracle.S202350102.dto.User1;
 
 import lombok.RequiredArgsConstructor;
 @Repository
@@ -57,11 +58,6 @@ public class YaBoardDaoImpl implements YaBoardDao {
 	}
 	
 	
-	@Override
-	public int getuserNum(String userId) {	
-		return session.selectOne("YaBoardGetUserNum",userId);
-	
-	}
 
 	@Override
 	public int insertCommunity(Board board) {
@@ -106,23 +102,133 @@ public class YaBoardDaoImpl implements YaBoardDao {
 	}
 
 	@Override
-	public List<Board> boardSearchList(Board board) {
+	public List<Board> boardSearchList(String keyword) {
 		List<Board> boardSearchList = null;
 		System.out.println("YaBoardDaoImpl boardSearchList start....");
 		
 		try {
-			boardSearchList = session.selectList("YaBoardSearhList",board);
+			boardSearchList = session.selectList("YaBoardSearhList", keyword);
 			
 		} catch (Exception e) {
 			System.out.println("YaBoardDaoImpl boardSearchList e.getMessage?"+e.getMessage());
 		}
-		return null;
+		return boardSearchList;
+	}
+	@Override
+	public List<Board> sortByViewCnt() {
+		List<Board> sortByViewCnt = null;
+        try {
+            return session.selectList("sortByViewCnt");
+        } catch (Exception e) {
+        	System.out.println("YaBoardDaoImpl sortByViewCnt() e.getMessage?"+e.getMessage());
+            return sortByViewCnt;
+        }
 	}
 
-	
+	@Override
+	public List<Board> sortByRegDate() {
+		List<Board> sortByRegDate =null;
+		try {
+	          return session.selectList("sortByRegDate");
+	        } catch (Exception e) {
+	          	System.out.println("YaBoardDaoImpl sortByRegDate() e.getMessage?"+e.getMessage());
+	            return sortByRegDate;
+	        }
+	}
+
+	@Override
+	public User1 userSelect(int user_num) {
+		User1 user = new User1();
+		try {
+			System.out.println("user_id->"+user_num);
+			user = session.selectOne("userSelect",user_num);
+			System.out.println("user->"+user);
+		} catch (Exception e) {
+			System.out.println("UserDaoImpl userSelect exception->"+e.getMessage());
+		}
+		return user;
+	}
+	// 댓글 조회
+	@Override
+	public List<Board> listComment(int brd_num) {
+		List<Board> listComment = null;
+		try {
+			System.out.println("YaBoardDaoImpl listComment start....");
+			listComment = session.selectList("listComment",brd_num);
+		} catch (Exception e) {
+			System.out.println("YaBoardDaoImpl listComment e.getMessage?"+e.getMessage());
+		}
+		return listComment;
+	}
+
+	@Override
+	public void commentWrite(Board board) {
+		System.out.println("YaBoardDaoImpl commentWrite start...");
+	 	
+		try {
+			session.insert("YacommentWrite", board);
+		} catch (Exception e) {
+			System.out.println("YaBoarDaoImpl void commentWrite e.getMessage)?"+e.getMessage());
+		}
+		
+	}
+
+	@Override
+	public Board commentSelect(int brd_num) {
+		System.out.println("YaBoardDaoImpl commentSelect start...");
+		Board board = new Board();
+		try {
+			session.selectOne("YaCommentSelect", brd_num);
+		} catch (Exception e) {
+			System.out.println("YaBoarDaoImpl void YaCommentSelect e.getMessage)?"+e.getMessage());
+		}
+		
+		return board;
+	}
+
+	@Override
+	public void commentUpdate(Board board) {
+		System.out.println("YaBoardDaoImpl commentUpdate start...");
+		try {
+			session.update("YaCommentUpdate", board);
+		} catch (Exception e) {
+			System.out.println("YaBoarDaoImpl void YaCommentUpdate e.getMessage)?"+e.getMessage());
+		}
+		
+	}
+
+	@Override
+	public void commentDelete(Board board) {
+		System.out.println("YaBoardDaoImpl commentDelete start...");
+		try {
+			session.delete("YaCommnetDelte",board);
+		} catch (Exception e) {
+			System.out.println("YaBoarDaoImpl void YaCommnetDelte e.getMessage)?"+e.getMessage());
+		}
+			
+	}
+
+	@Override
+	public int getLatestBrdStep(int brd_group) {
+		System.out.println("YaBoardDaoImpl getLatestBrdStep start...");
+		int getLatestBrdStep = 0;
+		try {
+			session.selectOne("YaGetLatestBrdStep",brd_group);
+			
+		} catch (Exception e) {
+			System.out.println("YaBoarDaoImpl etLatestBrdStep e.getMessage)?"+e.getMessage());
+		}
+		return getLatestBrdStep;
+	}
 	
 
-
 	
-
 }
+
+	
+	
+
+
+	
+
+

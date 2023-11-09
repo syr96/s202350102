@@ -14,7 +14,8 @@
 		From  	Challenge c 
 		JOIN    user1 On c.user_num = user1.user_num 
 		Where 	(c.title 	  like '%' || #{srch_word} || '%'
-		Or	  	 c.chg_conts  like '%' || #{srch_word} || '%')	
+		Or	  	 c.chg_conts  like '%' || #{srch_word} || '%'
+		)	
 		Order By c.reg_date DESC
 	</select>
 	

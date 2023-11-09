@@ -89,4 +89,18 @@ public class QBoardDaoImpl implements QBoardDao {
 		return result;
 	}
 
+
+	@Override
+	public int totalQBoard() {
+		int total = 0;
+		try {
+			total = session.selectOne("totalQBoard");
+		} catch (Exception e) {
+			System.out.println("totalQBoard dao sql exception->"+e.getMessage());
+		}
+		return total;
+	}
+	
+	
+
 }

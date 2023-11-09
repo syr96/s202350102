@@ -2,28 +2,42 @@ package com.oracle.S202350102.controller;
 
 
 
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.oracle.S202350102.dto.Board;
 import com.oracle.S202350102.dto.User1;
 import com.oracle.S202350102.service.jkService.JkBoardService;
 import com.oracle.S202350102.service.jkService.JkUserService;
-
+import com.oracle.S202350102.service.yaService.YaCommunityService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,9 +46,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class JkController {
-	
+	private static final Logger logger = LoggerFactory.getLogger(JkController.class);
 	private final JkUserService jus;
 	private final JkBoardService jbs;
+	private final YaCommunityService ycs;
+	
 	
 	//좋아요 기능 컨트롤러
 	//좋아요 상태 가져오는 메소드
@@ -53,14 +69,36 @@ public class JkController {
 	    return new ResponseEntity<>("Updated like status of Board with brd_num " + brd_num, HttpStatus.OK);
 	}
 
+	//쉐어링 게시글 유저 정보조회
+	@RequestMapping(value="/sharingUserDetail")
+	public String sharingUserDetail(Board board, Model model, HttpSession session) {
+		System.out.println("JkController sharingUserDetail start...");
+		List<Board> sharing = jbs.sharing(board);
+		System.out.println("JkController list Sharing.size()?"+sharing.size());
+		
+		int user_num = 0;
+		if(session.getAttribute("user_num") != null) {
+			user_num = (int) session.getAttribute("user_num");
+		}
+		else {
+			model.addAttribute("msg", "로그인한 사용자만 이용할 수 있는 페이지입니다.");
+			return "/loginForm";
+		}
+		User1 user1 = jbs.userSelect(user_num);
+		
+		model.addAttribute("user1", user1);
+		model.addAttribute("Sharing", sharing);
+		
+		return "jk/writeFormSharing";
+		}
 	
 	
 	//쉐어링 게시글 전체조회
-	@RequestMapping(value="/Sharing")
+	@RequestMapping(value="/sharing")
 	public String Sharing(Board board, Model model, HttpSession session) {
 		System.out.println("JkController Sharing start...");
-		List<Board> Sharing = jbs.Sharing(board);
-		System.out.println("JkController list Sharing.size()?"+Sharing.size());
+		List<Board> sharing = jbs.sharing(board);
+		System.out.println("JkController list Sharing.size()?"+sharing.size());
 		
 		int user_num = 0;
 		if(session.getAttribute("user_num") != null) {
@@ -70,11 +108,218 @@ public class JkController {
 		User1 user1 = jbs.userSelect(user_num);
 		
 		model.addAttribute("user1", user1);
-		model.addAttribute("Sharing", Sharing);
+		model.addAttribute("sharing", sharing);
 		
-		return "Sharing";
+		return "sharing";
 		}
 	
+	//쉐어링 조회 필터
+	@GetMapping("/loadSortedPosts")
+    public String loadSortedPosts(Board board, @RequestParam String sortType, Model model) {
+        List<Board> sortedPosts;
+        if (sortType.equals("popular")) {
+            sortedPosts = jbs.getPopularPosts(board); // jkService에서 인기 게시물을 불러오는 메서드 호출
+        } else {
+            sortedPosts = jbs.getRecentPosts(board); // jkService에서 최근 게시물을 불러오는 메서드 호출
+        }
+        model.addAttribute("sharing", sortedPosts);
+        return "yourPageName"; // 해당 페이지로 다시 돌려줘야 함
+    }
+
+	//쉐어링 게시글 상세조회
+	@GetMapping(value="/detailSharing")
+	public String detailSharing(int brd_num, Model model, HttpSession session) {
+		System.out.println("JkController detailSharing Start...");
+		System.out.println("brd_num->"+brd_num);
+		
+		int user_num = 0;
+		if(session.getAttribute("user_num") != null) {
+			user_num = (int) session.getAttribute("user_num");
+		}
+		
+		Board board = jbs.detailSharing(brd_num);
+		
+		int upViewCnt = 0;
+		ycs.upViewCnt(brd_num);
+			
+		model.addAttribute("board", board);
+		model.addAttribute("upbiewCnt", upViewCnt);
+		model.addAttribute("loggedIn", user_num!=0);
+		
+		System.out.println("nick: " + board.getNick());
+	    System.out.println("userName:"+board.getUser_name());
+	    System.out.println("user_num:"+board.getUser_num());
+	    System.out.println("user_id:"+board.getUser_id());
+	    System.out.println("sessionScope.usernum: " + session.getAttribute("user_num"));
+	
+		return"jk/detailSharing";
+				
+	}
+	
+	// 쉐어링 내가 쓴 글
+		@RequestMapping("/mySharing")
+		public String mySharing(Board board, Model model, HttpSession session) {
+			System.out.println("JkController mySharing start...");
+			
+			int user_num = 0;
+			if(session.getAttribute("user_num") != null) {
+				user_num = (int) session.getAttribute("user_num");
+			}
+			else {
+				model.addAttribute("msg", "로그인한 사용자만 이용할 수 있는 페이지입니다.");
+				return "redirect:/loginForm";
+			}
+			
+			List<Board> mySharing = jbs.sharing(board);
+			System.out.println("JkController list mySharing.size()?" + mySharing.size());
+			
+		
+			User1 user1 = jbs.userSelect(user_num);
+			System.out.println("usernum"+user_num);
+			model.addAttribute("user1", user1);
+			model.addAttribute("mySharing", mySharing);
+			
+				return "jk/mySharing";
+			}
+		
+	//쉐어링 내가 쓴 글 상세
+	@GetMapping(value="/myDetailSharing")
+	public String myDetailSharing(int brd_num, Model model, HttpSession session) {
+		System.out.println("JkController detailSharing Start...");
+		System.out.println("brd_num->"+brd_num);
+		
+		int user_num = 0;
+		if(session.getAttribute("user_num") != null) {
+			user_num = (int) session.getAttribute("user_num");
+		}
+		
+		Board board = jbs.detailSharing(brd_num);
+		
+		int upViewCnt = 0;
+		ycs.upViewCnt(brd_num);
+			
+		model.addAttribute("board", board);
+		model.addAttribute("upbiewCnt", upViewCnt);
+		model.addAttribute("loggedIn", user_num!=0);
+		
+		System.out.println("nick: " + board.getNick());
+	    System.out.println("userName:"+board.getUser_name());
+	    System.out.println("user_num:"+board.getUser_num());
+	    System.out.println("user_id:"+board.getUser_id());
+	    System.out.println("sessionScope.usernum: " + session.getAttribute("user_num"));
+	
+		return"jk/myDetailSharing";
+					
+		}
+		
+		//쉐어링 수정(읽기)
+		@GetMapping(value="/updateSharing1")
+		public String updateSharing1(int brd_num, Model model, HttpSession session) {
+			System.out.println("JkController updateSharing1 start...");
+			
+			int user_num = 0;
+			if(session.getAttribute("user_num") != null) {
+				user_num = (int) session.getAttribute("user_num");
+			}
+					
+			Board board = jbs.detailSharing(brd_num);
+			model.addAttribute("board", board);
+			
+			User1 user1 = jbs.userSelect(user_num);
+			model.addAttribute("user1", user1);
+						
+			return"jk/updateFormSharing";
+			
+		}
+	
+	//쉐어링 수정(쓰기)
+		@PostMapping("/updateSharing2")
+		public String updateSharing2(Board board, HttpServletRequest request, @RequestParam(value = "file", required = false) MultipartFile file1, HttpSession session) throws IOException {
+		    System.out.println("JkController updateSharing2 start...");
+		    String uploadPath = request.getSession().getServletContext().getRealPath("/upload/");
+		    System.out.println("실제 경로" + uploadPath);
+
+		    int user_num = 0;
+		    if (session.getAttribute("user_num") != null) {
+		        user_num = (int) session.getAttribute("user_num");
+		    }
+		    
+		    // 파일이 업로드되었을 경우 처리
+		    if (file1 != null && !file1.isEmpty()) {
+		        log.info("originalName : " + file1.getOriginalFilename());
+		        String saveName = uploadFile(file1.getOriginalFilename(), file1.getBytes(), uploadPath);
+		        board.setImg(saveName); // 업로드된 파일명을 게시글의 이미지로 설정
+		    }
+
+		    // user_num에 해당하는 사용자의 게시글 가져오기
+		    Board existingBoard = jbs.detailSharing(board.getBrd_num());
+
+		    // user_num과 게시글의 작성자 번호를 비교하여 권한 확인
+		    if (existingBoard != null && existingBoard.getUser_num() == user_num) {
+		        // 게시글의 작성자와 현재 로그인된 사용자가 일치하는 경우에만 업데이트 진행
+		        // 여기서는 board의 내용을 기존 게시글의 내용으로 교체
+		        existingBoard.setTitle(board.getTitle());
+		        existingBoard.setConts(board.getConts());
+		        existingBoard.setImg(board.getImg());
+
+		        // 업데이트된 게시글 정보를 DB에 업데이트
+		        int updateSharing = jbs.updateSharing(existingBoard);
+		        System.out.println("JkController jbs.updateSharing updateBoard " + updateSharing);
+		        
+		        return "forward:mySharing"; // 수정 후에 mySharing 페이지로 이동
+		    } else {
+		        // 권한이 없거나 게시글이 없는 경우에 대한 처리
+		        return "redirect:/error"; // 에러 페이지로 리다이렉트
+		    }
+		}
+
+		
+	//쉐어링 삭제
+		@GetMapping(value = "deleteSharing")
+		public String deleteSharing(int brd_num, Model model) {
+		    System.out.println("JkController deleteSharing start...");
+		    
+		    int deleteResult = jbs.deleteSharing(brd_num);
+		    model.addAttribute("deleteResult", deleteResult);
+		    
+
+		    return "forward:mySharing";
+		}
+			
+	@PostMapping("/writeShare")
+	public String writeShare(Board board, HttpServletRequest request,@RequestParam(value = "file", required = false) MultipartFile file1) throws IOException {
+		System.out.println("JkController writeShaire start..");
+		String uploadPath = request.getSession().getServletContext().getRealPath("/upload/");  // 저장경로 생성
+		System.out.println("realPath" + uploadPath);
+		log.info("originalName : " + file1.getOriginalFilename());
+		
+		String saveName = uploadFile(file1.getOriginalFilename(), file1.getBytes(), uploadPath);  // 진짜 저장
+		board.setImg(saveName);
+		System.out.println("brd_md->"+ board.getBrd_md());
+		int result = jbs.writeFormSharing(board);
+		System.out.println("Insert result->" + result);	
+		
+		return "forward:mySharing";		
+		
+	}
+	
+	private String uploadFile(String originalName, byte[] fileData, String uploadPath) throws IOException {
+		UUID uid = UUID.randomUUID();
+		System.out.println("uploadPath->" + uploadPath);
+		File fileDirectory = new File(uploadPath);  
+		if (!fileDirectory.exists()) {
+			fileDirectory.mkdirs(); 
+			System.out.println("시스템 업로드용 폴더 생성 :" + uploadPath);	
+		}
+		
+		String savedName = uid.toString() + "_" + originalName;
+		log.info("saveName : " + savedName); 
+		File target = new File(uploadPath, savedName);
+		FileCopyUtils.copy(fileData, target); 
+		
+		return savedName;
+	}
+
 	@RequestMapping(value="/challengeManagement")
 	public String challengeManagement(Integer user_num, Model model ) {
 		System.out.println("JkController challengeManagement Start... ");
@@ -85,18 +330,22 @@ public class JkController {
 	// 회원정보 조회
 	@GetMapping("/userDetail")
 	public String userUpdate(Model model, HttpSession session) {
-	     System.out.println("JkController userDetail start...");
-	        String user_id = (String) session.getAttribute("user_id");
+	    System.out.println("JkController userDetail start...");
 
-	        if (user_id != null) {
-	            User1 user1 = jus.getUserDetails(user_id);
-	            model.addAttribute("user1", user1);
-	            return "jk/userUpdate";
-	        } else {
-	            // 사용자가 로그인하지 않은 경우 로그인 페이지로 리다이렉트
-	            return "redirect:/loginForm";
-	        }
-	 }
+	    int user_num = 0;
+	    if (session.getAttribute("user_num") != null) {
+	        user_num = (int) session.getAttribute("user_num");
+	    }
+
+	    if (user_num != 0) {
+	        User1 user1 = jbs.userSelect(user_num);
+	        model.addAttribute("user1", user1);
+	        return "jk/userUpdate";
+	    } else {
+	        return "redirect:/loginForm";
+	    }
+	}
+
 	// 회원정보 수정
 	 @PostMapping("/updateUser1")
 	 public String updateUser(User1 user1, Model model) {
@@ -111,7 +360,8 @@ public class JkController {
 	         return "forward:/jk/mypage.jsp"; // 업데이트 실패 시의 뷰 페이지로 이동
 	     }
 	 }
-	 
+	
+	
 	
 	@RequestMapping("/followManagement")
 	public String challengeManagement() {
@@ -135,19 +385,18 @@ public class JkController {
 	}
 	
 	@GetMapping("/mypage")
-    public String mypage(HttpSession session, Model model) {
-		System.out.println("JkController mypage start...");
-        
-		System.out.println("session.getAttribute(\"user_id\") --> " + session.getAttribute("user_id"));
-		String user_id = (String) session.getAttribute("user_id");
+	public String mypage(HttpSession session, Model model) {
+	    System.out.println("JkController mypage start...");
 
-	    if (user_id != null) {
-	        
-	        return "mypage";
-	    } else {
-	        
-	        return "redirect:/loginForm";
-        }
+	    System.out.println("session.getAttribute(\"user_num\") --> " + session.getAttribute("user_num"));
+	    int user_num = 0;
+	    if (session.getAttribute("user_num") != null) {
+	        user_num = (int) session.getAttribute("user_num");
+	    }
+
+	    return user_num != 0 ? "mypage" : "redirect:/loginForm";
 	}
+
+	
 }   
 	

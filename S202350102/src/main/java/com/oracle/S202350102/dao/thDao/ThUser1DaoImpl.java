@@ -28,13 +28,13 @@ public class ThUser1DaoImpl implements ThUser1Dao {
 
 	@Override
 	public User1 login(User1 user1) {
-		System.out.println("User1DaoImpl loginstart...");
+		System.out.println("User1DaoImpl loginstart Start...");
 		return session.selectOne("thLogin", user1);
 	}
 
 	@Override
 	public int deleteUser(User1 user1) {
-		System.out.println("User1DaoImpl deleteUser...");
+		System.out.println("User1DaoImpl deleteUser Start...");
 		int deleteUserCnt = 0;
 		try {
 			deleteUserCnt = session.update("thDeleteUser1",user1);
@@ -43,6 +43,48 @@ public class ThUser1DaoImpl implements ThUser1Dao {
 		}
 		
 		return deleteUserCnt;
+	}
+
+	@Override
+	public int updateUserPrem(int user_num) {
+		System.out.println("User1DaoImpl updateUserPrem Start...");
+		System.out.println("User1DaoImpl updateUserPrem user_num --> " + user_num);
+		int updateCount = 0;
+		try {
+			updateCount = session.update("thUser1PremUpdate", user_num);
+		} catch (Exception e) {
+			System.out.println("User1DaoImpl updateUserPrem Exception --> " + e.getMessage());
+		}
+		
+		return updateCount;
+	}
+
+	@Override
+	public int user1IdCheck(String user_id) {
+		System.out.println("User1DaoImpl user1IdCheck Start...");
+		System.out.println("User1DaoImpl user1IdCheck user_id --> " + user_id);
+		int	result = 0;
+		try {
+			result = session.selectOne("thUser1IdCheck", user_id);
+		} catch (Exception e) {
+			System.out.println("User1DaoImpl user1IdCheck Exception --> " + e.getMessage());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public int user1NickCheck(String nick) {
+		System.out.println("User1DaoImpl user1NickCheck Start...");
+		System.out.println("User1DaoImpl user1NickCheck nick --> " + nick);
+		int	result = 0;
+		try {
+			result = session.selectOne("thUser1NickCheck", nick);
+		} catch (Exception e) {
+			System.out.println("User1DaoImpl user1NickCheck Exception --> " + e.getMessage());
+		}
+		
+		return result;
 	}
 	
 	

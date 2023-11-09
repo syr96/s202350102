@@ -1,15 +1,16 @@
 package com.oracle.S202350102.controller;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+//import java.io.BufferedReader;
+//import java.io.DataOutputStream;
+//import java.io.IOException;
+//import java.io.InputStream;
+//import java.io.InputStreamReader;
+//import java.io.OutputStream;
+//import java.net.HttpURLConnection;
+//import java.net.MalformedURLException;
+//import java.net.URL;
 
+import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -20,19 +21,29 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+//import com.oracle.S202350102.dto.KakaoPayApprovalVO;
 import com.oracle.S202350102.dto.User1;
+import com.oracle.S202350102.service.thService.ThKakaoPay;
+//import com.oracle.S202350102.service.thService.ThKakaoPayImpl;
+import com.oracle.S202350102.service.thService.ThOrder1Service;
 import com.oracle.S202350102.service.thService.ThUser1Service;
+
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
 @RequiredArgsConstructor
+@Data
 public class ThController {
 	// 태현 작업
 	private final ThUser1Service us1;
+	private final ThKakaoPay thKakaoPay;
+	private final ThOrder1Service os1;
 	
 	@PostMapping(value = "/writeUser1")
 	public String writeUser1(User1 user1, Model model) {
@@ -62,6 +73,12 @@ public class ThController {
 		}
 	}
 	
+	@RequestMapping(value = "/loginForm2")
+	public String loginForm2() {
+		System.out.println("ThController loginForm2 start...");
+		
+		return "th/loginForm2";
+	}
 	
 	@RequestMapping(value = "/logoutForm")
 	public String logoutForm() {
@@ -105,80 +122,82 @@ public class ThController {
 		return "th/userSubMng";
 	}
 	
-	@GetMapping(value = "thkakaoPayForm")
-	public String kakaoPayForm() {
-		return "th/thkakaoPayForm";
+	@RequestMapping(value = "thKakaoPayForm")
+	public String thKakaoPayForm(HttpSession session, Model model) {
+		if(session.getAttribute("user_num") == null) {
+			return "loginForm";
+		} 
+		return "th/thKakaoPayForm";
 	}
 	
-	// 카카오페이 구현(단발 성)
-	@RequestMapping("thKakaoPay")
-	@ResponseBody
-	public String thKakaoPay() {
-		System.out.println("ThController thKaKaoPay Start...");
-		try {
-			URL apiAddress = new URL("https://kapi.kakao.com/v1/payment/ready"); // 주소
-			// httpURLConnection = 서버연결 : 요청하는 클라이언트와 카카오페이서버를 연결해주는 것이 HttpURLConnection
-			HttpURLConnection httpURLConnection = (HttpURLConnection) apiAddress.openConnection();
-			httpURLConnection.setRequestMethod("POST"); // POST메소드 사용(카카오에서 지정함) 
-			// 카카오에서 인증받은 요청인지 확인하는 증명하는 메소드 					저장해놓은 어드민 키
-			httpURLConnection.setRequestProperty("Authorization", "KakaoAK ae879700f909ee8b00f9eab914f15730");
-			// 컨텐츠 타입
-			httpURLConnection.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-			// 서버에 넣어야 할 것이 있다 하면 해당메소드사용(true) / 서버로부터 받을것이 있다는 Connection 생성시 갖는  default라 따로 설정할 필요 없음
-			httpURLConnection.setDoOutput(true);
-			String parameter = 	"cid=TC0ONETIME&"
-							+ 	"partner_order_id=partner_order_id"
-							+   "&partner_user_id=partner_user_id"
-							+ 	"&item_name=초코파이"
-							+ 	"&quantity=1"
-							+ 	"&total_amount=2200"
-							+ 	"&vat_amount=200"
-							+ 	"&tax_free_amount=0"
-							+ 	"&approval_url=http://localhost:8222/success"
-							+ 	"&fail_url=http://localhost:8222/fail"
-							+ 	"&cancel_url=http://localhost:8222/cancel";
-			// 파라미터를 전송하는 객체(주는애)  = 서버연결로부터 OutputStream을 받음
-			OutputStream outputStream = httpURLConnection.getOutputStream();
-			// 데이터 주는 객체(데이터주는애)
-			DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-			dataOutputStream.writeBytes(parameter);
-			dataOutputStream.close();
-			
-			int result = httpURLConnection.getResponseCode();
-			
-			// 데이터 받는 객체(데이터받는애)
-			InputStream inputStream;
-			
-			if(result == 200) {
-				// 성공시 데이터받음 
-				inputStream = httpURLConnection.getInputStream();
-			} else {
-				// 실패시 에러데이터 받음
-				inputStream = httpURLConnection.getErrorStream();
-			}
-			// 읽는애(받은값:inputStream 을 읽음)
-			InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-			// 형변환 하는애(형변환을 위해 존재하는 클래스는아니지만 형변환 용으로 사용)
-			BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-			// 값을 찍어내면서 본인 값은 비워지게 된다함
-			return bufferedReader.readLine();
-			
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	@GetMapping("/thKakaoPay")
+	public void thKakaoPayGet() {
 		
-		return "{\"result\":\"No\"}";
 	}
 	
+	@PostMapping("/thKakaoPay")
+	public String thKakaoPay() {
+		System.out.println("ThController thKakaoPay Start...");
+		return "redirect:" + thKakaoPay.kakaoPayReady();
+	}
 	
-	@GetMapping("success")
-	public String kakaoSuccess() {
-		return "th/kakaoSuccess";
-	}
-	@GetMapping("cancel")
-	public String kakaoCancel() {
-		return "th/thkakaoPayForm";
-	}
+// 왜 GetMaping만 되지??
+    @GetMapping("/kakaoPaySuccess")
+    public String kakaoPaySuccess(@RequestParam("pg_token") String pg_token, Model model, HttpSession session) {
+        log.info("kakaoPaySuccess get............................................");
+        log.info("kakaoPaySuccess pg_token : " + pg_token);
+        System.out.println("kakaoPaySuccess session.getAttribute(\"user_num\") --> " + session.getAttribute("user_num"));
+        
+        
+        // 세션에서 유저 번호 받아옴
+    	int user_num = 0;
+		if(session.getAttribute("user_num") != null) {
+			user_num = (int) session.getAttribute("user_num");
+			System.out.println("ThController user_num --> " + user_num);
+		} 
+		// 결제성공시 회원상태 구독회원으로 변경
+        int updateCount = us1.updateUserPrem(user_num);
+        log.info("kakaoPaySuccess updateCount : " + updateCount);
+       
+        Object kakaoSucInfo = thKakaoPay.kakaoPayInfo(pg_token);
+
+        // 주문정보(order1)테이블에 값 넣기
+        int insertResult = os1.insertOrder1(user_num, kakaoSucInfo);
+        log.info("kakaoPaySuccess insertResult : " + insertResult);
+        
+        
+        
+        model.addAttribute("info", kakaoSucInfo);
+        return "th/kakaoPaySuccess";
+    }
+	
+    @PostMapping("/kakaoPayCancel")
+    public String kakaoPayCancel() {
+    	
+    	return "home2";
+    }
+
+    // 아작스 아이디 중복체크할때쓰는데, 왜 Getmapping일까? id가져가는데 postMapping이어야 하지않나? (getmapping하면 안됨)
+    // 중복확인 버튼클릭으로 넘어갈때는 Postmapping만 가능
+    @ResponseBody
+    @GetMapping(value = "/user1IdCheck")
+    public int user1IdCheck(String user_id) {
+    	System.out.println("ThController user1IdCheck Start...");
+    	System.out.println("ThController user_id --> " + user_id);
+    	int result = us1.user1IdCheck(user_id);
+    	System.out.println("ThController user1IdCheck result --> " + result);
+    	return result;
+    }
+
+    // 닉네임 중복 체크
+    @ResponseBody
+    @GetMapping(value = "user1NickCheck")
+    public int user1NickCheck(String nick) {
+    	System.out.println("ThController user1NickCheck Start...");
+    	System.out.println("ThController nick --> " + nick);
+    	int result = us1.user1NickCheck(nick);
+    	System.out.println("ThController user1NickCheck result --> " + result);
+    	return result;
+    }
+	
 }

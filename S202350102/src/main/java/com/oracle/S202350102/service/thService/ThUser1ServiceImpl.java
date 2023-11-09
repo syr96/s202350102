@@ -39,4 +39,33 @@ public class ThUser1ServiceImpl implements ThUser1Service {
 		return deleteUserCnt;
 	}
 
+
+	@Override
+	public int updateUserPrem(int user_num) {
+		System.out.println("ThUser1ServiceImpl updateUserPrem Start...");
+		int updateCount = ud1.updateUserPrem(user_num);
+		System.out.println("ThUser1ServiceImpl updateUserPrem result --> " + updateCount);
+		return updateCount;
+	}
+
+
+	@Override
+	public int user1IdCheck(String user_id) {
+		System.out.println("ThUser1ServiceImpl user1IdCheck Start...");
+		System.out.println("ThUser1ServiceImpl user1IdCheck user_id --> " + user_id);
+		int result = ud1.user1IdCheck(user_id);
+		System.out.println("ThUser1ServiceImpl user1IdCheck result --> " + result);
+		return result;
+	}
+
+
+	@Override
+	public int user1NickCheck(String nick) {
+		System.out.println("ThUser1ServiceImpl user1NickCheck Start...");
+		System.out.println("ThUser1ServiceImpl user1NickCheck nick --> " + nick);
+		int result = ud1.user1NickCheck(nick);
+		System.out.println("ThUser1ServiceImpl user1NickCheck result --> " + result);
+		return result;
+	}
+
 }

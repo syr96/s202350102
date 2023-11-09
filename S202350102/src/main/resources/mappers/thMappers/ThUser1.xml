@@ -19,5 +19,23 @@
 		WHERE  	user_id   = #{user_id}
 		AND		user_pswd = #{user_pswd}	
 	</update>
+	
+	<update id="thUser1PremUpdate" parameterType="int">
+		UPDATE 	user1
+		SET	   	status_md = 101
+		WHERE  	user_num   = #{user_num}
+	</update>
+	
+	<select id="thUser1IdCheck" parameterType="String" resultType="int">
+		SELECT 	COUNT(*)
+		FROM	user1
+		WHERE	user_id	=	#{user_id}
+	</select>
+	
+	<select id="thUser1NickCheck" parameterType="User1" resultType="int">
+		SELECT 	Count(*)
+		FROM	User1
+		WHERE	nick	=	#{nick}
+	</select>
 </mapper>
 
