@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.S202350102.BoardMapper">
+
+    <select id="listCommunity" parameterType="Board" resultType="Board">
+ 		 SELECT *
+ 		 FROM (
+ 		 		SELECT ROWNUM AS rn,  b.brd_num, b.title, u.nick, b.reg_date, b.view_cnt, replyCount(b.brd_num) replyCount
+ 		 		FROM   board b
+ 		 		INNER JOIN user1 u  ON b.user_num = u.user_num
+ 		 	    WHERE b.user_num = u.user_num
+        		AND b.brd_lg = 700
+        		AND b.brd_md = 103
+       		    AND b.brd_step =0
+      		    ORDER BY b.reg_date DESC
+ 		 )
+ 		 WHERE rn BETWEEN #{start} AND #{end}  
+    </select>
+  
+   <select id="YaCommunityOne" parameterType="int" resultType="Board">
+    	 SELECT  *
+    	 FROM board b, user1 u
+    	 Where brd_num =#{brd_num}
+    	 AND b.user_num = u.user_num
+    </select>
+    
+
+  	<update id="YaBoardUpviewCnt" parameterType="int">
+  		UPDATE board set view_cnt=view_cnt+1 
+  		WHERE brd_num=#{brd_num}
+  	</update>  
+	
+	
+    <insert id="YaBoardInsert" parameterType="Board">
+    	INSERT INTO board ( brd_num, user_num, brd_lg, brd_md, title, conts, reg_Date, brd_group, brd_step)
+    	VALUES          ( BRD_NUM_SEQ.nextval,#{user_num},#{brd_lg}, #{brd_md}, #{title},#{conts},sysdate, BRD_NUM_SEQ.nextval,0)
+    </insert>
+    
+    <update id="YaBoardUpdate" parameterType="Board">
+    	UPDATE board SET title=#{title}, conts=#{conts}
+    	WHERE  brd_num = #{brd_num}
+    </update>
+    
+    <delete id="YaBoardDelete" parameterType="int">
+    	DELETE FROM board WHERE brd_num = #{brd_num} 
+    </delete>
+    
+    <select id="YaBoardSearhList" parameterType="String" resultType="Board">
+		SELECT b.brd_num, b.title, u.nick,b.reg_date, b.view_cnt, replyCount(b.brd_num) replyCount
+        FROM board b ,user1 u
+        WHERE b.user_num = u.user_num
+        AND b.brd_lg = 700
+        AND b.brd_md = 103
+        AND   (b.title like '%' || #{keyword} || '%' 
+        	Or u.nick  like '%' || #{keyword} || '%')
+        AND b.brd_step =0
+        ORDER BY b.reg_date DESC	    
+    </select>
+    
+	 <select id="sortByViewCnt" parameterType="String" resultType="Board">
+	    SELECT b.brd_num, b.title, u.nick,b.reg_date, b.view_cnt, replyCount(b.brd_num) replyCount
+	    FROM board b ,user1 u
+	    WHERE b.user_num = u.user_num
+        AND b.brd_lg = 700
+        AND b.brd_md = 103
+         AND b.brd_step =0
+	    ORDER BY b.view_cnt DESC
+	</select>
+	
+	<select id="sortByRegDate" parameterType="String" resultType="Board">
+	    SELECT b.brd_num, b.title, u.nick,b.reg_date, b.view_cnt,  replyCount(b.brd_num) replyCount
+	    FROM board b ,user1 u
+	    WHERE b.user_num = u.user_num
+        AND b.brd_lg = 700
+        AND b.brd_md = 103
+        AND b.brd_step =0
+	    ORDER BY b.reg_date DESC
+	</select>
+	
+	<select id="listComment" resultType="Board" parameterType="int">
+		SELECT b.brd_num, b.user_num, b.conts, u.nick, b.reg_date, b.brd_step, b.brd_group
+		FROM board b, user1 u
+		Where b.brd_group = #{brd_num}
+		AND b.user_num = u.user_num
+		AND b.brd_lg = 700
+		AND b.brd_md = 103
+		AND b.brd_step>0
+		ORDER BY b.reg_date DESC
+	</select>
+  	
+	<insert id="YacommentWrite" parameterType="Board">
+	    INSERT INTO board (brd_num,   user_num, brd_lg, brd_md, conts,   reg_date,  brd_group, brd_step)
+	    VALUES (BRD_NUM_SEQ.nextval, #{user_num}, 700,   103,    #{conts}, sysdate, #{brd_num}, 
+	           (SELECT COALESCE(MAX(brd_step), 0) + 1 FROM board WHERE brd_group = #{brd_group}))
+	</insert>
+	
+	<select id="YaGetLatestBrdStep" resultType="int" parameterType="int">
+		SELECT MAX(brd_step) FROM board WHERE brd_group = #{brd_group}
+	</select>
+	
+	<update id="YaCommentUpdate" parameterType="Board">
+		UPDATE board SET conts=#{conts}
+		WHERE  user_num = #{user_num} 
+		AND    brd_num =#{brd_num}
+	</update>
+	
+	<select id="YaCommentTotal" parameterType="int" resultType="int">
+		SELECT count(*)
+		FROM  board
+		WHERE brd_group =#{brd_num}
+		AND brd_md = 103
+		AND brd_lg = 700
+		AND brd_step >0
+
+	</select>
+	
+	<delete id="YaCommentDelete" parameterType="Board">
+		DELETE FROM board
+		WHERE user_num = #{user_num} 
+		AND brd_num = #{brd_num}
+	</delete>
+	
+	<select id="YaTotalCommunity" parameterType="Board" resultType="int">
+		SELECT count(*) 
+		FROM board 
+		WHERE brd_lg = 700 
+		AND brd_md=103
+		AND brd_step = 0
+	</select>
+	
+
+</mapper>
