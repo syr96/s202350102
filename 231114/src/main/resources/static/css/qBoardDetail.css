@@ -1,0 +1,101 @@
+@font-face {
+    font-family: 'SUIT-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+#qbd-main {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+ul{
+   list-style:none;
+   }
+#qbd-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+#qbd-title a {
+    margin-right: 10px;
+    text-decoration: none;
+    color: #d6492c;
+}
+
+#qbd-title a:hover {
+    color: #d6492c; opacity: 0.7;
+}
+
+.qbd-content {
+    margin-bottom: 20px;
+}
+
+.qbd-rp-write textarea {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+.qbd-rp-write input[type="button"] {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.qbd-rp-write input[type="button"]:hover {
+    background-color: #1c87c9;
+}
+
+.qbd-rp-list {
+    list-style: none;
+    padding: 0;
+}
+
+.comment_item {
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #fff;
+}
+
+.comment_info img {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+.comment_info button {
+    background: none;
+    border: none;
+    color: #3498db;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.comment_info button:hover {
+    color: #1c87c9;
+}
+
+.saveBtn, .cancelBtn {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.saveBtn:hover, .cancelBtn:hover {
+    background-color: #1c87c9;
+}
+.qbd-content span {
+    white-space: pre-line;
+}
+
