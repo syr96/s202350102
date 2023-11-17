@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.S202350102.ThChgMapper">
+
+	<select id="thChgTotal" resultType="int">
+		SELECT 	COUNT(*) 
+		FROM 	challenge
+	</select>
+	
+	<select id="thChgTotalIng" parameterType="Challenge" resultType="int">
+		SELECT 	COUNT(*) 
+		FROM 	challenge
+		WHERE	state_lg = 300
+		AND		state_md = 102
+		<choose>
+			<when test="chg_lg == 200">		AND chg_md = #{chg_md}</when>
+		</choose>
+	</select>
+
+	<select id="thChgTotalFin" parameterType="Challenge" resultType="int">
+		SELECT 	COUNT(*) 
+		FROM 	challenge
+		WHERE	state_lg = 300
+		AND		state_md = 103
+		<choose>
+			<when test="chg_lg == 200">		AND chg_md = #{chg_md}</when>
+		</choose>
+	</select>
+	
+	<!--진행중 챌린지 조회 (choose: null(기본값), 개설일 순, 찜 순, 참가자 순 -->
+	<select id="thChgListAll" parameterType="Challenge" resultType="Challenge">
+		SELECT chl.* , (
+			                SELECT      COUNT(chg_id) 
+			                FROM        challenger cr
+			                WHERE       cr.chg_id = chl.chg_id
+			                GROUP BY    chg_id
+			           ) AS chlgerCnt
+			           , (
+			                SELECT 		COUNT(*)
+			                FROM   		chg_pick cp
+			                WHERE 		cp.chg_id = chl.chg_id
+			                AND 		cp.user_num = #{my_user_num}
+			               ) AS pickyn
+		FROM 
+		(
+			SELECT rownum rn, a.*
+			FROM
+				(SELECT		* 
+				 FROM 		challenge c
+				 WHERE 		c.state_lg = 300
+				 <choose>
+				 	<when test="state_md == 0">		AND c.state_md = 102</when>
+				 	<when test="state_md == 102">	AND c.state_md = 102</when>
+				 	<when test="state_md == 103">	AND c.state_md = 103</when>
+				 </choose>
+				 		
+				 <choose>
+				 	<when test="chg_lg == 200">		AND c.chg_md = #{chg_md}</when>
+				 </choose>
+				 
+				 <choose>
+				 	<when test="sortOpt ==  null">			ORDER BY 	c.create_date DESC) a</when>
+				 	<when test="sortOpt == 'create_date'">	ORDER BY 	c.create_date DESC) a</when>
+				 	<when test="sortOpt == 'pick_cnt'">		ORDER BY 	c.pick_cnt DESC) a</when>
+				 	<when test="sortOpt == 'participants'">	ORDER BY 	( 
+														                    SELECT      COUNT(cr.chg_id) AS cnt
+														                    FROM        challenger cr
+														                    WHERE       cr.chg_id = c.chg_id
+														                    GROUP BY    cr.chg_id
+															            ) DESC) a</when>
+				 </choose>
+		) chl
+		WHERE rn BETWEEN #{start} AND #{end}
+	</select>
+	
+	<!-- 챌린지 카테고리 조회 -->
+	<select id="thChgCategoryList" resultType="Comm">
+		SELECT	*
+		FROM	comm
+		WHERE	lg = 200
+		AND		md != 999
+	</select>
+
+</mapper>

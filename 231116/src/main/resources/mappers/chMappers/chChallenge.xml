@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.oracle.S202350102.chChallengeMapper">
+	<select id="popchgList" resultType="Challenge">
+		Select rownum, a.* 
+		From   (Select c.*, user1.nick 
+		        From   challenge c 
+		        Join   user1 On c.user_num = user1.user_num 
+		        ORDER BY pick_cnt DESC) a
+		Where rownum BETWEEN 1 and 5
+	</select>
+	
+	<select id="chgResult" parameterType="java.lang.String" resultType="Challenge">
+		Select 	c.*, user1.nick
+		From  	Challenge c 
+		JOIN    user1 On c.user_num = user1.user_num 
+		Where 	(c.title 	  like '%' || #{srch_word} || '%'
+		Or	  	 c.chg_conts  like '%' || #{srch_word} || '%')
+		Order By c.reg_date DESC
+	</select>
+	
+	<select id="chgCommList" resultType="Comm">
+		Select *
+		From comm
+		Where lg =200
+		and md != 999
+	</select>
+	
+	<insert id="chgInsert" parameterType="java.lang.String">
+		Insert Into comm
+		Values(200,
+			   (Select MAX(md)+1
+				From comm
+				Where lg =200
+				and md != 999),
+			   #{ctn})
+	</insert>
+	
+	<delete id="chgDeleteComm" parameterType="java.util.ArrayList">
+		 Delete comm
+	     Where lg = 200
+	     And <foreach collection="array" item="ctn" separator=" OR " index="index">
+	        ctn = #{ctn}
+	     </foreach>
+			
+	</delete>
+	
+</mapper>
