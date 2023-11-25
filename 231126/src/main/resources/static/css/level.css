@@ -1,0 +1,81 @@
+@font-face {
+    font-family: 'SUIT-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* .modal {
+	width: 100%; height: 100%;
+	background-color: gray; opacity: 0.6;
+} */
+
+#modalOpenBtn, #modalCloseBtn {
+  cursor: pointer;
+}
+
+#modalOpenBtn {
+  font-size: 16px;
+  color: #59a5d2;
+  border: none;
+}
+
+#levelInfoBtn {
+  font-size: 16px;
+  color: #59a5d2;
+  border: none;
+}
+
+#modalCloseBtn {
+	display: flex; justify-content: end; align-items: center;
+}	
+
+#modalContainer {
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+#modalContainer > #modalContent {
+  z-index: 2;
+  position: absolute;
+  background-color: #ffffff;
+  width: 530px;
+  height: 700px;
+  padding: 15px;
+}
+
+#modalContainer,
+#level_info_container {
+    transition: opacity 0.3s ease-in-out;
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#levelInfoBtn {
+	margin-top: 50px;
+	margin-bottom: 10px;
+}
+.userInfoBox1{
+	border: 0px solid red; height: 50px;
+	display: flex; justify-content: center; align-items: center;
+}
+
+.userInfoBox2 {
+	height: 50px;
+	border: 0px solid red;
+	display: flex; align-items: center;
+}
+.userInfoBox2 > .user_exp {
+	margin-right: 330px;
+}

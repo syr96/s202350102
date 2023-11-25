@@ -1,0 +1,159 @@
+@font-face {
+    font-family: 'SUIT-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+.qbd-main {
+    width: 100%; height: 100%;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: 0px solid red;
+}
+.qbd-main > .qbd-mainbody{
+	width: 80%; height: 100%;
+	border: 0px solid red; margin: auto;
+}
+
+.qbd-main > .qbd-mainbody >.qbd-title {
+    width: 1100px; height: 150px;
+    display: flex;
+    border: 0px solid red;
+    margin: auto;
+}
+.qbd-main > .qbd-mainbody >.qbd-title > .qbd-object{
+	display: flex; justify-content: end; align-items: end;
+	border: 0px solid black; width: 30%;
+}
+.qbd-main > .qbd-mainbody >.qbd-title > .qbd-title-content {
+	display: flex; align-items: center; justify-content: start;
+	width: 900px; border: 0px solid red;
+}
+.qbd-main > .qbd-mainbody > .qbd-line {
+	width: 100%; height: 50px;
+	display: inline-grid; align-items: center; 
+	vertical-align: middle;
+}
+.qbd-main > .qbd-mainbody > .qbd-line > .qbd-line-li {
+	width: 80%; height: 2px; background-color: gray;
+	margin: auto;
+}
+.qbd-main > .qbd-mainbody > .qbd-line > .qbd-line-box {
+	width: 80%; margin: auto;
+}
+.qbd-line-box-text {
+	font-size: 0.8em; font-weight: 500;
+}
+.qbd-main > .qbd-mainbody > .qbd-content {
+	width: 80%; height: auto; max-height: 1000px;
+    border: 0px solid black;
+	margin: auto;
+	display: flex;
+	overflow: auto;
+}
+.qbd-content span {
+    white-space: pre-wrap;
+    overflow: hidden;
+}
+.title-text {
+	margin-left: 30px; margin-top: 20px; font-size: 1.8em; font-weight: bold;
+}
+.qbd-title a {
+    margin-right: 10px;
+    color: #d6492c;
+    
+}
+
+.qbd-title a:hover {
+    color: #d6492c; opacity: 0.7;
+}
+
+.qbd-content {
+    margin-bottom: 20px;
+}
+.qbd-main > .qbd-mainbody > .qbd-content > .qbd-rp {
+	position: absolute;
+}
+.qbd-rp-write form[name="boardTrans"] {
+	display: flex; align-items: center; justify-content: center;
+}
+.qbd-rp-write textarea {
+    width: 80%;
+    padding: 10px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+.qbd-rp-write input[type="button"] {
+    background-color: #ffc1c2;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer; height: 92px; margin-top: 12px;
+}
+
+.qbd-rp-write input[type="button"]:hover {
+    background-color: #ffc1c2; opacity: 0.7; transition: 0.2s all;
+}
+
+.qbd-rp-list {
+    list-style: none;
+    padding: 0;
+    width: 80%; margin: auto;
+}
+.qbd-rp-list ul {
+	margin-left: -60px;
+}
+.qbd-rp-group li {
+	white-space: pre-wrap;
+	overflow: auto;
+}
+
+.comment_item {
+    border: 1px solid #8c8c8c;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #fff;
+    overflow: auto;
+}
+/* #data-conts {
+	padding: 10px; border: 0px solid black;
+} */
+
+.comment_info {
+	padding: 20px 20px 10px 10px;
+}
+
+.comment_info button {
+    background: none;
+    border: none;
+    color: #ff7d81;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.comment_info button:hover {
+    color: #ff7d81; opacity: 0.7; transition: 0.2s all;
+}
+.updateArea {
+	width: 100%; height: 100px;
+}
+.saveBtn, .cancelBtn {
+    background-color: #ffc1c2;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.saveBtn:hover, .cancelBtn:hover {
+    background-color: #ffc1c2; opacity: 0.7; transition: 0.2s all;
+}
+ul{
+   list-style:none;
+}
+

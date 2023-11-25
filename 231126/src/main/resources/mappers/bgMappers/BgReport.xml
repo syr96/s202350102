@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.S202350102.BgReport">
+
+	<select id="recordANDCnt" parameterType="report" resultType="report">
+		SELECT  cnt, COUNT(Report_id) As burningRecord
+	    FROM    report
+	    WHERE   brd_num = #{brd_num} 
+	    AND		user_num = #{user_num}
+	</select>
+	
+	<insert id="insBurningRecord" parameterType="report">
+		INSERT INTO report(report_id,   user_num,   brd_num,    cnt,    REPORT_DATE,    REPORT_LG,  CTG_LG, STATE_LG,   STATE_MD)
+        VALUES (Report_id_seq.Nextval,  #{user_num}, #{brd_num},  10,     sysdate,        500,        800,    300,        100);
+	</insert>
+	
+	<update id="updateCnt" parameterType="report">
+		UPDATE	report
+		<choose>
+			<when test="cnt == 10">
+				SET	cnt = 0
+			</when>
+			<when test="cnt == 0">
+				SET	cnt = 10
+			</when>
+		</choose>
+		WHERE   brd_num = #{brd_num} 
+	    AND		user_num = #{user_num}
+	</update>
+
+</mapper>
