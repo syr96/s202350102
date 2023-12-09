@@ -20,7 +20,7 @@
 			<div class="row">
 	            <c:set var="num" value="${page.total-page.start+1 }"></c:set>
 	            	<c:forEach var="chg" items="${srch_chgResult }">
-			            <div class="col-6 col-md-4">
+			            <div class="col-6 col-md-4" style="max-width: 250px;">
 						
 			               <!-- Card -->
 			              <div class="card mb-7">

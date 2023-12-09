@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.oracle.S202350102.dao.thDao.ThOrder1Dao;
 import com.oracle.S202350102.dto.KakaoPayApprovalVO;
+import com.oracle.S202350102.dto.KakaoPayCancelVO;
 import com.oracle.S202350102.dto.KakaoPayReadyVO;
 import com.oracle.S202350102.dto.Order1;
 
@@ -27,9 +28,10 @@ public class ThKakaoPayImpl implements ThKakaoPay {
     
 	private static final String HOST = "https://kapi.kakao.com";
     
-    private KakaoPayReadyVO 	kakaoPayReadyVO;
-    private KakaoPayApprovalVO	kakaoPayApprovalVO;
-
+    private 		KakaoPayReadyVO 	kakaoPayReadyVO;
+    private 		KakaoPayApprovalVO	kakaoPayApprovalVO;
+    private			KakaoPayCancelVO	kakaoPayCancelVO;
+    private final 	ThOrder1Dao			od1;
     
     //결제 요청및 인증
     public String kakaoPayReady(Order1 order1) {
@@ -62,6 +64,11 @@ public class ThKakaoPayImpl implements ThKakaoPay {
         try {
             kakaoPayReadyVO = restTemplate.postForObject(new URI(HOST + "/v1/payment/ready"), body, KakaoPayReadyVO.class);
             
+            // order1객체에 tid를담고 order1테이블에 tid를 업데이트 (tid:카카오페이에서 제공하는 결제 한 건에 대한  고유번호)
+            order1.setTid(kakaoPayReadyVO.getTid());
+            int updateResult = od1.updateTid(order1);
+            System.out.println("ThKakaoPayImpl kakaoPayReady Tid updateResult --> " + updateResult);
+            
             log.info("" + kakaoPayReadyVO);
             return kakaoPayReadyVO.getNext_redirect_pc_url();
  
@@ -69,7 +76,9 @@ public class ThKakaoPayImpl implements ThKakaoPay {
             e.printStackTrace();
         } catch (URISyntaxException e) {
             e.printStackTrace();
-        }
+        } catch (Exception e) {
+        	e.printStackTrace();
+		}
         
         return "/pay";   
     }
@@ -111,6 +120,44 @@ public class ThKakaoPayImpl implements ThKakaoPay {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+        
+        return null;
+    }
+    
+    //결제 환불
+    public KakaoPayCancelVO kakaoPayCancel(Order1 order1) {
+    	System.out.println("ThKakaoPayImpl kakaoPayCancel Start...");
+    	System.out.println("ThKakaoPayImpl kakaoPayCancel order1 --> " + order1);
+        RestTemplate restTemplate = new RestTemplate();
+ 
+        // 서버로 요청할 Header
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "KakaoAK " + "47b09ab850144b4a5618939d2b5cb91f");
+        headers.add("Accept", MediaType.APPLICATION_JSON_UTF8_VALUE);
+        headers.add("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE + ";charset=UTF-8");
+        
+        // 서버로 요청할 Body
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
+        params.add("cid", "TC0ONETIME");
+        params.add("tid", order1.getTid()+"");
+        params.add("cancel_amount", order1.getPrice()+"");
+        params.add("cancel_tax_free_amount", "100");
+        
+        HttpEntity<MultiValueMap<String, String>> body = new HttpEntity<MultiValueMap<String, String>>(params, headers);
+ 
+        try {
+            kakaoPayCancelVO = restTemplate.postForObject(new URI(HOST + "/v1/payment/cancel"), body, KakaoPayCancelVO.class);
+
+            log.info("" + kakaoPayCancelVO);
+            return kakaoPayCancelVO;
+ 
+        } catch (RestClientException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+        	e.printStackTrace();
+		}
         
         return null;
     }

@@ -1,11 +1,15 @@
 package com.oracle.S202350102.service.jkService;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import com.oracle.S202350102.dao.jkDao.JkUser1Dao;
 import com.oracle.S202350102.dto.Board;
+import com.oracle.S202350102.dto.Following;
 import com.oracle.S202350102.dto.User1;
+import com.oracle.S202350102.dto.UserLevel;
 
 import lombok.RequiredArgsConstructor;
 
@@ -40,6 +44,16 @@ public class JkUserServiceImpl implements JkUserService {
 	    System.out.println("User1ServiceImpl updateProfile result --> " + result);
 	    return result;
 	}
+
+	@Override
+	public Map<String, Integer> followingCnt(int user_num) {
+		Map<String, Integer> followingCnt = jud.followingCnt(user_num);
+		return followingCnt;
+	}
+
+
+
+
 
 		
 

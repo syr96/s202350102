@@ -133,21 +133,21 @@ body {
 <title>Insert title here</title>
 </head>
 <body>
-<section class="pt-7 pb-12">
+<section class="section-mt" style="padding-top: 30px;">
 	<div class="container">
 		<div class="row">
 			<div class="col-12 text-center">
-				<c:if test="${brd_md == 106 }"><h3 class="mb-10">이벤트</h3></c:if>
-				<c:if test="${brd_md == 105 }"><h3 class="mb-10">공지</h3></c:if>				
+				<c:if test="${brd_md == 105 }"><h3 class="mb-10">공지사항</h3></c:if>
+				<c:if test="${brd_md == 106 }"><h3 class="mb-10">이벤트</h3></c:if>								
 			</div>
 		
 		
 			<div class="row" >
-				<div class="col-12 col-md-3">
+				<div class="col-3">
 					
 					<nav class="mb-10 mb-md-0">
 						<div class="list-group list-group-sm list-group-strong list-group-flush-x">
-							<a class="list-group-item list-group-item-action dropend-toggle " href="notice?brd_md=105">공지</a>
+							<a class="list-group-item list-group-item-action dropend-toggle " href="notice?brd_md=105">공지사항</a>
 							<a class="list-group-item list-group-item-action dropend-toggle " href="notice?brd_md=106">이벤트</a>							
 						</div>
 					</nav>
@@ -160,7 +160,7 @@ body {
 					
 				</div>
 				
-		        <div class="col-12 col-md-9 col-lg-8 mx-0">
+		        <div class="col-9">
 					<c:set var="num" value="${page.total-page.start+1 }"></c:set>
 					
 					<table id="boardtable">

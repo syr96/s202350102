@@ -10,7 +10,7 @@
 <script type="text/javascript" src="js/th/updateUserFormAdmin.js"></script>
 <body>
 <section class="pt-7 pb-12">
- 	<div class="container">
+ 	<div class="container section-mt">
  	
  	<!-- TITLE  -->
  	<div class="col-12 text-center">
@@ -22,7 +22,7 @@
  	
 	<div class="col-10">
 	
-		<table class="table table-bordered table-sm mb-0" style="border-top: solid 2px #e5e5e5">
+		<table class="table table-bordered table-sm mb-0" style="border-top: solid 3px #e5e5e5">
 			<form action="/updateUserAdmin" method="get" name="frm">
 			    <tr>
 			      <th scope="row" width="15%" class="table-secondary">레벨 / 경험치 </th> 
@@ -187,11 +187,12 @@
 				<tr style="border-bottom: none;">
 					<td colspan="2" align="right" style="border-left: none; border-right: none;" class="px-0"><button class="btn btn-sm btn-dark mx-1" onclick="return chk()">확인</button></td>
 <!-- 				<div class="form-group"> -->
-					<input type="hidden" name="pageNum" value="${pageNum}">
-					<input type="hidden" name="user_num" value="${user1.user_num }">
+					<input type="hidden" name="pageNum" 	value="${pageNum}">
+					<input type="hidden" name="user_num" 	value="${user1.user_num }">
+					<input type="hidden" name="keyword"		value="${keyword }">
 <!-- 				</div>	 -->
 		</form>
-					<td colspan="2" align="left"  style="border-left: none; border-right: none;" class="px-0"><button class="btn btn-sm btn-dark mx-1" onclick="location.href='/detailUserByAdmin?user_num=${user1.user_num}&pageNum=${pageNum}'">취소</button></td>		
+					<td colspan="2" align="left"  style="border-left: none; border-right: none;" class="px-0"><button class="btn btn-sm btn-dark mx-1" onclick="location.href='/detailUserByAdmin?user_num=${user1.user_num}&pageNum=${pageNum}&keyword=${keyword }'">취소</button></td>		
 				</tr>
 				   			    
 		</table>	

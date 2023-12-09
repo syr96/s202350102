@@ -15,15 +15,15 @@ public class BoardDaoimpl implements BoardDao {
 	private final SqlSession session;
 
 	@Override
-	public List<Board> selectChgCert(int userNum) {
+	public List<Board> selectChgCert(Board board) {
 		List<Board> chgCert = null; 
 		try {
-			chgCert = session.selectList("chgCert", userNum);
+			chgCert = session.selectList("chgCert", board);
 			
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 		return chgCert;
 	}
-
+	
 }

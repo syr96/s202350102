@@ -31,14 +31,14 @@ public class JhCallengeServiceImpl implements JhCallengeService {
 		return chgDetail;
 	}
 
-	@Override
-	public List<Board> chgReviewList(Board board) {
-		System.out.println("JhCallengeServiceImpl chgReviewList Start...");
-		
-		List<Board> chgReviewList = jhChgDao.chgReviewList(board);
-		
-		return chgReviewList;
-	}
+	/* 보드로 
+	 * @Override public List<Board> chgReviewList(Board board) {
+	 * System.out.println("JhCallengeServiceImpl chgReviewList Start...");
+	 * 
+	 * List<Board> chgReviewList = jhChgDao.chgReviewList(board);
+	 * 
+	 * return chgReviewList; }
+	 */
 
 	@Override
 	public String userStatus(int userNum) {
@@ -49,31 +49,31 @@ public class JhCallengeServiceImpl implements JhCallengeService {
 		return userStatus;
 	}
 
-	@Override
-	public Board reviewContent(int brd_num) {
-		System.out.println("JhCallengeServiceImpl reviewContent Start...");
-		Board reviewContent = jhChgDao.reviewContent(brd_num);
-		
-		return reviewContent;
-	}
+	/*//보드서비스로 옮김
+	 * @Override public Board reviewContent(int brd_num) {
+	 * System.out.println("JhCallengeServiceImpl reviewContent Start..."); Board
+	 * reviewContent = jhChgDao.reviewContent(brd_num);
+	 * 
+	 * return reviewContent; }
+	 */
 
-	@Override
-	public List<Board> reviewReplyList(Board board) {
-		System.out.println("JhCallengeServiceImpl reviewReplyList Start...");
-		
-		List<Board> reviewReplyList = jhChgDao.reviewReplyList(board);
-		
-		return reviewReplyList;
-	}
+	//보드로
+//	@Override
+//	public List<Board> reviewReplyList(Board board) {
+//		System.out.println("JhCallengeServiceImpl reviewReplyList Start...");
+//		
+//		List<Board> reviewReplyList = jhChgDao.reviewReplyList(board);
+//		
+//		return reviewReplyList;
+//	}
 
-	@Override
-	public int reviewTotal(int chg_id) {
-		System.out.println("JhCallengeServiceImpl reviewTotal Start...");
-		int reviewTotal = jhChgDao.reviewTotal(chg_id);
-		
-		return reviewTotal;
-	}
-
+	/*보드 서비스
+	 * @Override public int reviewTotal(int chg_id) {
+	 * System.out.println("JhCallengeServiceImpl reviewTotal Start..."); int
+	 * reviewTotal = jhChgDao.reviewTotal(chg_id);
+	 * 
+	 * return reviewTotal; }
+	 */
 
 	@Override
 	public int ingChgListTotal() {
@@ -94,58 +94,64 @@ public class JhCallengeServiceImpl implements JhCallengeService {
 	 * ingChgPicList; }
 	 */
 
-	@Override
-	public void replyInsert(Board board) {
-		System.out.println("JhCallengeServiceImpl replyInsert Start...");
-		jhChgDao.replyInsert(board);
-		
-	}
+//	보드
+//	@Override
+//	public void replyInsert(Board board) {
+//		System.out.println("JhCallengeServiceImpl replyInsert Start...");
+//		jhChgDao.replyInsert(board);
+//		
+//	}
 
-	@Override
-	public int replyDelete(int brd_num) {
-		System.out.println("JhCallengeServiceImpl replyDelete Start...");
-		int result = jhChgDao.replyDelete(brd_num);
-		
-		return result;
-	}
+	//보드로
+//	@Override
+//	public int replyDelete(int brd_num) {
+//		System.out.println("JhCallengeServiceImpl replyDelete Start...");
+//		int result = jhChgDao.replyDelete(brd_num);
+//		
+//		return result;
+//	}
 
-	@Override
-	public void viewCntUp(int brd_num) {
-		System.out.println("JhCallengeServiceImpl viewCntUp Start...");
-		jhChgDao.viewCntUp(brd_num);
-	}
+	//보드로
+//	@Override
+//	public void viewCntUp(int brd_num) {
+//		System.out.println("JhCallengeServiceImpl viewCntUp Start...");
+//		jhChgDao.viewCntUp(brd_num);
+//	}
 
 
-	@Override
-	public int replyUpdate(Board board) {
-		System.out.println("JhCallengeServiceImpl replyUpdate Start...");
-		int result = jhChgDao.replyUpdate(board);
-		return result;
-	}
+//	보드로
+//	@Override
+//	public int replyUpdate(Board board) {
+//		System.out.println("JhCallengeServiceImpl replyUpdate Start...");
+//		int result = jhChgDao.replyUpdate(board);
+//		return result;
+//	}
 
-	@Override
-	public int reviewPost(Board board) {
-		System.out.println("JhCallengeServiceImpl reviewPost Start...");
-		
-		int result = jhChgDao.reviewPost(board);
-		
-		return result;
-	}
+	//보드로
+//	@Override
+//	public int reviewPost(Board board) {
+//		System.out.println("JhCallengeServiceImpl reviewPost Start...");
+//		
+//		int result = jhChgDao.reviewPost(board);
+//		
+//		return result;
+//	}
 
-	@Override
-	public int reviewUpdate(Board board) {
-		System.out.println("JhCallengeServiceImpl reviewUpdate Start...");
-		int result = jhChgDao.reviewUpdate(board);
-		return result;
-	}
+//	@Override
+//	public int reviewUpdate(Board board) {
+//		System.out.println("JhCallengeServiceImpl reviewUpdate Start...");
+//		int result = jhChgDao.reviewUpdate(board);
+//		return result;
+//	}
 
-	@Override
-	public int reviewDelete(int brd_num) {
-		System.out.println("JhCallengeServiceImpl reviewDelete Start...");
-		
-		int reviewDel = jhChgDao.reviewDelete(brd_num);
-		return reviewDel;
-	}
+	//보드
+//	@Override
+//	public int reviewDelete(int brd_num) {
+//		System.out.println("JhCallengeServiceImpl reviewDelete Start...");
+//		
+//		int reviewDel = jhChgDao.reviewDelete(brd_num);
+//		return reviewDel;
+//	}
 
 	@Override
 	public int boardImgDelete(int brd_num) {
@@ -218,6 +224,20 @@ public class JhCallengeServiceImpl implements JhCallengeService {
 		int result = jhChgDao.chgAdminUpdate(chg);
 		
 		return result;
+	}
+
+	@Override
+	public int chgDelete(int chg_id) {
+		System.out.println("JhCallengeServiceImpl chgDelete Start...");
+		int result = jhChgDao.chgDelete(chg_id);
+		return result;
+	}
+
+	@Override
+	public int chgStateMd(int chg_id) {
+		System.out.println("JhCallengeServiceImpl chgStateMd Start...");
+		int stateMd = jhChgDao.chgStateMd(chg_id);
+		return stateMd;
 	}
  
 

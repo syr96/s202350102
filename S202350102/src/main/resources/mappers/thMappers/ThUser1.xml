@@ -64,9 +64,12 @@
 		AND		delete_yn	=	'N'	
 	</update>
 	
-	<select id="ThTotUserCnt" resultType="int">
+	<select id="ThTotUserCnt" parameterType="User1" resultType="int">
 		SELECT	COUNT(*)
 		FROM	user1
+		<if test='keyword != null and keyword != ""'> 
+		WHERE	user_id LIKE '%' || #{keyword} || '%'	
+		</if>
 	</select>
 	
 	<select id="thUserListAll" parameterType="User1" resultType="User1">
@@ -75,10 +78,15 @@
 			(
 				SELECT rownum rn, a.*
 				FROM
-					(SELECT * FROM user1 ORDER BY user_num) a
+					(
+						SELECT * 
+						FROM user1 
+						<if test='keyword != null and keyword != ""'> 
+							WHERE	user_id LIKE '%' || #{keyword} || '%'	
+						</if>
+					 	ORDER BY user_num) a
 			)
 		WHERE rn BETWEEN #{start} AND #{end}
-		
 	</select>
 	
 	<update id="thUpdateUserLoginDate" parameterType="int">
@@ -114,5 +122,10 @@
 		WHERE	user_num 	=	#{user_num}
 	</update>
 	
+	<update id="thUpdateUserNormal" parameterType="int">
+		UPDATE 	user1
+		SET	   	status_md = 100
+		WHERE  	user_num  = #{user_num}
+	</update>
 </mapper>
 

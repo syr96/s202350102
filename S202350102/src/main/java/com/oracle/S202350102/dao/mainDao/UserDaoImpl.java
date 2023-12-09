@@ -76,4 +76,17 @@ public class UserDaoImpl implements UserDao {
 		}
 		return userLevelInfoList;
 	}
+
+
+	@Override
+	public User1 userSelect(User1 user1) {
+		System.out.println("UserDaoImpl userSelect start...");
+		User1 userResult = null;
+		try {
+			userResult = session.selectOne("mainUserSelectByUserId",user1);
+		} catch (Exception e) {
+			System.out.println("UserDaoImpl userSelect  exception->"+e.getMessage());
+		}
+		return userResult;
+	}
 }

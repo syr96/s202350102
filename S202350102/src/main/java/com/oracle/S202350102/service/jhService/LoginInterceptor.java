@@ -8,19 +8,23 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 public class LoginInterceptor implements HandlerInterceptor {
-
+	
+    
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		System.out.println("LoginInterceptor Interceptor Prehandle Start.....");
-
+		System.out.println("[Controller Method 호출 전]");
+		System.out.println("[" + request.getMethod() + "]");
+		System.out.println("[" + request.getRequestURL() + "]");
+		System.out.println("[" + request.getRequestURI() + "]");
 		//request에서 세션정보 추출
 		HttpSession session = request.getSession();
 		
 		//로그인 여부 확인 -> 로그인 전이면 로그인 페이지로 이동
 		int userNum = 0;
 		if(session.getAttribute("user_num") == null) {
-			response.sendRedirect("/loginForm");
+			response.sendRedirect("/errorLogin");
 			return false;
 			
 		} else {
@@ -41,5 +45,6 @@ public class LoginInterceptor implements HandlerInterceptor {
 //		HandlerInterceptor.super.postHandle(request, response, handler, modelAndView);
 	}
 	
+
 
 }

@@ -10,14 +10,16 @@
 <%@ include file="/WEB-INF/views/header4.jsp" %>
 
 <script type="text/javascript">
-	
-	// 모달 값 지우기
-	// 모달창을 끌 때, hidden.bs.modal이라는 이벤트가 발생하고 이때 함수를 실행시킨다
-	// 해당모달의 input창의 모든 값을 비운다
-	// $(document).ready(function() : 이부분을 사용하지않으면 문서가 모달 이벤트 수신할 때 아래코드가 준비되지 않아 작동 안할수있음, 문서가준비된 이후 코드가 작동하도록 보장하기위해 jQuery의 document.ready 이벤트 사용
+
 	$(document).ready(function() {
-		$('.modal').on('hidden.bs.modal', function(e) {
-			$(this).find('input').val('');
+
+		
+		// 검색어 입력 후 엔터키 입력하면 검색버튼 클릭
+		$("#keyword").keypress(function(e){	
+			if(e.keyCode && e.keyCode == 13){
+				$("#searchButton").trigger("click");
+				return false;
+			}
 		});
 	});
 	
@@ -55,8 +57,8 @@
 					$("#chgPick" + p_index).removeClass("btn-primary").addClass("btn-white-primary");
 					alert("찜 취소");
 				}
-				$("#inputPickCnt" + p_index).text(chgPickResult.chgPickCnt);
-
+				$("#inputPickCnt" + p_index).html('<div style="color: #e56d90;" id="inputPickCnt${chg.chg_id }"><i class="fa-solid fa-heart" style="width:16px"></i>&ensp;' + chgPickResult.chgPickCnt + '</div>');
+				
 			},
 			error : function() {
 				alert("찜하기 오류");
@@ -69,6 +71,8 @@
 		var input_priv_pswd = $('#input_priv_pswd'+p_index).val()
 		var chg_priv_pswd 	= $('#chg_priv_pswd'+p_index).val();
 		var chg_id			= $('#chg_id'+p_index).val();
+// 		alert('input_priv_pswd --> ' + input_priv_pswd);
+// 		alert('chg_priv_pswd --> ' + chg_priv_pswd);
 		if(input_priv_pswd == chg_priv_pswd){
 			location.href = "chgDetail?chg_id="+chg_id
 		} else {
@@ -153,9 +157,13 @@
 		$("#searchButton").click(function () {
 			var keyword 	=	$("#keyword").val();
 			var state_md 	=	${chg.state_md}
+			var chg_lg 		= 	${chg.chg_lg}
+	 		var chg_md 		= 	${chg.chg_md}
 			// 진행중,종료된 챌린지를 체크하기위해서 status_md를 넣어줌
-			location.href = '/thChgList?keyword='+keyword+'&state_md='+state_md					
-
+			location.href = '/thChgList?keyword='+keyword
+							+'&state_md='+state_md
+							+'&chg_lg='+chg_lg
+							+'&chg_md='+chg_md
 		})
 	})
 
@@ -163,11 +171,9 @@
 </head>
 
 <body>
-
-    
-    
+  
     <section class="pt-7 pb-12">
-      <div class="container">
+      <div class="container section-mt">
         <div class="row">
        		<div class="col-12 text-center">
 				    <!-- Heading -->
@@ -212,11 +218,15 @@
 						
 			               <!-- Card -->
 			              <div class="card mb-7">
+							
 							<!-- Badge -->
 							<!-- 찜수  10이상 시 인기 챌린지 태그 달아줌 -->
 							<c:if test="${chg.pick_cnt >= 10 }">
-			                  	<h6><div class="badge bg-primary card-badge text-uppercase">인기</div></h6>
-			                </c:if>
+			                  	<div class="badge bg-primary card-badge text-uppercase">인기</div>
+			                </c:if>					
+				            
+
+			                
 			                <!-- Image -->
 			                <div class="card-img">
 			
@@ -270,16 +280,17 @@
 			                  					   >
 			                  <c:if test="${chg.thumb != null}">
 			             		<c:if test="${chg.thumb == 'assets/img/chgDfaultImg.png'}">
-			                  		<img class="card-img-top" src="assets/img/chgDfaultImg.png" alt="chgDfault" style="width: 100%; height: 250px; border-radius: 10px;">
+			                  		<img class="card-img-top" src="assets/img/chgDfaultImg2.png" alt="chgDfault" style="width: 100%; height: 250px; border-radius: 25px;">
 			                  	</c:if>
 			                  	<c:if test="${chg.thumb != 'assets/img/chgDfaultImg.png'}">
-			                  		<img class="card-img-top" src="${pageContext.request.contextPath}/upload/${chg.thumb}" alt="thumb" style="width: 100%; height: 250px; border-radius: 10px;" >
+			                  		<img class="card-img-top" src="${pageContext.request.contextPath}/upload/${chg.thumb}" alt="thumb" style="width: 100%; height: 250px; border-radius: 25px;" >
 			                  	</c:if>
 			                  </c:if>
 			                  <c:if test="${chg.thumb == null}">
-			                  	<img class="card-img-top" src="assets/img/chgDfaultImg.png" alt="chgDfault" style="width: 100%; height: 250px; border-radius: 10px;">
+			                  	<img class="card-img-top" src="assets/img/chgDfaultImg2.png" alt="chgDfault" style="width: 100%; height: 250px; border-radius: 25px;">
+			                  	
 			                  </c:if>
-
+								
 							  </a>
 			              </div>
 			              
@@ -295,9 +306,18 @@
 			                  	~ 
 			                	<fmt:formatDate value="${chg.end_date }" pattern="yyyy-MM-dd"></fmt:formatDate>
 			                </div>
-			                <div class="text-muted"><i class="fa-solid fa-user" style="width:16px"></i>&ensp;${chg.chlgerCnt}명 참여중</div>
-			                <span style="color: #e56d90;"><i class="fa-solid fa-heart" style="width:16px"></i>&ensp;</span>
-			                <span style="color: #e56d90;" id="inputPickCnt${chg.chg_id }">${chg.pick_cnt }</span>
+			               
+								<div class="text-muted">
+									<i class="fa-solid fa-user" style="width:16px"></i>&ensp;${chg.chlgerCnt}명 참여중
+								</div>
+
+							<div class="row">
+			                	<div class="col-4" style="color: #e56d90;" id="inputPickCnt${chg.chg_id }"><i class="fa-solid fa-heart" style="width:16px"></i>&ensp;${chg.pick_cnt }</div>
+								<div class="text-muted col-5 text-start">
+									<c:if test="${chg.chg_public == 0 }"><span style="color: #5478e3;"><i class="fa-solid fa-lock-open"></i>&ensp;공개</span></c:if>
+									<c:if test="${chg.chg_public == 1 }"><i class="fa-solid fa-lock"></i>&ensp;비공개</c:if>
+								</div>			                	
+			                </div>
 			              </div>
 							
 			            </div>
@@ -310,7 +330,6 @@
 				     <div class="modal fade" id="modalMatchPswd${status.index }" tabindex="-1" role="dialog" aria-hidden="true">
 				      <div class="modal-dialog modal-dialog-centered" role="document">
 				        <div class="modal-content">
-				    
 				          <!-- Close -->
 				          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
 				            <i class="fe fe-x" aria-hidden="true"></i>
@@ -334,20 +353,38 @@
 				    			
 				    		  <!-- 모달 -->
 				              <div class="form-group">
+				                
 				                <label class="visually-hidden" for="input_priv_pswd${status.index }">
 				                  	비밀번호 *
 				                </label>
-				                <input class="form-control form-control-sm" id="input_priv_pswd${status.index }" name="input_priv_pswd" type="text"  placeholder="비밀번호 " required>
+				                
+				                <input class="form-control form-control-sm input_priv_pswd" id="input_priv_pswd${status.index }" name="input_priv_pswd" type="password"  placeholder="비밀번호 " required>
+				                
 				                <c:if test="${chg.chg_public == 1 }">
 				                	<input class="form-control form-control-sm" id="chg_priv_pswd${status.index }" name="chg_priv_pswd" type="hidden" value="${chg.priv_pswd }">
-				                	<input class="form-control form-control-sm" id="chg_id${status.index }" name="chg_id" type="hidden" value="${chg.chg_id }">
+				                	<input class="form-control form-control-sm" id="chg_id${status.index }" 	   name="chg_id" 		type="hidden" value="${chg.chg_id }">
 				                </c:if>
 				              </div>
-				     
-				              <button class="btn btn-sm btn-dark" onclick="return confirmPswd(${status.index })">
+				                					    			    				     
+				              <button class="btn btn-sm btn-dark" id='confirmPswd${status.index }' onclick="return confirmPswd(${status.index })">
 				                	확인
 				              </button>
-				    
+				              
+ 				                
+			                	<script type="text/javascript">
+			                	    //비공개방 모달창 비밀번호 입력칸에서 엔터키 클릭시 확인 버튼 클릭 
+				            		// 검색어 입력 후 엔터키 입력하면 검색버튼 클릭
+				            		$("#input_priv_pswd"+${status.index}).keypress(function(e){	
+				            			if(e.keyCode && e.keyCode == 13){
+				            				$("#confirmPswd"+${status.index }).trigger("click");
+				            				return false;
+				            			}
+				            		});
+				            		// 모달창 끌때 input값 비우기
+				            		$('.modal').on('hidden.bs.modal', function(e) {
+				             			$('#input_priv_pswd'+${status.index }).val('');
+				            		});
+			    			    </script>
 				    
 				          </div>
 				    
@@ -393,14 +430,13 @@
 				<div class="container d-flex justify-content-center my-5">
 				    <div class="d-flex justify-content-center">
 				        <div class="input-group input-group-merge">
-				            <input class="form-control form-control-sm" id="keyword" type="search" placeholder="제목 검색" value="${chg.keyword}">
+				            <input class="form-control form-control-sm" id="keyword" type="search" placeholder="제목/내용 검색" value="${chg.keyword}">
 							<div class="input-group-append">
 								<!-- 부트스트랩에서 button or div 내 이미지 수평+수직정렬 -->					
 							    <button class="btn btn-outline-border btn-search d-flex justify-content-center align-items-center"  id="searchButton">
 							        <i class="fe fe-search"></i>
 							    </button>
 							</div>
-				
 				        </div>
 				    </div>
 				</div>

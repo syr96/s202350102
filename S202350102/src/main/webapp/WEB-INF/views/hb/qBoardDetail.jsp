@@ -2,42 +2,46 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<jsp:useBean id="today" class="java.util.Date" />
+<fmt:formatDate value="${today}" pattern="yyyyMMdd" var="nowDate"/>
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" type="text/css" href="<c:url value="/css/qBoardDetail.css"><c:param name="dt" value="${nowDate}"/></c:url>"/>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
 <script type="text/javascript" src="js/jquery.js"></script>
-<link rel="stylesheet" href="/css/qBoardDetail.css">
 <body>
+
 <c:import url="/WEB-INF/views/header4.jsp"/>
 	<i class="fa-sharp fa-light fa-image"></i>
-	<div id="qbd-main" class="qbd-main">
+	<div id="qbd-main" class="container section-mt">
 		<div class="qbd-mainbody">
 			<div id="qbd-title" class="qbd-title">
 				<div class="qbd-title-content">
 					<span class="title-text">${board.title }</span>
 				</div>
-				<div class="qbd-object">
+				<div class="qbd-object text-end">
 						<a href="qBoardUpdateForm?brd_num=${board.brd_num }">수정</a>
 						<a href="javascript:void(0);" onclick="confirmDelete(${board.brd_num}, '${board.img}');">삭제</a>
 						<a href="qBoardList?board=${board }">목록</a></p>
 				</div>	
 			</div>
-			<div class="qbd-line">
 				<div class="qbd-line-box">
 					<span class="qbd-line-box-text">작성자: ${board.nick }</span>&nbsp;&nbsp;&nbsp;&nbsp;
 					<span class="qbd-line-box-text">작성일: <fmt:formatDate value="${board.reg_date }" pattern="yyyy-MM-dd"/></span>&nbsp;&nbsp;&nbsp;&nbsp;
 					<span class="qbd-line-box-text">카테고리: ${board.category }</span>
 				</div>
+			<div class="qbd-line">
+				<div class="qbd-line-li"></div>
+			</div>
 				<!-- <div class="qbd-line-li"></div> -->
 			</div>
 			
 			<div class="qbd-content">
 				<div class="qbd-content text">
-					<c:if test="${board.img != null }"><img alt="UpLoad Image" src="${pageContext.request.contextPath}/upload/qBoard/${board.img}"><p></c:if>				
-					<span>${board.conts }</span>
+					<span><c:if test="${board.img != null }"><img alt="UpLoad Image" src="${pageContext.request.contextPath}/upload/qBoard/${board.img}"><p></c:if>${board.conts }</span>
 				</div>
 
 			</div>
@@ -51,7 +55,7 @@
 					    <input type="hidden"  id="img"  name="img" value="${board.img }">
 					    <input type="hidden"  id="brd_md" 	 name="brd_md" value="${board.brd_md }">
 					    <input type="hidden"  id="brd_group"  name="brd_group" value="${board.brd_num }">
-					    <textarea rows="3" cols="50" name="conts" id="conts" placeholder="댓글을 입력하세요." required="required"></textarea><p>
+					    <textarea rows="3" cols="50" maxlength="200" name="conts" id="conts" placeholder="댓글을 입력하세요." wrap="on" required="required"></textarea><p>
 						<input type="button" value="입력" onclick="commentWriteBtn()">
 					</form>
 				</div>
@@ -134,6 +138,15 @@
 	
 // 댓글작성
 	function commentWriteBtn() {
+		  // 댓글 내용 가져오기
+		  var commentContent = $('#conts').val();
+
+		  // 댓글 내용이 비어 있는지 확인
+		  if (commentContent.trim() === '') {
+		    alert('댓글 내용을 입력하세요.');
+		    return; // 댓글 내용이 비어있다면 함수 종료
+		  }
+	
 		var brd_group = ${board.brd_group};
 		var sendData =  $('#boardTrans').serialize();
 		$.ajax({
@@ -151,8 +164,16 @@
 			
 		})		
 	}
+	
+	// 엔터 키 입력 시 댓글 작성 함수 호출
+	$('#conts').keyup(function (e) {
+	  if (e.which === 13 && !e.shiftKey) { // 엔터 키 코드이면서 쉬프트 키가 눌리지 않았을 때
+	    e.preventDefault(); // 기본 엔터 동작 제거
+	    commentWriteBtn(); // 댓글 작성 함수 호출
+	  }
+	});
 
-
+	// 댓글삭제
 	$(document).ready(function () {
 	    $(document).off('click', '#commentDelete');
 	    $(document).on('click', '#commentDelete', function () {
@@ -179,7 +200,7 @@
 	        }
 	    });
 
-
+		// 댓글수정
 	    $(document).off('click', '#commentUpdate');
 	    $(document).on('click', '#commentUpdate', function () {
 	        var commentList = $(this).closest('li');
@@ -187,7 +208,7 @@
 	        var brd_num = $(this).data('brd-num');
 
 	        var originalContent = commentList.find('span').text(); // input hidden하고 textarea 밸류 받자
-	        var inputField = $('<input class="updateArea" type="text" value="'+originalContent+'">' /* { type: 'text', value: originalContent } */);
+	        var inputField = $('<textarea wrap="on" rows="5" cols="50" maxlength="200" class="updateArea">' +originalContent+ '</textarea>' /* { type: 'text', value: originalContent } */);
 	        commentList.find('span').replaceWith(inputField);
 
 	        var saveButton = $('<button type="button" class="saveBtn" data-user-num="' + user_num + '" data-brd-num="' + brd_num + '">저장</button>');
@@ -198,7 +219,7 @@
 
 	        $(document).off('click', '.saveBtn');
 	        $(document).on('click', '.saveBtn', function () {
-	            var updateContent = commentList.find('input').val();
+	            var updateContent = commentList.find('textarea').val();
 	            $.ajax({
 	                url: 'qBoardCommentUpdate',
 	                type: 'POST',
@@ -209,7 +230,6 @@
 	                dataType: 'json',
 	                success: function (result) {
 	                    if (result.result == "success") {
-	                        alert("수정성공!");
 	                        qBoardCommentList();
 	                    } else {
 	                        alert("수정실패..");
@@ -233,6 +253,16 @@
 	    } else {
 	    }
 	}
+	
+	// textarea 줄바꿈 제한
+	$(document).on('keydown', 'textarea', function() {
+	    var rows = $(this).val().split('\n').length;
+	    var maxRows = 6;
+	    if (rows > maxRows) {
+	        var modifiedText = $(this).val().split("\n").slice(0, maxRows);
+	        $(this).val(modifiedText.join("\n"));
+	    }
+	});
 
 </script>
 </body>

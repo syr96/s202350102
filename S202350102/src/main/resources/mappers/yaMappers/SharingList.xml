@@ -20,13 +20,18 @@
     </select>		
     
 	<select id="YaMyJoinSharingList" parameterType="sharingList" resultType="sharingList">
-		SELECT s.brd_num, b.title, s.state_md, s.reject_msg
-		FROM sharingList s
-		INNER JOIN board b ON s.brd_num = b.brd_num
-		WHERE s.user_num = #{user_num}
-		ORDER BY s.brd_num DESC
-
-   
+		SELECT *
+		FROM (
+		    SELECT ROWNUM AS r, a.*
+		    FROM (
+		        SELECT s.brd_num, b.title, s.state_md, s.reject_msg
+		        FROM sharingList s
+		        INNER JOIN board b ON s.brd_num = b.brd_num
+		        WHERE s.user_num = #{user_num}
+		        ORDER BY s.brd_num DESC
+		    ) a
+		)
+WHERE r BETWEEN #{start} AND #{end}
 	</select>	
     
 	<update id="YaSharingConfirm" parameterType="sharingList">
@@ -47,6 +52,18 @@
 		SELECT count(*)
 		FROM sharingList
 		WHERE user_num = #{user_num}	
+	</select>
+	
+	<select id="YaSharingChk" parameterType="int" resultType="int">
+                select user_num
+                from sharingList
+                where brd_num = #{brd_num}	    
+	</select>	
+	
+	<select id="YaDeleteSharing" parameterType="int"> 
+		DELETE FROM sharingList
+		WHERE brd_num = #{brd_num}
+		AND user_num = #{user_num}	
 	</select>
 	
 	

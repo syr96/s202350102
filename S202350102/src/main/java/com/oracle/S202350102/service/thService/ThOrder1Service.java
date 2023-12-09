@@ -7,7 +7,8 @@ public interface ThOrder1Service {
 	int 			insertOrder(Order1 order1);
 	int 			selectMaxOrderNum();
 	Order1 			selectOrderJoinMem(Order1 order1);
-	int 			updateOrderSucess(int order_num);
 	Order1 			selectOrderSucess(int user_num);
+	int 			transactionOrderInsertUpdate(String tid, int user_num);
+	int 			tranxOrdUsrUptSuc(int order_num, int user_num);
 
 }

@@ -1,41 +1,75 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>  
-<%@ include file="/WEB-INF/views/topBar.jsp" %>
 <%@ include file="/WEB-INF/views/header4.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<style type="text/css">
-	#comList{
-		position: relative;
-		align-self: center;
-		left: 40%;
-		right: 40%;
+<script src="../../js/jquery.js"></script>
+<script type="text/javascript">
+	function deleComm(){
+		$("#delComm").submit();
 	}
-</style>
+</script>
 </head>
 <body>
-	<div class="card card-xl" id="comList">
-		<div class="card-body">
-			<form action="deleteChgComm" method="post">
-				<ul>
-				<c:forEach items="${chgCommList }" var="chgCommList">
-					<li>
-						<input type="checkbox" name="ctn" value="${chgCommList.ctn }">${chgCommList.ctn }
-					</li>	
-				</c:forEach>
-					<li><input type="submit" value="선택항목 삭제"></li>
-				</ul>
-			</form>
-			<form action="insertChgComm" method="post">
-				챌린지 카테고 입력: <input type="text" name="ctn"> <input type="submit" value="확인">
-			</form>
+	<div class="container section-mt">
+			<div class="row">
+	            <!-- Heading -->
+	            <div class="col-12 text-center">
+            		<h3>챌린지 카테고리 관리</h3>
+          		</div>
+        	</div>
+        	
+		<div class="row">
+			<%@ include file="../jh/adminSidebar.jsp" %>
+			
+			<div class="col-md-10 profile-form">
+        	
+	            <div class="row justify-content-center py-9">
+	              <div class="col-12 col-lg-10 col-xl-8">
+	                <div class="row">
+	                  <div class="col-12">
+	                  		<div class="review">
+                  				<form action="deleteChgComm" method="post" class="row d-flex justify-content-between align-items-center mb-0" id="delComm">
+			                  		<table>
+										<tbody class="col-12 text-center">
+											<c:set value="1" var="i"></c:set>
+											<c:forEach items="${chgCommList }" var="chgCommList">
+												<tr>
+													<td class="col-3"><label for="ctn${i }">${chgCommList.ctn }</label></td>									
+													<td class="col-3"><input type="checkbox" name="ctn" id="ctn${i }" value="${chgCommList.ctn }"></td>					
+												</tr>		
+														
+												<c:set value="${i +1 }" var="i"></c:set>
+											</c:forEach>										
+										</tbody>										
+									</table>									
+								</form>
+								<div class="text-center py-1">
+									<button type="button" onclick="deleComm()" class="btn-dark">선택항목 삭제</button>
+								</div>
+								<div class="row justify-content-center">
+									<div class="col-12">
+										<form action="insertChgComm" method="post" class="text-center">
+											챌린지 카테고 입력: <input type="text" name="ctn"> <input type="submit" value="추가" class="btn-dark">
+										</form>
+									</div>
+								</div>
+	                  		</div>
+						</div>
+	                  
+	                  </div>
+	                </div>
+	              </div>
+           </div>
+		                
+			
+			
 		</div>
 	</div>
+		
 </body>
 <%@ include file="/WEB-INF/views/footer.jsp" %>
 </html>

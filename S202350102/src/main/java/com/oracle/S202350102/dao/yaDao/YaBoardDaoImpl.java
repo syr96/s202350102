@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.oracle.S202350102.dto.Board;
 import com.oracle.S202350102.dto.SharingList;
 import com.oracle.S202350102.dto.User1;
+import com.oracle.S202350102.service.hbService.Paging;
 
 import lombok.RequiredArgsConstructor;
 
@@ -108,38 +109,78 @@ public class YaBoardDaoImpl implements YaBoardDao {
 	}
 
 	@Override
-	public List<Board> boardSearchList(String keyword) {
+	public List<Board> boardSearchList(String keyword, String currentPage) {
 		List<Board> boardSearchList = null;
 		System.out.println("YaBoardDaoImpl boardSearchList start....");
 		
 		try {
-			boardSearchList = session.selectList("YaBoardSearhList", keyword);
+		      // 검색 결과와 페이징 정보 가져오기
+	        int countSearch = countSearch(keyword);
+
+	        // 페이징 처리
+	        Paging boardPage = new Paging(countSearch, currentPage);
+
+	        // MyBatis를 사용하여 검색 결과 가져오기
+	        Map<String, Object> parameterMap = new HashMap<>();
+	        parameterMap.put("keyword", keyword);
+	        parameterMap.put("start", boardPage.getStart());
+	        parameterMap.put("end", boardPage.getEnd());
+	        parameterMap.put("total", countSearch);
+
+			boardSearchList = session.selectList("YaBoardSearhList",parameterMap);
+
 			
 		} catch (Exception e) {
 			System.out.println("YaBoardDaoImpl boardSearchList e.getMessage?"+e.getMessage());
 		}
 		return boardSearchList;
 	}
+	
+
 	@Override
-	public List<Board> sortByViewCnt() {
+	public int countSearch(String keyword) {
+		int countSearch = 0;
+		System.out.println("YaBoardDaoImpl countSearch start.. ");
+	    try {
+	        countSearch = session.selectOne("countSearch", keyword);
+	    } catch (Exception e) {
+	        System.out.println("YaBoardDaoImpl countSearch e.getMessage? " + e.getMessage());
+	    }
+		return countSearch;
+	}
+
+
+	
+	
+	
+	@Override
+	public List<Board> sortByViewCnt(int start, int end) {
 		List<Board> sortByViewCnt = null;
         try {
-            return session.selectList("sortByViewCnt");
+            Map<String, Integer> params = new HashMap<>();
+            params.put("start", start);
+            params.put("end", end);      	
+        	sortByViewCnt = session.selectList("sortByViewCnt",params);
         } catch (Exception e) {
         	System.out.println("YaBoardDaoImpl sortByViewCnt() e.getMessage?"+e.getMessage());
-            return sortByViewCnt;
+     
         }
+		return sortByViewCnt;
 	}
 
 	@Override
-	public List<Board> sortByRegDate() {
+	public List<Board> sortByRegDate(int start, int end) {
 		List<Board> sortByRegDate =null;
 		try {
-	          return session.selectList("sortByRegDate");
+			 Map<String, Integer> params = new HashMap<>();
+	            params.put("start", start);
+	            params.put("end", end);      	
+	            sortByRegDate = session.selectList("sortByRegDate",params);
 	        } catch (Exception e) {
 	          	System.out.println("YaBoardDaoImpl sortByRegDate() e.getMessage?"+e.getMessage());
-	            return sortByRegDate;
+	         
 	        }
+		   return sortByRegDate;
 	}
 
 	@Override
@@ -257,11 +298,11 @@ public class YaBoardDaoImpl implements YaBoardDao {
 
 	//마이페이지-내가올린 쉐어링리스트 조회 
 	@Override
-	public List<Board> myUploadSharingList(int user_num) {
+	public List<Board> myUploadSharingList(Board board) {
 		System.out.println("YaBoardDaoImpl myUploadSharingList start...");
 		List<Board> myUploadSharingList = null;
 		try {
-			myUploadSharingList = session.selectList("myUploadSharingList", user_num);
+			myUploadSharingList = session.selectList("myUploadSharingList",  board);
 			System.out.println("YaBoardDaoImpl myUploadSharingList List.size()?"+myUploadSharingList.size());
 		} catch (Exception e) {
 			System.out.println("YaBoardDaoImpl myUploadSharingList e.getMessage()?"+e.getMessage());
@@ -289,11 +330,11 @@ public class YaBoardDaoImpl implements YaBoardDao {
 
 	//마이페이지 내가 참가한 쉐어링 조회
 	@Override
-	public List<SharingList> myJoinSharingList(int user_num) {
+	public List<SharingList> myJoinSharingList(SharingList sharingList) {
 		System.out.println("YaBoardDaoImpl  myJoinSharingList sharingParticipantsInfo start...");
 		List<SharingList> myJoinSharingList = null;
 		try {
-			myJoinSharingList = session.selectList("YaMyJoinSharingList", user_num);
+			myJoinSharingList = session.selectList("YaMyJoinSharingList", sharingList);
 			
 			System.out.println("YaBoardDaoImpl myJoinSharingList.size()?"+myJoinSharingList.size());
 		} catch (Exception e) {
@@ -306,11 +347,11 @@ public class YaBoardDaoImpl implements YaBoardDao {
 
 	//마이페이지 내가 승인한 쉐어링 조회 
 	@Override
-	public List<Board> myConfirmSharingList(int user_num) {
-		System.out.println("YaBoardDaoImpl myConfirmSharingList sharingParticipantsInfo start...");
+	public List<Board> myConfirmSharingList(Board board) {
+		System.out.println("YaBoardDaoImpl myConfirmSharingList start...");
 		List<Board> myConfirmSharingList = null;
 		try {
-			myConfirmSharingList = session.selectList("YaMyConfirmSharingList", user_num);
+			myConfirmSharingList = session.selectList("YaMyConfirmSharingList", board);
 			
 			System.out.println("YaBoardDaoImpl myConfirmSharingList.size()?"+myConfirmSharingList.size());
 		} catch (Exception e) {
@@ -429,7 +470,7 @@ public class YaBoardDaoImpl implements YaBoardDao {
 
 	@Override
 	public int totalSharing(Board board) {
-		System.out.println("YaBoardDaoImpltotalSharing( start....");
+		System.out.println("YaBoardDaoImpltotalSharing start....");
 		int totalSharing = 0;
 		try {
 			totalSharing = session.selectOne("YaTotalSharing");
@@ -438,6 +479,126 @@ public class YaBoardDaoImpl implements YaBoardDao {
 		}
 		return totalSharing;
 	}
+
+
+
+	@Override
+	public int likeSharingCnt(int user_num) {
+		System.out.println("YaBoardlikeSharingCnt start....");
+		int likeSharingCnt = 0;
+		try {
+			likeSharingCnt = session.selectOne("YaLikeSharingCnt",user_num );
+		} catch (Exception e) {
+			System.out.println("YaBoardDao YaLikeSharingCnt e.getmmessage?"+e.getMessage());
+		}
+		return likeSharingCnt;
+	}
+
+
+
+	@Override
+	public List<Board> likeSharingList(Board board) {
+		System.out.println("YaBoardDaoImpl likeSharingList start...");
+		List<Board> likeSharingList = null;
+		//이거하니까 담김***
+		board.setUser_num(board.getB_user_num());
+		try {
+			likeSharingList = session.selectList("YaLikeSharingList", board);
+			
+			System.out.println("YaBoardDaoImpl myConfirmSharingList.size()?"+likeSharingList.size());
+		} catch (Exception e) {
+			System.out.println("YaBoardDaoImpl myConfirmSharingList e.getMessage()?"+e.getMessage());
+		}	
+		return likeSharingList;
+
+	}
+
+
+
+	@Override
+	public int searchSharingCnt(String keyword) {
+		 int searchSharingCnt = 0;
+		 System.out.println("YaBoardDaoImpl searchSharingCnt start.. ");
+		 
+		 try {
+			 searchSharingCnt = session.selectOne("searchSharingCnt", keyword);
+		} catch (Exception e) {
+			System.out.println("YaBoardDaoImpl SearchSharingCnt e.,getmssage?"+e.getMessage());
+		}
+		 
+		return searchSharingCnt;
+	}
+
+
+
+	@Override
+	public List<Board> sharingSearchResult(String keyword,String sortOption,  String currentPage, Board board) {
+		List<Board> sharingSearchResult = null;
+		System.out.println("YaBoardDaoImpl sharingSearchResult start...");
+		board.setUser_num(board.getB_user_num());
+		System.out.println("YaBoardDaoImpl sharingSearchResult b_user_num" + board.getB_user_num());
+
+		
+		try {
+			// sharingSearchResult = session.selectList("YaSharingSearchResult", keyword);
+			
+			int searchSharingCnt =searchSharingCnt(keyword);			 
+		  	Paging boardPage = new Paging(searchSharingCnt, currentPage,9);
+		  	 	
+		  		
+		        Map<String, Object> paramMap = new HashMap<>();
+		        paramMap.put("keyword", keyword);
+		        paramMap.put("b_user_num", board.getB_user_num());
+		        paramMap.put("currentPage", currentPage);
+		        paramMap.put("start", boardPage.getStart());
+		        paramMap.put("sortOption", sortOption);
+		        paramMap.put("end", boardPage.getEnd());
+		        paramMap.put("searchSharingCnt", searchSharingCnt);
+		        sharingSearchResult = session.selectList("YaSharingSearchResult", paramMap);
+		} catch (Exception e) {
+			System.out.println("YaBoardDaoImpl YaSharingSearchResult e.,getmssage?"+e.getMessage());
+		}
+		return  sharingSearchResult;
+	}
+
+
+	//쉐어링 참가 확인
+	@Override
+	public List<SharingList> sharingChk(int brd_num) {
+		System.out.println("ybdSharingChk start...");
+		System.out.println("brd_num?"+brd_num);
+		
+		List<SharingList> sharingChk = null;
+		try {
+			sharingChk = session.selectList("YaSharingChk", brd_num);
+			
+		} catch (Exception e) {
+		
+			System.out.println("YaBoardDaoImpl sharingChk e.getmssage?"+e.getMessage());
+		}
+		return sharingChk;
+	}
+
+
+
+	@Override
+	public int deleteJoinSharing(int user_num) {
+		System.out.println("ybd deletejoinShairng start...");
+		int deleteJoinSharing = 0;
+		try {
+			
+			deleteJoinSharing = session.delete("YaDeleteSharing", user_num);
+			System.out.println("deleteJoinSharing:"+deleteJoinSharing);
+			
+		} catch (Exception e) {
+			System.out.println("YaBoardDaoImpl deleteJoinSharing  e.getmssage?"+e.getMessage());
+		}
+		return deleteJoinSharing;
+	}
+	
+
+
+
 
 
 	

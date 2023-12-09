@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ include file="../header4.jsp" %>
-<%@ include file="/WEB-INF/views/topBar.jsp" %>   
+<%@ include file="../header4.jsp" %>  
 <!DOCTYPE html>
 <html>
 <head>
@@ -36,7 +35,7 @@ function fileUpdate(){
         </div>
 
 	   <!--form  -->
-      <div class="col-12 col-md-9 col-lg-8 offset-lg-1">        
+      <div class="col-12 col-md-9 col-lg-10 offset-lg-1">             
      	<!--제목, 닉네임, 내용, 작성일자, 첨부파일 -->
  		<form action="/updateCommunity" method="post" enctype="multipart/form-data"> 	 	
 			<input type="hidden" name="brd_num" value="${board.brd_num}">
@@ -61,8 +60,9 @@ function fileUpdate(){
           	 	   </div>
 		 			   <!-- 작성일자 -->
                     <div class="form-group mb-7">                       
-                           <label class="form-label" for="nick">날짜</label>
+                           <label class="form-label" for="reg_Date">날짜</label>
                            <input class="form-control form-control-sm" id="view_cnt" name="view_cnt" type="text" value="${board.reg_date}" readonly>
+                           
           	   		 </div>
 		
 					<!-- 상세내용 -->       
@@ -81,8 +81,11 @@ function fileUpdate(){
 					</div>
 					    
 					    
-		<!--작성완료버튼 모달창  -->
+		<!--수정완료버튼 모달창  -->
+		<div class="button-container" >
 		<button type="button" class="btn btn-dark btn-sm" id="openModalButton">수정완료</button>
+        <a href="listCommunity?" class="btn btn-dark btn-sm">취소</a> 	
+		</div>
 		<!-- Modal -->
 		<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
 		    <div class="modal-dialog modal-sm" role="document"> <!-- 모달 사이즈를 조절 -->

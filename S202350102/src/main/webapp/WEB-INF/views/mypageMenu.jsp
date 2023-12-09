@@ -1,43 +1,44 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ include file="/WEB-INF/views/topBar.jsp" %>
 <html>
 <head>
     <meta charset="UTF-8">
-<!-- CSS start -->
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-    
-<!-- Favicon -->
-<link rel="shortcut icon" href="./assets/favicon/favicon.ico" type="image/x-icon" />
-
-<!-- Libs CSS -->
-<link rel="stylesheet" href="./assets/css/libs.bundle.css" />
-
-<!-- Theme CSS -->
-<link rel="stylesheet" href="./assets/css/theme.bundle.css" />    
-    
-<!-- JAVASCRIPT -->
-<!-- Map (replace the API key to enable) -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnKt8_N4-FKOnhI_pSaDL7g_g-XI1-R9E"></script>
-
-<!-- Vendor JS -->
-<script src="./assets/js/vendor.bundle.js"></script>
-
-<!-- Theme JS -->
-<script src="./assets/js/theme.bundle.js"></script>
-
-<!--  jquery.js-->
-<script src="./js/jquery.js"></script>
-
-
-<!--  font -->
-<link href="https://fonts.googleapis.com/earlyaccess/notosanskr.css" rel="stylesheet">
-<style type="text/css">
-    body{ font-family: 'Noto Sans KR', sans-serif; } 
-</style>
-
-    <title>Insert title here</title>
+<link rel="stylesheet" href="css/level.css">
+<title>Insert title here</title>
 </head>
 <script>
+$(document).ready(function () {
+    // mypageMenu 엔드포인트로 AJAX 요청
+    $.ajax({
+       type: 'GET',
+       url: '/mypageMenu',
+       success: function (data) {
+          // 응답을 처리 (필요한 경우)
+          console.log(data);
+          
+          var jsonData = JSON.parse(data);
+          var user1 = jsonData.user1;
+          var level1List = jsonData.level1List;
+          var followCnt = jsonData.followCnt;
+          var followerCount = followCnt.FOLLOWER_CNT;
+          var followingCount = followCnt.FOLLOWING_CNT;
+          var myBoard_cnt = jsonData.myBoard; 
+          
+          console.log("Follower Count: " + followerCount);
+          console.log("Following Count: " + followingCount);
+          
+          $('.profile-usertitle-name').text(user1.nick + ' 님');
+          $('.follow').text(followCnt.FOLLOWER_CNT);
+          $('.following').text(followCnt.FOLLOWING_CNT);
+          $('.myBoardCnt').text(myBoard_cnt);
+          
+       },
+       error: function (error) {
+          // 오류 처리
+          console.error(error);
+       }
+    });
+ });
      $(document).ready(function () {
          $('#editImageModalBtn').click(function () {
              $('#editImageModal').modal('show');
@@ -87,315 +88,303 @@
      }
  </script>
 <style>
-
-.profile {
-  margin: 20px 0;
-}
-
-/* Profile sidebar */
-.profile-sidebar {
-  padding: 0px 0 10px 0;
-  background: #fff;
-}
-
-.profile-userpic {
-  text-align: center;
-}
-
-.profile-userpic img {
-  float: none;
-  margin: 0 auto;
-  width: 100px;
-  height: 100px;
-  -webkit-border-radius: 50% !important;
-  -moz-border-radius: 50% !important;
-  border-radius: 50% !important;
-}
-
-.profile-usertitle {
-  text-align: center;
-  margin-top: 20px;
-}
-
-.profile-usertitle-name {
-  color: #5a7391;
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 7px;
-}
-
-.profile-usertitle-job {
-  text-transform: uppercase;
-  color: #5b9bd1;
-  font-size: 12px;
-  font-weight: 600;
-  margin-bottom: 15px;
-}
-
-/* Profile Content */
-.profile-content {
-  padding: 20px;
-  background: #fff;
-  min-height: 460px;
-}
-
-a, button, code, div, img, input, label, li, p, pre, select, span, svg, table, td, textarea, th, ul {
-    -webkit-border-radius: 0!important;
-    -moz-border-radius: 0!important;
-    border-radius: 0!important;
-}
-
-.dashboard-stat, .portlet {
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    -ms-border-radius: 4px;
-    -o-border-radius: 4px;
-}
-
 .portlet {
     margin-top: 0;
     margin-bottom: 25px;
     padding: 0;
     border-radius: 4px;
 }
-
 .portlet.bordered {
     border-left: 2px solid #e6e9ec!important;
 }
-
 .portlet.light {
     padding: 12px 20px 15px;
     background-color: #fff;
 }
-
 .portlet.light.bordered {
     border: 1px solid #e7ecf1!important;
 }
 
-.list-separated {
-    margin-top: 10px;
-    margin-bottom: 15px;
-}
+.pCard_card {
 
-.profile-stat {
-    padding-bottom: 0px;
-   }
-
-.profile-stat-title {
-    color: #7f90a4;
-    font-size: 25px;
-    text-align: center;
-}
-
-.uppercase {
-    text-transform: uppercase!important;
-}
-
-.profile-stat-text {
-    color: #5b9bd1;
-    font-size: 10px;
-    font-weight: 600;
-    text-align: center;
-}
-
-.profile-desc-title {
-    color: #7f90a4;
-    font-size: 17px;
-    font-weight: 600;
-}
-
-.profile-desc-text {
-    color: #7e8c9e;
-    font-size: 14px;
-}
-
-.margin-top-20 {
-    margin-top: 20px!important;
-}
-
-[class*=" fa-"]:not(.fa-stack), [class*=" glyphicon-"], [class*=" icon-"], [class^=fa-]:not(.fa-stack), [class^=glyphicon-], [class^=icon-] {
-    display: inline-block;
-    line-height: 14px;
-    -webkit-font-smoothing: antialiased;
-}
-
-.profile-desc-link i {
-    width: 22px;
-    font-size: 19px;
-    color: #abb6c4;
-    margin-right: 5px;
-}
-/* 여기부터 */
-
-.profile-card {
-  width: 240px;
+  width: 253px;
+  height: 425px;
+ background-color: #f6fcfe;
+  box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.18);
+  position: relative;
   overflow: hidden;
+  top : 10px;
+}
+
+/****************
+UP
+****************/
+
+
+
+
+.pCard_card .pCard_up {
+  position: absolute;
+  width: 100%;
+  height: 230px;
+  background-image: url('${pageContext.request.contextPath}/upload/${user1.img}');
+  background-position: 50%;
+  background-size: cover;
+  z-index: 3;
   text-align: center;
-  position: relative;
-  box-shadow: 0 0  4px #111;
+
+  transition: 0.5s ease-in-out;
 }
-.top-section {
-  padding: 15px ;
-  background: #FFBDC2;
+
+.pCard_on .pCard_up {
+  height: 100px;
+  box-shadow: 0 0 30px #cfd8dc;
 }
-.message,
-.notif {
+
+.pCard_card .pCard_up .pCard_text {
   position: absolute;
-  top: 40px;
-  font-size: 20px;
-  cursor: pointer;
-  color: #ffffff50
-}
-.message {
-  right: 40px;
-}
-.notif {
-  left: 40px;
-}
-.message:hover,
-.notif:hover {
-  color: #f1f1f1;
-}
-.pic {
-  width: 120px;
-  height:120px;
-  margin: auto;
-  border: 6px solid #F5EFF1;
-  border-radius: 50%;
-  position: relative;
-}
-.pic:after {
-  content: '';
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  border: 1px solid #fff;
+  top: 260px;
   left: 0;
-  top: 0;
-  border-radius: 50%;
-  box-sizing: border-box;
-  animation: wave 1.5s infinite linear;
+  right: 0;
+  color: #f1f7f9;
+  transition: 0.5s ease-in-out;
 }
-@keyframes wave{
-  to {
-    transform: scale(1.3);
-    opacity: 0;
-  }
+
+.pCard_on .pCard_up .pCard_text {
+  top: 20px;
+  font-size: 50px;
+  
 }
-.pic img {
+
+.pCard_card .pCard_up .pCard_text h2 {
+  margin: 0;
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.pCard_card .pCard_up .pCard_text p {
+  margin: 0;
+  color: black;
+  font-family : 'Noto Sans KR', sans-serif; 
+   font-size: 20px;
+
+}
+
+.pCard_card .pCard_up .pCard_add {
+  position: absolute;
+  top: 214px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 35px;
+  height: 32px;
+  cursor: pointer;
+ 
+}
+
+.pCard_on .pCard_up .pCard_add {
+  -webkit-transform: rotate(360deg) scale(0.5);
+  -moz-transform: rotate(360deg) scale(0.5);
+  -ms-transform: rotate(360deg) scale(0.5);
+  -o-transform: rotate(360deg) scale(0.5);
+  transform: rotate(360deg) scale(0.5);
+  top: 470px;
+}
+
+/****************
+Down
+****************/
+
+.pCard_card .pCard_down {
+  background-color: #fff;
+  position: absolute;
+  bottom: 0px;
   width: 100%;
-  height: 100%;
-  border-radius: 50%;
+  height: 80px;
+  z-index: 2;
+
+
+  transition: 0.5s ease-in-out;
 }
-.name {
-  color: #f1f1f1;
-  font-size: 28px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
+
+.pCard_on .pCard_down {
+  height: 100px;
+  -webkit-box-shadow: 0 0 30px #cfd8dc;
+  -moz-box-shadow: 0 0 30px #cfd8dc;
+  -ms-box-shadow: 0 0 30px #cfd8dc;
+  -o-box-shadow: 0 0 30px #cfd8dc;
+  box-shadow: 0 0 30px #cfd8dc;
 }
-.tag {
+
+.pCard_card .pCard_down div {
+  width: 33.333%;
+  float: left;
+  text-align: center;
   font-size: 18px;
-  color: #222;
+  -webkit-transition: 0.5s ease-in-out;
+  -moz-transition: 0.5s ease-in-out;
+  -ms-transition: 0.5s ease-in-out;
+  -o-transition: 0.5s ease-in-out;
+  transition: 0.5s ease-in-out;
 }
-.bottom-section {
-  background: #f1f1f1;
-  padding: 60px 14px;
+
+.pCard_on .pCard_down div {
+  margin-top: 10px;
+}
+
+.pCard_card .pCard_down div p:first-of-type {
+  color: #68818c;
+  margin-bottom: 5px;
+}
+
+.pCard_card .pCard_down div p:last-of-type {
+  color: #334750;
+  font-weight: 700;
+  margin-top: 0;
+}
+.pCard_card .pCard_back a i {
+  margin: 10px;
+  padding: 15px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+  border-radius: 15px;
+  -webkit-transition: 0.3s ease-in-out;
+  -moz-transition: 0.3s ease-in-out;
+  -ms-transition: 0.3s ease-in-out;
+  -o-transition: 0.3s ease-in-out;
+  transition: 0.3s ease-in-out;
+}
+
+.pCard_card .pCard_back a i:hover {
+  -webkit-transform: scale(1.2);
+  -moz-transform: scale(1.2);
+  -ms-transform: scale(1.2);
+  -o-transform: scale(1.2);
+  transform: scale(1.2);
+}
+
+.pCard_card .pCard_back a:nth-of-type(1) i {
+  color: #3b5998;
+  border: 2px solid #3b5998;
+}
+
+.pCard_card .pCard_back a:nth-of-type(2) i {
+  color: #0077b5;
+  border: 2px solid #0077b5;
+}
+
+.pCard_card .pCard_back a:nth-of-type(3) i {
+  color: #1769ff;
+  border: 2px solid #1769ff;
+}
+
+.pCard_card .pCard_back a:nth-of-type(4) i {
+  color: #000000;
+  border: 2px solid #000000;
+}
+
+.pCard_card .pCard_back a:nth-of-type(5) i {
+  color: #eb5e95;
+  border: 2px solid #eb5e95;
+}
+
+.pCard_card .pCard_back a:nth-of-type(6) i {
+  color: #3f729b;
+  border: 2px solid #3f729b;
+}
+
+.pCard_card .pCard_up .pCard_add i {
+  color: white;
+  font-size: 38px;
+  line-height: 88px;
+}
+.buttonlevel {
+  position: absolute;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+ /* 프로그레스바 */
+  :root {
+      --dark: #1B252B;
+      --blue: #00BBE3;
+    }
+
+.progress {
   position: relative;
+  width: 491px;
+  height: 50px;
+  background-color: #d3dadd;
+  border-radius: 10px !important;
+  overflow: hidden;
+  margin: 3px;
+}
+
+.progress-bar {
+    position: absolute;
+    height: 50%;
+    background-color: #E57373;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px !important;
+    transition: width 0.5s;
+    margin: 12px;
+}
+
+
+.progress-bar2 {
+  width: var(--user-progress, 95%);
+  height: 50%;
+  background-color: #F9F5F6; /* 회색 바 색상 */
   display: flex;
   align-items: center;
-  justify-content: centre;
-  text-transform: uppercase;
-  font-size: 20px;
+  justify-content: center;
+  transition: width 0.5s;
+  border-radius: 11px !important;
+  margin: 12px;
 }
-.bottom-section span {
-  font-size: 14px;
-  display: block;
-}
-.border {
-  width: 1px; 
-  height: 20px;
-  background: #bbb;
-  margin: 0 20px;
-}
-.social-media {
-  position: absolute;
-  width: 100%;
-  top: -18px;
-  left: 0;
-  z-index: 1;
-}
-.social-media i {
-  width: 40px;
-  height: 40px;
-  background: #2c3e50;
-  border-radius: 50%;
-  color: #f1f1f1;
-  line-height: 40px;
-  font-size: 20px;
-  margin: 0 1px;
-  position: relative;
-}
-.social-media i:after {
-  content: '';
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  background: #2c3e50;
-  left: 0;
-  top: 0;
-  box-sizing: border-box;
-  border-radius: 50%;
-  z-index: -1;
-  transition: 0.4s linear;
-}
-.social-media i:hover:after {
-  transform: scale(1.3);
-  opacity: 0;
-}
-
 
 </style>
 <body>
-  
+ <div class="pCard_card">
+  <div class="pCard_up">
+    <div class="pCard_text">
+      <p class="fs-xxl">${user1.nick } 님</p>
+         <button id="modalOpenBtn">경험치 정보</button>
+    </div>
+      <div class="pCard_add" id="editImageModalBtn">
+        <i class="fa-solid fa-circle-plus fa-beat fa-2xl" style="color: #e56d90;"></i>
+    </div>
+  </div>
+  <div class="pCard_down">
+    <div class="text-center">
+      <p class="fs-sm">Follow</p>
+      <p class="follow mx-auto"></p>
+    </div>
+    <div>
+      <p class="fs-sm">Following</p>
+      <p class="following"></p>
+    </div>
+    <div>
+      <p class="fs-sm">My Posts</p>
+      <p class="myBoardCnt"></p>
+    </div>
+  </div>
+</div>
+
 <div class="profile-card" >
   <div class="top-section" style="position: relative;">
-    <div class="pic">
-    <img src="${pageContext.request.contextPath}/upload/${user1.img}">
-  </div>
+    
 <button type="button" class="btn btn-secondary btn-xxs fs-xxs" id="editImageModalBtn" style="position: absolute; bottom: 0; right: 0;">
         <i class="fa-regular fa-pen-to-square"></i>
     </button>
 </div>
 
-			<div class="profile-sidebar">
-			
-				<!-- SIDEBAR USER TITLE -->
-    
-				<div class="profile-usertitle">
-					<div class="profile-usertitle-name">
-						${user1.nick } 님 
-					</div>
-					<div class="profile-usertitle-job">
-						<%@ include file="hb/level.jsp" %>
-					</div>
-					<div class="row list-separated profile-stat">
-                   <div class="col-md-4 col-sm-4 col-xs-6">
-                       <div class="uppercase profile-stat-title"> 37 </div>
-                       <div class="uppercase profile-stat-text"> 팔로우 </div>
-                   </div>
-                   <div class="col-md-4 col-sm-4 col-xs-6">
-                       <div class="uppercase profile-stat-title"> 51 </div>
-                       <div class="uppercase profile-stat-text"> 팔로잉 </div>
-                   </div>
-                   <div class="col-md-4 col-sm-4 col-xs-6">
-                       <div class="uppercase profile-stat-title"> 61 </div>
-                       <div class="uppercase profile-stat-text"> 내가 쓴 글</div>
-                   </div>
-                   
-               </div>
-					
-				</div>
-				</div>
 				</div>
 				<!-- END SIDEBAR USER TITLE -->
            <div class="portlet light bordered">
@@ -405,12 +394,14 @@ a, button, code, div, img, input, label, li, p, pre, select, span, svg, table, t
                    <!-- Nav -->
                    <nav class="mb-10 mb-md-0" >
                        <div class="list-group list-group-sm list-group-strong list-group-flush-x">
-                           <a class="list-group-item list-group-item-action dropend-toggle " href="/mypage">
+                           <a class="list-group-item list-group-item-action dropend-toggle" href="/mypage">
                                활동정보
                            </a>
+                           <!-- 
                            <a class="list-group-item list-group-item-action dropend-toggle " href="/challengeManagement">
-                               챌린지 관리
+							챌린지 관리
                            </a>
+                            -->
                            <a class="list-group-item list-group-item-action dropend-toggle " href="/followList">
                                팔로우 관리
                            </a>
@@ -446,7 +437,67 @@ a, button, code, div, img, input, label, li, p, pre, select, span, svg, table, t
            </div>
      
 
-<!-------------------------------- 모달창 자바스크립트 ------------------------------------------------------------------------>
+
+
+<!-------------------------------- 모달창  ------------------------------------------------------------------------>
+		<div id="modal">
+			<div class="hidden" id="modalContainer">
+				<div id="modalContent">
+					<button id="modalCloseBtn">X</button>
+					<div class="user_info">
+						<div class="userInfoBox1">
+							<img id="user_icon" alt="user_icon" src="images/level/${user1.user_level }.gif">
+							<span id="user_level">
+								<label>현재 레벨 : ${user1.user_level }</label> 
+							</span>
+						</div>
+
+					 <div class="progress">
+					   <div class="progress-bar" role="progressbar" style="width: 95%;">${user1.percentage}%</div>
+					    <div class="progress-bar2"></div>
+					  </div>
+
+						
+												
+						<div class="userInfoBox2">
+							<span class="user_exp" style=" margin-right: 248px; margin-left: 10px;">
+								<label>남은 경험치 ${user1.user_exp }</label>
+							</span>
+							<span class="remain_exp">
+								<label>레벨업 까지 ${user1.remain_exp }</label>
+							</span>
+						</div>
+
+					</div>
+					<button id="levelInfoBtn" style="margin-top: 0px; margin-left:207px;">레벨표 보기</button>
+					<div class="hidden" id="level_info_container">
+					    <table border="1" style="width: 500px; border-collapse: collapse;">
+					        <thead style="background-color: #F2BED1;">
+					            <tr>
+					                <th style="text-align: center; padding: 5px;"><span style="font-size: 16px;">레벨</span></th>
+					                <th style="text-align: center; padding: 5px;"><span style="font-size: 16px;">아이콘</span></th>
+					                <th style="text-align: center; padding: 5px;"><span style="font-size: 16px;">경험치</span></th>
+					                <th style="text-align: center; padding: 5px;"><span style="font-size: 16px;">설명</span></th>
+					            </tr>
+					        </thead>
+					        <c:forEach var="level" items="${level1List}">
+					            <tbody>
+					                <tr>
+					                    <td style="text-align: center; padding: 5px;"><span style="font-size: 16px;">${level.user_level}</span></td>
+					                    <td style="text-align: center; padding: 5px;"><img alt="${level.user_level}" src="/images/level/${level.lv_name}.gif" style="max-width: 50px;"></td>
+					                    <td style="text-align: center; padding: 5px;"><span style="font-size: 16px;">${level.tot_exp}.Exp</span></td>
+					                    <td style="text-align: center; padding: 5px;"><span style="font-size: 16px;">${level.lv_name}레벨</span></td>
+					                </tr>
+					            </tbody>
+					        </c:forEach>
+					    </table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+
 <!-- 모달 창 -->
 <div class="modal fade" id="editImageModal" tabindex="-1" role="dialog" aria-labelledby="editImageModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -481,5 +532,44 @@ a, button, code, div, img, input, label, li, p, pre, select, span, svg, table, t
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+const modalOpenBtn = document.getElementById('modalOpenBtn');
+const modalCloseBtn = document.getElementById('modalCloseBtn');
+const modal = document.getElementById('modalContainer');
+const levelInfoContainer = document.getElementById('level_info_container');
+
+modalOpenBtn.addEventListener('click', () => {
+    modal.classList.remove('hidden');
+});
+
+modalCloseBtn.addEventListener('click', () => {
+    modal.classList.add('hidden');
+    levelInfoContainer.classList.add('hidden'); // 모달이 닫힐 때 level_info도 숨김
+});
+
+const levelInfoBtn = document.getElementById('levelInfoBtn');
+
+levelInfoBtn.addEventListener('click', () => {
+    levelInfoContainer.classList.toggle('hidden'); // 보이기/숨기기 전환
+});
+
+</script>
+
+<!-- 프로그레스바 -->
+<script>
+  $(document).ready(function () {
+    // Assuming user1.percentage is the actual percentage value you want to display
+    const user1 = {
+      percentage: ${user1.percentage}
+    };
+
+    const progressBar = document.querySelector('.progress-bar');
+    progressBar.style.width = `${user1.percentage}%`;
+    progressBar.textContent = `${user1.percentage}%`;
+  });
+</script>
+
+
 </body>
 </html>

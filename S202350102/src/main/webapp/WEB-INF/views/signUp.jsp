@@ -1,18 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ include file="/WEB-INF/views/topBar.jsp" %>
 <!DOCTYPE html>
 <html>
  <head>
  <meta charset="UTF-8">
-<script type="text/javascript" src="js/th/thSignUp.js"></script>
 <title>회원가입</title>
+<script type="text/javascript" src="js/th/thSignUp.js"></script>
 <%@ include file="/WEB-INF/views/header4.jsp" %>
  </head>
 <body class="bg-light">
     <!-- CONTENT -->
     <section class="py-12">
-      <div class="container">
+      <div class="container section-mt">
         <div class="row">
           <div class="col-7" style="float: none; margin:0 auto;">
 

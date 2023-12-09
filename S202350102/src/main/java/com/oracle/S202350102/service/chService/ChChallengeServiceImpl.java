@@ -20,10 +20,10 @@ public class ChChallengeServiceImpl implements ChChallengeService {
 	
 	
 	@Override
-	public List<Challenge> popchgList() {
+	public List<Challenge> popchgList(int user_num) {
 		System.out.println("ChChallengeServiceImpl popChgList Start...");
 		
-		List<Challenge> popchgList = chChallengeService.popChgList();
+		List<Challenge> popchgList = chChallengeService.popChgList(user_num);
 		return popchgList;
 	}
 

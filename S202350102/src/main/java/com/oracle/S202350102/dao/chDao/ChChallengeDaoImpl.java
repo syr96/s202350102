@@ -19,12 +19,12 @@ public class ChChallengeDaoImpl implements ChChallengeDao {
 	private final SqlSession session;
 	
 	@Override
-	public List<Challenge> popChgList() {
+	public List<Challenge> popChgList(int user_num) {
 		System.out.println("ChChallengeDaoImpl popChgList Start...");
 		List<Challenge> popChgList = null;
 		
 		try {
-			popChgList = session.selectList("popchgList");
+			popChgList = session.selectList("popchgList",user_num);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("ChChallengeDaoImpl popChgList e.getMessage()->" + e.getMessage());
@@ -115,7 +115,7 @@ public class ChChallengeDaoImpl implements ChChallengeDao {
 	public int chgUpdate(Challenge chg) {
 		System.out.println("ChChallengeDaoImpl chgUpdate Start...");
 		int result = 0;
-		System.out.println(chg);
+		System.out.println(chg);		
 		
 		try {
 			result = session.update("chgUpdate",chg);

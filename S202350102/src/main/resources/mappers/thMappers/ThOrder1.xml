@@ -36,4 +36,17 @@
 		AND		rslt_status = '1'
 	</select>
 	
+	<update id="thUpdateTid" parameterType="Order1">
+		UPDATE	order1
+		SET		tid = #{tid} 
+		WHERE	order_num	= #{order_num}
+	</update>
+	
+	<update id="thUpdateOrderRefund" parameterType="String">
+		UPDATE	order1
+		SET		rslt_status = '2'
+		WHERE	tid = #{tid} 
+	</update>
+	
+	
 </mapper>

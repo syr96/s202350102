@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="../header4.jsp" %>
-<%@ include file="/WEB-INF/views/topBar.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,7 +12,7 @@
 
 <!-- PRODUCT -->
 <section>
-    <div class="container">
+    <div class="container section-mt">
         <div class="row">
             <div class="col-12">
                 <div class="row">
@@ -63,14 +62,20 @@
                         <!-- Heading, Price, Form -->
                         <h3 class="mb-1">${board.title}</h3>
                         <div class="mb-3 text-gray-400">
-                            <span class="ms-1 fs-5 fw-bold">${board.price}원</span>
+                            <span class="ms-1 fs-5 fw-bold"><fmt:formatNumber value="${board.price}" pattern="#,###"/>원</span> <a href="sharing" class="btn btn-dark btn-xs">목록</a>
                         </div>
                         <hr class="my-3">
                         
                         <!--  신청내용 -->
+                          <p class="mb-4 fs-sm fw-bold">
+	                      <a class="text-body" href="product.html">작성자</a> <br>
+	                      <span class="text-muted">${board.nick}</span>
+	                    </p>
                         <p class="mb-4 fs-sm fw-bold">
 	                      <a class="text-body" href="product.html">작성일</a> <br>
-	                      <span class="text-muted">${board.reg_date}</span>
+	                      <span class="text-muted">
+						    <fmt:formatDate value="${board.reg_date}" pattern="yyyy-MM-dd"/>
+						</span>
 	                    </p>
 	                    
 	                    <p class="mb-4 fs-sm fw-bold">
@@ -101,12 +106,36 @@
                                     <input type="hidden" name="b_user_num" value="${board.user_num}">
                                     <input type="hidden" name="user_num" value="${sessionScope.user_num}">		
                                     <div class="col-lg-6 mb-2">
+                                       <!--로그인 유저  user_num과 sharingList table user_num이 존재할경우 버튼비활성화   -->
                                        
                                         <!--ya 쉐어링 참가신청 test -------------------------------------------------------------------------->
                                         <button type="button" class="btn btn-dark w-100" id="participateBtn" data-toggle="modal" data-target="#infoModal"
                                             data-user_num="${sessionScope.user_num}" data-brd_num="${board.brd_num}" data-participants="${board.participants}" data-applicants="${board.applicants }">
                                             <i class="fe fe-mail me-2"> 참가신청 </i></button>
                                     </div>
+                                    <!--ya 참가자 중복신청 막기 버튼  ------>
+									<script>
+									    document.addEventListener('DOMContentLoaded', function () {
+									        // 페이지 로드 시 실행되는 함수
+									        checkAndDisableButton();
+									    });
+									
+									    function checkAndDisableButton() {									        
+									        var userNum = ${sessionScope.user_num};
+									        var sharingChk = ${sharingChk};
+											console.log("userNum : "+userNum );
+											console.log("sharingChk:" +sharingChk);
+											
+									        // 유저의 user_num과 sharingChk 중 하나와 일치하면 버튼 비활성화
+									        if (sharingChk.includes(userNum)) {
+									            document.getElementById('participateBtn').disabled = true;
+									            
+									            
+									        }
+									    }
+									</script>
+									                                    
+                                    
                                          <!-- yr 작성 -->
                         <!-- 쉐어링 찜하기 -->
                         <div class="col-lg-6 mb-2">
@@ -163,7 +192,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h6 class="modal-title">전달할  메세지를 입력해주세요.신청하시겠습니까?</h6>
+                <h6 class="modal-title">전달할  메세지를 입력해주세요!</h6>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
 
@@ -202,8 +231,9 @@
         </div>
     </div>
 </div>
-<!-------------------------------- 모달창 자바스크립트 ------------------------------------------------------------------------>
+<!--------------------------------YA모달창 자바스크립트 ------------------------------------------------------------------------>
 <script type="text/javascript">
+    
     // 참가신청버튼 클릭 모달창열기
     document.addEventListener('DOMContentLoaded', function() {
         const modalBtn = document.querySelector('[data-target="#infoModal"]');
@@ -286,6 +316,7 @@
 
 		                if (result.status === 'success') {
 		                    alert('신청이 완료되었습니다 마이페이지에서 승인상태를 확인해주세요.');
+		                    location.reload();
 		                } else {
 		                    alert('신청 저장에 실패했습니다.');
 		                }

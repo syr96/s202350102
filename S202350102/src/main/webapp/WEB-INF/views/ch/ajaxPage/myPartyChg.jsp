@@ -11,25 +11,22 @@
 <body>
 <!-- Item2 참여한 챌린지 -->
 <c:forEach items="${mychgrList }" var="chg">
-	<div class="col-12 px-4" style="max-width: 400px;">
+	<div class="col px-4" style="max-width: 250px;">
 		<div class="card">
 			
-			  <!-- Image -->
-			
-			
-			<!-- Button -->
-			<button class="btn btn-xs w-100 btn-dark card-btn">
-				<i class="fe me-2 mb-1"></i>챌린지에 도전하세요!
-			</button>
+			  <!-- Image -->		
 			
 			
 			<a class="text-body" href="chgDetail?chg_id=${chg.chg_id }">
-				<c:if test="${chg.thumb != null}">
-					<img class="card-img-top" src="${pageContext.request.contextPath}/upload/${chg.thumb}" alt="thumb" style="width: 100%; height: 250px; border-radius: 10px;" >
-				</c:if>
-				<c:if test="${chg.thumb == null}">
-					<img class="card-img-top" src="assets/img/chgDfaultImg.png" alt="chgDfault" style="width: 100%; height: 250px; border-radius: 10px;">
-				</c:if>
+				<c:choose>
+					<c:when test="${chg.thumb == 'assets/img/chgDfaultImg.png'}">
+						<img class="card-img-top thumb-img" src="/assets/img/chgDfaultImg.png" alt="chgDfault">
+					</c:when>
+					
+					<c:otherwise>
+						<img class="card-img-top thumb-img" src="${pageContext.request.contextPath}/upload/${chg.thumb}" alt="thumb">
+					</c:otherwise>
+				</c:choose> 
 			</a>
 			
 			               <!-- Body -->

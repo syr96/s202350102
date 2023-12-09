@@ -12,11 +12,11 @@
 		where    c1.chg_id = #{chg_id}
 		and      c1.chg_id = c2.chg_id
 		and      c2.user_num = u.user_num
-		order by brd_reg_date desc
+		order by brd_reg_date
 	</select>
 	
 	<select id="selectFollowingList" parameterType="int" resultType="User1">
-		select f1.user_num, f1.following_id
+		select f1.user_num as my_user_num, f1.following_id
 		      , (select 1
 		         from following f2
 		         where f1.user_num = f2.following_id

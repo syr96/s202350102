@@ -16,4 +16,8 @@ public class BoardReChk {
 	
 	// 조회용
 	private String  title; // 글의 제목 조회
+	private String  brd_md; // 글의 제목 조회
+	private int 	new_Cmt; // 새 댓글 수 조회
+	private String 	chg_id; // 새 댓글 수 조회
+	
 }

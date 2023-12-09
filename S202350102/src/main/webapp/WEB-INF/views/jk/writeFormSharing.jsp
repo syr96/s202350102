@@ -1,31 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="../header4.jsp" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ include file="/WEB-INF/views/topBar.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
 <!--  CSS  -->
-<link rel="shortcut icon" href="./assets/favicon/favicon.ico" type="image/x-icon" />
-<link rel="stylesheet" href="./assets/css/libs.bundle.css" />
-<link rel="stylesheet" href="./assets/css/theme.bundle.css" />
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
  <meta charset="UTF-8">
 <title>Insert title here</title>
-<style type="text/css">
-@import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css); 
-    	body{
-    	font-family: 'Noto Sans KR', sans-serif;} 
-			
-</style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  
-      
 </head>
 <body>
    <section class="pt-7 pb-12">
-      <div class="container">
+      <div class="container section-mt">
         <div class="row">
           <div class="col-12 text-center">
 
@@ -60,7 +47,7 @@
           <div class="col-12 col-md-9 col-lg-8 offset-lg-1">
 
              <!-- Form -->
-                    <form method="post" action="/writeShare" enctype="multipart/form-data">
+                    <form id="options" method="post" action="/writeShare" enctype="multipart/form-data">
                        
                             <div class="col-12">
                                 <!-- 제목 -->
@@ -162,32 +149,34 @@
 							</div>
 
  							<!-- 상세내용 -->
-<div class="form-group mb-7">
-    <label class="form-label" for="conts">상세내용 *</label>
-    <div class="d-flex align-items-start" style="margin-top: 10px;">
-        <textarea class="form-control form-control-sm" id="conts" name="conts" rows="8" required></textarea>
-    </div>
-</div>
-
-<!-- Button (input 요소로 submit) -->
-<div class="col-lg-6 mb-2">
-    <button type="submit" class="btn btn-outline-dark w-100">
-        작성완료
-    </button>
-                          
-                        </div>
-                  </form>
+					<div class="form-group mb-7">
+					    <label class="form-label" for="conts">상세내용 *</label>
+					    <div class="d-flex align-items-start" style="margin-top: 10px;">
+					        <textarea class="form-control form-control-sm" id="conts" name="conts" rows="8" required></textarea>
+					    </div>
+					</div>
+					<div class="row">
+						<!-- Button (input 요소로 submit) ya 추가 -->
+						<div class="col-lg-6 mb-2">
+						    <button type="submit" class="btn btn-outline-dark w-100">
+						        작성완료
+						    </button>
+						 </div>
+					
+					 <div class="col-lg-6 mb-2">
+						  <a href="sharing" class="btn btn-outline-dark w-100">작성취소</a> 
+					 </div>
+				 </div>               
+				 </form>
                 </div>
             </div>
         </div>
     </section>
   
+
   
   
-  
-  
-  
-  
+   
   
   
   

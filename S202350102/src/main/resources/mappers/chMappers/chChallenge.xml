@@ -1,47 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.oracle.S202350102.chChallengeMapper">
-	<select id="popchgList" resultType="Challenge">
-		Select g.*, cnt.chlgerCnt, b.pick_cnt
-		From (Select rownum rn, a.*
-		        From (select count(*) pick_cnt, p.chg_id
-		                From chg_pick p
-		                join challenge c on p.chg_id = c.chg_id
-		                Group by p.chg_id
-		                ORDER BY pick_cnt desc)a) b
-		join challenge g on b.chg_id = g.chg_id
-		Join(
-		      Select Count(*) chlgerCnt, chg_id ggg
-		      From Challenger
-		      Group By chg_id) cnt on b.chg_id = cnt.ggg
-		Where b.rn BETWEEN 1 and 5
-		ORDER by b.rn
+	<select id="popchgList" parameterType="int" resultType="Challenge">
+		Select rownum rn, a.*
+		From (select c.*, count_pick(chg_id) as pick_cnt, count_challenger(chg_id) as chlgerCnt, pickyn(chg_id,#{my_user_num}) AS pickyn
+		        From   challenge c
+		        where state_md = 102
+		        ORDER BY pick_cnt desc) a
+		Where rownum BETWEEN 1 and 5       
 	</select>
 	
 	<select id="chgResult" parameterType="Board" resultType="Challenge">
-		Select e.*
-		From   (Select rownum rn, d.*
-		        FROM   (Select a.*, c.pick_cnt, b.chlgerCnt
-		                From   (Select 	chg.*, user1.nick  --검색된 챌린지
-		                        From  	Challenge chg 
-		                        JOIN    user1 On chg.user_num = user1.user_num 
-		                        Where 	(chg.title 	  like '%' || #{keyword} || '%'
-		                        Or	  	 chg.chg_conts  like '%' || #{keyword} || '%')
-		                        ) a
-		                Join ( 
-		                      Select Count(*) chlgerCnt, CHG_id chgr_id
-		                      From Challenger
-		                      GROUP BY chg_id
-		                     ) b on a.chg_id = b.chgr_id 
-		                Join ( 
-		                      Select Count(*) pick_cnt, chg_id pick_id
-		                      From chg_pick
-		                      GROUP BY chg_id
-		                      ) c on a.chg_id = c.pick_id
-		                Order By a.reg_date DESC
-		                ) d  
-		                ) e
-		WHere e.rn BETWEEN #{start} and #{end}
+		Select b.*
+		From (Select Rownum rn, a.*
+		        From (Select 	chg.*, user1.nick, count_pick(chg.chg_id) as pick_cnt, count_challenger(chg.chg_id) as chlgerCnt, pickyn(chg_id,#{user_num}) AS pickyn
+		                From  	Challenge chg 
+		                JOIN    user1 On chg.user_num = user1.user_num 
+		                Where 	(chg.title 	  like '%' || #{keyword} || '%'  Or chg.chg_conts  like '%' || #{keyword} || '%')
+		                and chg.state_md = 102
+		                ORDER by chg.reg_date DESC) a ) b
+		Where rn BETWEEN #{start} and #{end}
+		
 	</select>
 	
 	<select id="chgReTotal" parameterType="Board" resultType="int">
@@ -49,6 +28,7 @@
 		From  	Challenge c 
 		Where 	(c.title 	  like '%' || #{keyword} || '%'
 		Or	  	 c.chg_conts  like '%' || #{keyword} || '%')
+		and c.state_md = 102
 		Order By c.reg_date DESC
 	</select>
 	
@@ -78,15 +58,20 @@
 	</delete>
 	
 	<select id="chMyChgList" parameterType="Board" resultType="Challenge">
-		Select b.*, c.*
-		From (  Select Count(*) chlgerCnt, a.chg_id
-		        From (Select *
-		              From challenge
-		              Where user_num = #{user_num}) a
-		        left JOIN challenger g on a.chg_id = g.chg_id
-		        GROUP BY a.chg_id) b
-		join challenge c on b.chg_id = c.chg_id
-		Order By c.reg_date DESC
+		Select *
+		From (Select rownum rn, myall.*
+		        From (Select b.*, c.*
+		                From (  Select Count(*) chlgerCnt, a.chg_id check_id
+		                        From (Select *
+		                              From challenge
+		                              Where user_num = #{user_num}
+		                              and state_lg = 300
+		                              and state_md != 103 ) a
+		                        left JOIN challenger g on a.chg_id = g.chg_id
+		                        GROUP BY a.chg_id) b
+		                join challenge c on b.check_id = c.chg_id
+		                Order By c.reg_date DESC) myall ) allrn
+		<if test="start > 0">WHere allrn.rn BETWEEN #{start} and #{end}</if>  
 	</select>
 	
 	<select id="chmyChgrList" parameterType="int" resultType="Challenge">
@@ -102,6 +87,7 @@
 		    Where c.user_num = #{user_num}
 		) b
 		join challenge d on b.chg_id = d.chg_id
+		where d.state_lg = 300 and d.state_md != 103
 	</select>
 	
 	<update id="chgUpdate" parameterType="Challenge">
@@ -116,6 +102,11 @@
            	chg_public = #{chg_public}, 
            	<if test="priv_pswd != null">priv_pswd = #{priv_pswd},</if> 
            	<if test="thumb != null">thumb = #{thumb}, </if>           	
+           	<if test="delStatus == 1">
+           		<if test="thumb == null">
+           			thumb = #{thumb,jdbcType=VARCHAR},
+           		</if>
+           	</if>
            	end_date = #{end_date}
         Where chg_id = #{chg_id}
 	</update>

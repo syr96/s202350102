@@ -47,11 +47,12 @@ function regTel(tel) { // 휴대폰번호 : 010 시작 -:있을수도 없을수�
 
 function checkId() {
 	   var inputed = $('#user_id').val();
-	   $.ajax({		
+	   $.ajax({	
 		   		data : { user_id : inputed },
 		      	url : "user1IdCheck", // data를 checkid url에 보냄 (Controller에서 받아처리한다. 중복이 되면 1, 아니면 0을 반환하는 함수를 구현했다.)
 	      success : function(data) {
-	         if(data == '1') { //아이디가 중복되었을 때
+	      	var integerData = parseInt(data, 10);
+	         if(integerData >= 1) { //아이디가 중복되었을 때
 	            $("#failDupId").css("display", "block"); //중복 에러메세지를 띄운다
 	            $("#failId").css("display","none"); //중복 에러메세지 말고 다른 에러 메세지를 지운다.
 	            $("#user_id").css("border-color", "#FFCECE");
@@ -63,7 +64,7 @@ function checkId() {
 	            $("#user_id").css("border-color", "#FFCECE");
 	            $("#user_id").css("border-width", "2px");
 	            idCheck = 0;
-	         } else if( data == '0' && regUser_id(inputed)) { //중복되지않고, 정규식을 통과할 때
+	         } else if( data == 0 && regUser_id(inputed)) { //중복되지않고, 정규식을 통과할 때
 	            $("#user_id").css("border-color", "#e5e5e5");
 	            $("#user_id").css("border-width", "1px");
 	            $("#failDupId").css("display","none");

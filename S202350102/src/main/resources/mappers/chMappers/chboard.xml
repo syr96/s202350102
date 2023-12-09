@@ -37,7 +37,9 @@
 	<update id="noticeUpdate" parameterType="Board">
 		Update board 
 		set title = #{title}, conts=#{conts} 
-		<if test="delStatus == 1 and img == null">, img = NULL</if>
+		<if test="delStatus == 1">			
+				, img = #{img , jdbcType=VARCHAR}			
+		</if>
 		<if test="img != null">, img = #{img}</if>
 		Where brd_num = #{brd_num}
 	</update>
@@ -54,31 +56,26 @@
 	</update>
 	
 	<select id="popBoardList" resultType="Board">
-		Select rownum,b.*, brd.*, u.nick, replyCount(brd.brd_num) replyCount
-		From (Select Count(*) like_cnt, brd_num aaa
-		        From board_like
-		        Group by brd_num
-		        ORDER BY like_cnt desc) b
-		join board brd on b.aaa = brd.brd_num
-		join user1 u on brd.user_num = u.user_num
-		Where brd.brd_step = 0
-		and brd.brd_md = 103
-		and brd.brd_lg = 700
+		Select rownum, a.*, u.nick, replyCount(a.brd_num) replyCount
+		From (Select *
+		        From board 
+		        Where brd_num = brd_group
+		        and brd_lg = 700
+		        and brd_md = 103
+		        and view_cnt is not null
+		        ORDER by view_cnt desc) a, user1 u           
+		Where u.user_num = a.user_num
 		and rownum BETWEEN 1 and 5
 	</select>
 	
 	<select id="popShareList" resultType="Board">
-		Select rownum,b.*, brd.*, u.nick, replyCount(brd.brd_num) replyCount
-		From (Select Count(*) like_cnt, brd_num aaa
-		        From board_like
-		        Group by brd_num
-		        ORDER BY like_cnt desc) b
-		join board brd on b.aaa = brd.brd_num
-		join user1 u on brd.user_num = u.user_num
-		Where brd.brd_step = 0
-		and brd.brd_md = 102
-		and brd.brd_lg = 700
-		and rownum BETWEEN 1 and 5
+		Select rownum rn, a.*
+		From (select brd.*, count_like(brd.brd_num) as like_cnt, likeyn(brd.brd_num, #{user_num}) AS likeyn
+		        From   board brd
+		        Where brd.brd_md = 102
+		        and brd.brd_lg = 700
+		        ORDER BY like_cnt desc) a
+		Where rownum BETWEEN 1 and 5
 	</select>
 	
 	
@@ -99,22 +96,21 @@
 		Where a.rn BETWEEN #{start} and #{end}
 	</select>
 	
-	<select id="shrResult" parameterType="Board" resultType="Board">		
-		Select a.*
-		From	(SELECT rownum rn, b.*, user1.nick, replyCount(b.brd_num) replyCount
-		        FROM board b
-		        JOIN user1 ON b.user_num = user1.user_num
-		        WHERE b.brd_md = 102
-		        and b.brd_lg = 700
-		        AND	  b.brd_Group = b.brd_num
-		        AND   (b.title like '%' || #{keyword} || '%' 
-		        	Or user1.nick like '%' || #{keyword} || '%'
-		        	Or b.addr like '%' || #{keyword} || '%')
-		        ORDER BY b.reg_date DESC) a
-		left join (Select Count(*), brd_num
-			  From board_like
-			  Group By brd_num) c on a.brd_num = c.brd_num
-		<if test="start >= 1"> Where a.rn BETWEEN #{start} and #{end}</if>
+	<select id="shrResult" parameterType="Board" resultType="Board">
+		Select bbb.rn, bbb.*, replyCount(bbb.brd_num) replyCount, count_like(bbb.brd_num) as like_cnt, likeyn(bbb.brd_num, #{user_num}) AS likeyn
+		From (Select rownum rn, bb.*
+		        From (SELECT b.*, user1.nick 
+		                FROM board b
+		                JOIN user1 ON b.user_num = user1.user_num
+		                WHERE b.brd_md = 102
+		                and b.brd_lg = 700
+		                AND	  b.brd_Group = b.brd_num
+		                AND  (b.title like '%' || #{keyword} || '%' 
+					        	Or user1.nick like '%' || #{keyword} || '%'
+					        	Or b.addr like '%' || #{keyword} || '%')
+		                ORDER BY b.reg_date DESC) bb) bbb
+		<if test="start >= 1"> Where bbb.rn BETWEEN #{start} and #{end}</if>		
+		
 	</select>
 	
 	<select id="chgSrchBTot" parameterType="Board" resultType="int">
@@ -135,11 +131,13 @@
 	</select>
 	
 	<select id="alarmchk" parameterType="int" resultType="BoardReChk">
-		Select c.*, b.title
-		From   board_re_chk c, board b 
-		where  c.send_date= 1
-		and    c.brd_num = b.brd_num
-		and    c.user_num = #{user_num}
+		Select a.*, b.title, b.brd_md, b.user_num, b.chg_id
+		From (Select count(*) new_Cmt, brd_num
+		        From   board_re_chk
+		        where  send_date= 1
+		        and user_num = #{user_num}
+		        GROUP BY brd_num)a, board b
+		Where a.brd_num = b.brd_num
 	</select>
 	
 	
@@ -189,6 +187,7 @@
 		                WHERE b.user_num = #{user_num}
 		                AND b.brd_md = #{brd_md}
 		                and b.brd_step = 0
+		                and b.brd_lg = 700
 		                ORDER BY b.reg_date DESC) a) c
 		Where rn BETWEEN #{start} and #{end}           
 	</select>
@@ -197,7 +196,7 @@
 		Update BOARD_RE_CHK
 		Set SEND_DATE = 2, read_date=sysdate
 		Where user_num = #{user_num}
-		AND re_step = #{re_step}
+		AND brd_num = #{brd_num}
 	</update>
 	
 	<update id="moveToNewCmt" parameterType="BoardReChk">
@@ -220,14 +219,14 @@
 		Select d.*       
 		From       (Select rownum rn, a.*
 		             From    (Select b.*, u.nick, c.title chg_title, replyCount(b.brd_num) replyCount
-		                        FROM board b
-							    JOIN User1 u ON b.user_num = u.user_num
-							    JOIN challenge c ON b.chg_id = c.chg_id
-		                        Where b.brd_md = #{brd_md}
-		                        and b.user_num = #{user_num}
-		                        and b.brd_step = 0
-		                        and b.brd_lg = 700
-		                        ORDER by b.reg_date DESC) a ) d
+								FROM board b
+								JOIN User1 u ON b.user_num = u.user_num
+								JOIN challenge c ON b.chg_id = c.chg_id
+								Where b.brd_md = #{brd_md}
+								and b.user_num = #{user_num}
+								and b.brd_group = b.brd_num
+								and b.brd_lg = 700
+								ORDER by b.reg_date DESC) a ) d
 		Where rn BETWEEN #{start} and #{end}
 	</select>
 	

@@ -44,7 +44,6 @@ import com.oracle.S202350102.service.main.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oracle.net.aso.l;
 
 @Controller
 @RequiredArgsConstructor
@@ -68,21 +67,26 @@ public class HbController {
 				user_num = (int) session.getAttribute("user_num");
 				User1 user1 = us.userSelect(user_num);
 				ls.userLevelCheck(user_num);
-				// 전체 게시글 수
+				
+				// 전체 게시글 수 
+				// 로그인한 유저의 status_md 값으로 조건을 태우기 위함
 				int total = qbs.totalQBoard(user1);
+				System.out.println(total);
 				
 				// Paging 작업
 				Paging page = new Paging(total, currentPage);
 				
 				board.setStart(page.getStart());
 				board.setEnd(page.getEnd());
+				board.setStatus_md(user1.getStatus_md());
 				
 				// 보드 리스트 불러오기
+				if ( user1.getStatus_md() != 102 ) {
+					board.setUser_num(user_num);
+				}
+				
 				List<Board> qBoardList = qbs.qBoardList(board);
-				
-
-				
-				// 유저 정보 불러오기
+				System.out.println(qBoardList);
 
 				// 게시판 유저 정보 BoardList에 저장하기
 				qBoardList = us.boardWriterLevelInfo(qBoardList);
@@ -116,9 +120,9 @@ public class HbController {
 				
 				// 유저 정보 불러오기
 				User1 user1 = us.userSelect(user_num);
-				ls.userLevelCheck(user_num);
+				ls.userLevelCheck(user_num); // 현재 유저 경험치가 레벨업 경험치를 넘는지 확인 (넘으면 레벨업)
 				// 게시판 유저 정보 BoardList에 저장하기
-				qboardListSearch = us.boardWriterLevelInfo(qboardListSearch);
+				qboardListSearch = us.boardWriterLevelInfo(qboardListSearch); // boardList 에 게시판 작성자에 대한 레벨정보 조회를 위함
 				
 				model.addAttribute("searchInfo",board);
 				model.addAttribute("total", total);

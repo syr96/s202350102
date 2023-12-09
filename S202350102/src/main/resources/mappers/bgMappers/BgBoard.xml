@@ -21,18 +21,24 @@
 		FROM	(
 		        Select b.*, u.nick, u.img as user_img, replyCount(b.brd_num) replyCount,
 		                count_like(b.brd_num) as like_cnt
-		                ,TOGGLE_BURNING_COUNT_FUNCTION2(b.brd_num) as burning_cnt
+		                ,TOGGLE_BURNING_COUNT_FUNCTION2(b.brd_num) as report_cnt
 		                , (SELECT 	COUNT(*)
 		                   FROM   	board_like bl
 		                   WHERE 	bl.brd_num = b.brd_num
 		                   AND 		bl.user_num = #{b_user_num}
 		                  ) AS likeyn
+		                , (SELECT	SUM(cnt)
+		                   FROM		report r
+		                   WHERE	r.brd_num	= b.brd_num
+		                   AND		r.user_num	= #{b_user_num}
+		                   ) As myBurning
 		                , Row_Number() Over (Order By brd_group Desc, brd_step) As row_num
 		        From    board b
 		                INNER JOIN  user1 u On  b.user_num = u.user_num
 		        Where   brd_md	= 	100
                 and     brd_lg	=	700
                 and     chg_id	=	#{chg_id}
+                
 		        ) b
 		Where b.row_num Between #{start} 
 						And 	#{end}
@@ -118,13 +124,13 @@
 							<when test="searchType == 'title'">
 								And b.title Like '%' || #{keyword} || '%'
 							</when>
-							<when test="searchType == 'content'">
+							<when test="searchType == 'conts'">
 								And b.conts Like '%' || #{keyword} || '%'
 							</when>
 							<when test="searchType == 'nick'">
 								And nick 	Like '%' || #{keyword} || '%'
 							</when>
-							<when test="searchType != null"></when>
+							<when test="searchType == null"></when>
 						</choose>
 						<choose>
 							<when test="sortBy == 'newest'">
@@ -133,7 +139,7 @@
 							<when test="sortBy == 'oldest'">
 								Order by   brd_group   ,   brd_step 
 							</when>
-							<when test="sortBy != null"></when>
+							<when test="sortBy == null"></when>
 						</choose>
 		                 ) a
 		        )
@@ -144,7 +150,19 @@
 	<select id="searchCrtBd" parameterType="board" resultType="board">
 		Select  *
 		From    (Select rownum  rn, a.*
-		         From   (Select b.*, u.nick, replyCount(b.brd_num) replyCount
+		         From   (Select b.*, u.nick, u.img as user_img, replyCount(b.brd_num) replyCount
+		         		,count_like(b.brd_num) as like_cnt
+		                ,toggle_burning_count_function2(b.brd_num) as report_cnt
+		                ,(SELECT 	COUNT(*)
+				                   FROM   	board_like bl
+				                   WHERE 	bl.brd_num = b.brd_num
+				                   AND 		bl.user_num = 1
+				                  ) AS likeyn
+		                , (SELECT	SUM(cnt)
+		                   FROM		report r
+		                   WHERE	r.brd_num	= b.brd_num
+		                   AND		r.user_num	= 1
+		                   ) As myBurning
 		                 From   board b
 		                 Inner Join user1 u On  b.user_num = u.user_num
 		                 Where  brd_md  =   100
@@ -154,22 +172,24 @@
 							<when test="searchType == 'title'">
 								And b.title Like '%' || #{keyword} || '%'
 							</when>
-							<when test="searchType == 'content'">
+							<when test="searchType == 'conts'">
 								And b.conts Like '%' || #{keyword} || '%'
 							</when>
 							<when test="searchType == 'nick'">
 								And nick 	Like '%' || #{keyword} || '%'
 							</when>
-							<when test="searchType != null"></when>
+							<when test="searchType == null"></when>
 						</choose>
 						<choose>
-							<when test="sortBy == 'newest'">
-								Order by   brd_group  Desc,   brd_step 
-							</when>
 							<when test="sortBy == 'oldest'">
 								Order by   brd_group,   brd_step 
 							</when>
-							<when test="sortBy != null"></when>
+							<when test="sortBy == 'newest' or sortBy == null">
+								Order by   brd_group  Desc,   brd_step 
+							</when>
+							<otherwise>
+								Order by   brd_group  Desc,   brd_step 
+							</otherwise>
 						</choose>
 		                 ) a
 		        )

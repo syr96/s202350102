@@ -13,19 +13,19 @@ public interface JhCallengeService {
 
 
 	//chgReviewList랑 reviewReplyList를 합칠 수 없는가 생각해보기
-	List<Board> 		chgReviewList(Board board);
+//	List<Board> 		chgReviewList(Board board); //보드 서비스
 
 	
-	List<Board>			reviewReplyList(Board board);
+//	List<Board>			reviewReplyList(Board board); //보드로
 	
 
 	String 				userStatus(int userNum);
 
 
-	Board 				reviewContent(int brd_num);
+//	Board 				reviewContent(int brd_num); //보드서비스로 옮김
 
 
-	int 				reviewTotal(int chg_id);
+//	int 				reviewTotal(int chg_id); //보드 서비스
 
 
 	int 				ingChgListTotal();
@@ -37,25 +37,25 @@ public interface JhCallengeService {
 //	List<Challenge> 	ingChgPickList(Challenge challenge);
 
 
-	void 				replyInsert(Board board);
+//	void 				replyInsert(Board board); 보드로
 
 
-	int 				replyDelete(int brd_num);
+//	int 				replyDelete(int brd_num); //보드로
 
 
-	void 				viewCntUp(int brd_num);
+//	void 				viewCntUp(int brd_num);//보드로
 
 
-	int 				replyUpdate(Board board);
+//	int 				replyUpdate(Board board); //보드로
 
 
-	int 				reviewPost(Board board);
+//	int 				reviewPost(Board board); //보드로
 
 
-	int 				reviewUpdate(Board board);
+//	int 				reviewUpdate(Board board); //보드
 
 
-	int 				reviewDelete(int brd_num);
+//	int 				reviewDelete(int brd_num); //보드
 
 
 	int 				boardImgDelete(int brd_num);
@@ -83,8 +83,14 @@ public interface JhCallengeService {
 
 
 	int 				chgAdminUpdate(Challenge chg);
+
+
+	int 				chgDelete(int chg_id);
+
+	//승인 반려 후 챌린지 진행 상태 가져 오기 위함
+	int 				chgStateMd(int chg_id); 
   
-   
+    
 	
         
        

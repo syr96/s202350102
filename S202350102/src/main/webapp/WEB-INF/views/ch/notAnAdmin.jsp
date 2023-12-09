@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ include file="/WEB-INF/views/topBar.jsp" %>    
+    pageEncoding="UTF-8"%>  
 <%@ include file="/WEB-INF/views/header4.jsp" %>
 <!DOCTYPE html>
 <html>

@@ -208,4 +208,13 @@ public class JkBoardServiceImpl implements JkBoardService {
 		System.out.println("JkCommunityServiceImpl Sharing.size()-->"+sharing2.size());
 		return sharing2 ;
 	}
+
+	@Override
+	public int myBoard(int user_num) {
+		System.out.println("JkCommunityServiceImpl myBoard Start...");
+		
+		int myBoard = jbd.myBoard(user_num);
+		
+		return myBoard;
+	}
 }

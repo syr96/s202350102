@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ include file="/WEB-INF/views/topBar.jsp"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,7 +12,6 @@
 	<!-- MODALS  -->
 
 	<!-- 비밀번호 리셋 MODAL -->
-
 	<div class="modal fade" id="modalPasswordReset" tabindex="-1"
 		role="dialog" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered" role="document">
@@ -100,22 +98,17 @@
 
 					<!-- 아이디 -->
 					<div class="form-group">
-						<label class="visually-hidden" for="user_name"> 이름 * </label> <input
-							class="form-control form-control-sm" id="user_name"
-							name="user_name" type="text" placeholder="이름  " required>
+						<label class="visually-hidden" for="user_name"> 이름 * </label> 
+						<input class="form-control form-control-sm" id="user_name" name="user_name" type="text" placeholder="이름  " required>
 					</div>
 
 					<!-- Email -->
 					<div class="form-group">
-						<label class="visually-hidden" for="email"> 이메일 * </label> <input
-							class="form-control form-control-sm" id="email" name="email"
-							type="email" placeholder="이메일 you@xxx.xxx" required>
+						<label class="visually-hidden" for="email"> 이메일 * </label> 
+						<input class="form-control form-control-sm" id="email" name="email" type="email" placeholder="이메일 you@xxx.xxx" required>
 					</div>
 
-
-
-					<!-- Button type ="submit을" 안걸어도 알아서 연동됨 ;; 왜지?-->
-					<button class="btn btn-sm btn-dark" onclick="return findId_click()">
+					<button class="btn btn-sm btn-dark" id="findIdBtn" onclick="return findId_click()">
 						아이디 찾기</button>
 
 					<!--             </form> -->
@@ -125,14 +118,11 @@
 			</div>
 
 		</div>
-	</div>
-
-	<!-- NAVBAR -->
-	<!--     {{> navbars/navbar classList="bg-white"}} -->
+	</div>	
 
 	<!-- CONTENT -->
 	<section class="py-12">
-		<div class="container">
+		<div class="container section-mt">
 			<div class="row">
 				<div class="col-12 col-md-6" style="float: none; margin: 0 auto;">
 
@@ -211,14 +201,53 @@
 
 	<!-- JAVASCRIPT -->
 	<script type="text/javascript">
-		// 모달 값 지우기
-		// 모달창을 끌 때, hidden.bs.modal이라는 이벤트가 발생하고 이때 함수를 실행시킨다
-		// 해당모달의 input창의 모든 값을 비운다
-		// $(document).ready(function() : 이부분을 사용하지않으면 문서가 모달 이벤트 수신할 때 아래코드가 준비되지 않아 작동 안할수있음, 문서가준비된 이후 코드가 작동하도록 보장하기위해 jQuery의 document.ready 이벤트 사용
+		
 		$(document).ready(function() {
+			// 모달 값 지우기
+			// 모달창을 끌 때, hidden.bs.modal이라는 이벤트가 발생하고 이때 함수를 실행시킨다
+			// 해당모달의 input창의 모든 값을 비운다
+			// $(document).ready(function() : 이부분을 사용하지않으면 문서가 모달 이벤트 수신할 때 아래코드가 준비되지 않아 작동 안할수있음, 문서가준비된 이후 코드가 작동하도록 보장하기위해 jQuery의 document.ready 이벤트 사용
 			$('.modal').on('hidden.bs.modal', function(e) {
 				$(this).find('input').val('');
 			});
+			
+			// 아이디입력창에서 엔터키 입력시 로그인 버튼 클릭
+			$("#user_id").keypress(function(e){
+				//검색어 입력 후 엔터키 입력하면 조회버튼 클릭
+				if(e.keyCode && e.keyCode == 13){
+					$("#loginBtn").trigger("click");
+					return false;
+				}
+			});
+			
+			// 비밀번호 입력창에서 엔터키 입력시 로그인 버튼 클릭
+			$("#user_pswd").keypress(function(e){				
+				//검색어 입력 후 엔터키 입력하면 조회버튼 클릭
+				if(e.keyCode && e.keyCode == 13){
+					$("#loginBtn").trigger("click");
+					return false;
+				}
+
+			});
+			
+			// 비밀번호 입력창에서 엔터키 입력시 아이디 찾기 버튼 클릭
+			$("#user_name").keypress(function(e){	
+				//검색어 입력 후 엔터키 입력하면 조회버튼 클릭
+				if(e.keyCode && e.keyCode == 13){
+					$("#findIdBtn").trigger("click");
+					return false;
+				}
+			});
+			
+			// 비밀번호 입력창에서 엔터키 입력시 아이디 찾기 버튼 클릭
+			$("#email").keypress(function(e){	
+				//검색어 입력 후 엔터키 입력하면 조회버튼 클릭
+				if(e.keyCode && e.keyCode == 13){
+					$("#findIdBtn").trigger("click");
+					return false;
+				}
+			});
+			
 		});
 
 
@@ -311,7 +340,7 @@
 						alert('탈퇴한 회원입니다')
 					} else {
 // 						alert('로그인 되었습니다 메인페이지로 이동합니다')
-						location.href = '/'
+						location.href = '/loginSuc?user_id='+user_id;
 					}
 				}
 			});
@@ -387,6 +416,7 @@
 						}
 						return unescape(cookieValue);
 					}
+					
 				});
 	</script>
 </body>

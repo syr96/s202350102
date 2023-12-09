@@ -71,10 +71,11 @@ public class ChSearchServiceImpl implements ChSearchService {
 
 
 	@Override
-	public void deleteHis(SearchHistory sh) {
+	public int deleteHis(SearchHistory sh) {
 		System.out.println("ChSearchServiceImpl deleteHis Start...");
 		int result = chSearchDao.deleteHis(sh);
 		
+		return result;
 	}
 
 

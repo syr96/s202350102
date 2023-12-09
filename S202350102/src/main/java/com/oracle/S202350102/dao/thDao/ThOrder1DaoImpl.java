@@ -1,7 +1,13 @@
 package com.oracle.S202350102.dao.thDao;
 
+import javax.transaction.Transaction;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.oracle.S202350102.dto.Order1;
 
@@ -12,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class ThOrder1DaoImpl implements ThOrder1Dao {
 	// Mybatis DB 연동
 	private final SqlSession session;
+	private final PlatformTransactionManager transactionManager;
 
 	@Override
 	public int insertOrder(Order1 order1) {
@@ -50,18 +57,6 @@ public class ThOrder1DaoImpl implements ThOrder1Dao {
 	}
 
 	@Override
-	public int updateOrderSucess(int order_num) {
-		System.out.println("ThOrder1DaoImpl updateOrderSucess start...");
-		int updateResult = 0;
-		try {
-			updateResult = session.selectOne("thUpdateOrderSucess",order_num);
-		}catch (Exception e) {
-			System.out.println("ThOrder1DaoImpl updateOrderSucess Exception --> " + e.getMessage());
-		}
-		return updateResult;
-	}
-
-	@Override
 	public Order1 selectOrderSucess(int user_num) {
 		System.out.println("ThOrder1DaoImpl selectOrderSucess start...");
 		Order1 order1 = null;
@@ -71,6 +66,60 @@ public class ThOrder1DaoImpl implements ThOrder1Dao {
 			System.out.println("ThOrder1DaoImpl selectOrderSucess Exception --> " + e.getMessage());
 		}
 		return order1;
+	}
+
+	@Override
+	public int updateTid(Order1 order1) {
+		System.out.println("ThOrder1DaoImpl updateTid start...");
+		int updateResult = 0;
+		try {
+			updateResult = session.update("thUpdateTid",order1);
+		}catch (Exception e) {
+			System.out.println("ThOrder1DaoImpl updateTid Exception --> " + e.getMessage());
+		}
+		return updateResult;
+	}
+
+	@Override
+	public int transactionOrderInsertUpdate(String tid, int user_num) {
+		int result = 0;
+		System.out.println("ThOrder1DaoImpl transactionOrderInsertUpdate start...");
+		TransactionStatus txStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
+		try {
+			// 주문테이블 상태를 환불(2) 로 변경
+			result = session.update("thUpdateOrderRefund", tid);
+			System.out.println("thUpdateOrderRefund result --> " + result);
+			
+			// 회원테이블 유저상태를 일반회원(100)으로 변경
+			result = session.update("thUpdateUserNormal", user_num);
+			System.out.println("thUpdateUserNormal result --> " + result);
+			transactionManager.commit(txStatus);
+		} catch (Exception e) {
+			transactionManager.rollback(txStatus);
+			result = -1;
+		}
+		return result;
+	}
+
+	@Override
+	public int tranxOrdUsrUptSuc(int order_num, int user_num) {
+		int result = 0;
+		System.out.println("ThOrder1DaoImpl transactionOrderInsertUpdate start...");
+		TransactionStatus txStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
+		try {
+			// 주문테이블 상태를 환불(2) 로 변경
+			result = session.update("thUpdateOrderSucess", order_num);
+			System.out.println("thUpdateOrderSucess result --> " + result);
+			
+			// 회원테이블 유저상태를 일반회원(100)으로 변경
+			result = session.update("thUser1PremUpdate", user_num);
+			System.out.println("thUser1PremUpdate result --> " + result);
+			transactionManager.commit(txStatus);
+		} catch (Exception e) {
+			transactionManager.rollback(txStatus);
+			result = -1;
+		}
+		return result;
 	}
 	
 	

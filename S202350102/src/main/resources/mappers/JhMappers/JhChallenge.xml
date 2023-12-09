@@ -19,8 +19,8 @@
 		WHERE ch.chg_id = #{chg_id}
 	</select>
 	
-	<!--챌린지 후기 총 갯수  -->
-	<select id="jhReviewTotal" parameterType="int" resultType="int">
+	<!--챌린지 후기 총 갯수  보드로 옮김 -->
+<!-- 	<select id="jhReviewTotal" parameterType="int" resultType="int">
 		SELECT 	COUNT(*)
 		FROM 	board b
 		INNER JOIN challenge c ON b.chg_id = c.chg_id
@@ -28,10 +28,10 @@
 		AND 	brd_md = 101
 		AND 	c.chg_id = #{chg_id}
 		AND 	brd_step = 0
-	</select>
+	</select> -->
 	
-	<!-- 챌린지 후기 리스트 -->
-	<select id="jhChgReviewList" parameterType="Board" resultType="Board">
+	<!-- 챌린지 후기 리스트  보드로 옮김-->
+<!-- 	<select id="jhChgReviewList" parameterType="Board" resultType="Board">
 		SELECT * 
 		FROM (
 		        SELECT  ROWNUM AS rn, a.* 
@@ -47,7 +47,7 @@
 		                    ORDER BY 	b.brd_num DESC) a
 		)
 		WHERE rn BETWEEN #{start} AND #{end}  
-	</select>
+	</select> -->
 	
 	<!-- 필요한가? -->
 	<select id="jhUserStatus" parameterType="int" resultType="java.lang.String">
@@ -57,23 +57,23 @@
 		WHERE 	u.user_num = #{user_num}
 	</select>
 
-	<!-- 조회수 올리기 -->
-	<update id="jhViewCntUp" parameterType="int">
+	<!-- 조회수 올리기 보드로-->
+<!-- 	<update id="jhViewCntUp" parameterType="int">
 		UPDATE board
 		SET    view_cnt = view_cnt+1
 		WHERE  brd_num  = #{brd_num}
-	</update>
+	</update> -->
 
-	<!-- 후기 내용 -->
-	<select id="jhReviewContent" parameterType="int" resultType="Board">
+	<!-- 후기 내용  보드 매퍼로 옮김-->
+	<!-- <select id="jhReviewContent" parameterType="int" resultType="Board">
 		SELECT  b.brd_num, b.title, b.conts, b.img, b.reg_date, u.user_num, u.nick, b.view_cnt, replyCount(b.brd_num) replyCount
 		FROM 	board b
 		INNER JOIN user1 u ON b.user_num = u.user_num
 		WHERE 	b.brd_num = #{brd_num}
-	</select>
+	</select> -->
 	
-	<!-- 후기 댓글 리스트 -->
-	<select id="jhReviewReplyList" parameterType="Board" resultType="Board">
+	<!-- 후기 댓글 리스트 보드로 -->
+	<!-- <select id="jhReviewReplyList" parameterType="Board" resultType="Board">
 		SELECT * 
 		FROM (
 				SELECT 	 ROWNUM AS rn, a.*
@@ -85,10 +85,10 @@
 						AND 	 b.brd_step > 0
 						ORDER BY b.brd_num DESC ) a
 		) WHERE rn BETWEEN #{start} AND #{end} 
-	</select>
+	</select> -->
 	
-	<!-- 후기 댓글 입력 -->
-	<select id="jhReplyInsertPro" parameterType="Board" statementType="CALLABLE" >
+	<!-- 후기 댓글 입력  보드로-->
+	<!-- <select id="jhReplyInsertPro" parameterType="Board" statementType="CALLABLE" >
 		{
 			call Challenge_Review_Insert_Proc(
 						 #{brd_num , 	mode=IN , jdbcType=INTEGER}
@@ -99,31 +99,31 @@
 						)
 		}
 		
-	</select>
+	</select> -->
 	
 	<!-- 후기랑 댓글 수정 삭제 하나의 쿼리에 조건문 주고 가능한지 생각해보기 -->
-	<!-- 후기 댓글 삭제 -->
-	<delete id="jhReplyDelete" parameterType="int">
+	<!-- 후기 댓글 삭제  보드로-->
+	<!-- <delete id="jhReplyDelete" parameterType="int">
 		DELETE 	FROM board
 		WHERE 	brd_num = #{brd_num}
-	</delete>
+	</delete> -->
 	
 	<!-- 후기 댓글 수정-->
-	<update id="jhReplyUpdate" parameterType="Board">
+	<!-- <update id="jhReplyUpdate" parameterType="Board">
 		UPDATE board
 		SET    conts = #{conts}, reg_date = SYSDATE
 		WHERE  brd_num = #{brd_num}
 	</update>
-	
+	 -->
 
 	<!-- 후기 입력 -->
-	<insert id="jhReviewPost" parameterType="Board" >
+<!-- 	<insert id="jhReviewPost" parameterType="Board" >
 		INSERT INTO board (brd_num, chg_id, user_num, brd_lg, brd_md, title, conts, img, reg_date , brd_group, brd_step)
 		VALUES (brd_num_seq.NEXTVAL, #{chg_id}, #{user_num}, 700, 101, #{title}, #{conts}, #{img}, SYSDATE, brd_num_seq.NEXTVAL, 0)
-	</insert>
+	</insert> -->
 	
 	<!-- 후기 수정 -->
-	<update id="jhReviewUpdate" parameterType="Board">
+<!-- 	<update id="jhReviewUpdate" parameterType="Board">
       UPDATE  board
       SET     title = #{title} 
             , conts = #{conts} 
@@ -138,21 +138,21 @@
         	  </choose>
             , reg_date = SYSDATE   
       WHERE   brd_num = #{brd_num}
-   </update>
+   </update> -->
 	
 	<!-- 후기 삭제 -> 댓글도 같이 삭제 되게 할 것인가? -->
-	<delete id="jhReviewDelete" parameterType="int">
+	<!-- <delete id="jhReviewDelete" parameterType="int">
 		DELETE	FROM board
 		WHERE 	brd_num = #{brd_num}
-		<!-- OR		brd_group = #{brd_num} -->
-	</delete>
+		OR		brd_group = #{brd_num}
+	</delete> -->
 	
-	<!-- 후기 이미지 삭제 -->
-	<update id="jhBoardImgDelete" parameterType="int">
+	<!-- 후기 이미지 삭제  필요한가? -->
+<!-- 	<update id="jhBoardImgDelete" parameterType="int">
 		UPDATE  board
 		SET 	img = null
 		WHERE	brd_num = #{brd_num}
-	</update>
+	</update> -->
 	
 	<!-- 추천 챌린지 -->
 	<select id="jhRecommendChgList" parameterType="int" resultMap="RecommendChg">
@@ -244,6 +244,11 @@
 		                    	<when test="state_md == 104"> ch.state_md = 104</when>
 		                    </choose>
 		                    
+           				    <if test= "keyword != null and keyword != ''"> 
+								AND (title   	LIKE '%' || #{keyword} || '%'	
+								OR  chg_conts 	LIKE '%' || #{keyword} || '%')
+						 	</if>
+		                    
 		                    <choose>
 		                    	<when test="chg_md == 100"> AND ch.chg_md = 100 </when>
 		                    	<when test="chg_md == 101"> AND ch.chg_md = 101 </when>
@@ -264,6 +269,10 @@
 		<choose>
 			<when test="chg_md != 0"> AND chg_md = #{chg_md} </when>
 		</choose>
+		<if test='keyword != null and keyword != ""'> 
+			AND (title   	LIKE '%' || #{keyword} || '%'	
+			OR  chg_conts 	LIKE '%' || #{keyword} || '%')
+		</if>
 	</select>
 	
 		<!-- 챌린지 승인(챌린저에 개설자 추가) / 반려 -->
@@ -280,30 +289,55 @@
 		
 	</select>
 	
+	<!-- 챌린지 승인 반려 성공 여부 가져오기 위함 -->
 	<resultMap id="resultMap" type="java.util.Map">
-    <result property="resultCount" column="resultCount" jdbcType="INTEGER"/>
+    	<result property="resultCount" column="resultCount" jdbcType="INTEGER"/>
 	</resultMap>
 	
 	
 	<update id="jhChgAdminUpdate" parameterType="Challenge" >
 		Update Challenge
-		Set title = #{title}, 
-			chg_capacity = #{chg_capacity}, 
-			chg_conts = #{chg_conts},
-			chg_md = #{chg_md},
-           	upload = #{upload}, 
-           	<if test="sample_img != null">sample_img = #{sample_img},</if> 
-           	freq = #{freq}, 
-           	chg_public = #{chg_public}, 
-           	<if test="priv_pswd != null">priv_pswd = #{priv_pswd},</if> 
-           	<if test="thumb != null">thumb = #{thumb}, </if>           	
-           	end_date = #{end_date}
+		Set   title = #{title} 
+			, chg_capacity = #{chg_capacity} 
+			, chg_conts = #{chg_conts}
+			, chg_md = #{chg_md}
+           	, upload = #{upload} 
+           	<if test="sample_img != null">, sample_img = #{sample_img}</if> 
+           	, freq = #{freq} 
+           	, chg_public = #{chg_public} 
+           	, priv_pswd = 
+	           	<choose> 
+	           		<when test="priv_pswd != null and !priv_pswd.equals('')">
+	           			#{priv_pswd}
+	           		</when>
+	           		<otherwise>
+	           			null
+	           		</otherwise>
+	           	</choose>
+           	, thumb = 
+	           	<choose>
+	            	<when test="thumb != null and !thumb.equals('')">
+	                	#{thumb}
+	            	</when>
+	              	<otherwise>
+	                	null
+	            	</otherwise>
+	        	</choose>          	
+           	, end_date = #{end_date}
         Where chg_id = #{chg_id}
 	</update>
 	
 	
+	<delete id="jhChgDelete" parameterType="int">
+		DELETE 	FROM  Challenge
+		WHERE 	chg_id = #{chg_id}
+	</delete>
 	
-	
+	<select id="jhChgStateMd" parameterType="int" resultType="int">
+		SELECT  state_md
+		FROM    challenge
+		WHERE   chg_id = #{chg_id}
+	</select>
 	
 	
 	

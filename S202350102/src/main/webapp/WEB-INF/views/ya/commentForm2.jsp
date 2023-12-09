@@ -1,17 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ include file="/WEB-INF/views/topBar.jsp" %>  
-<!DOCTYPE html>
-
-<html>
-<head>
+<%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%> 
 <!-- CSS -->
-<link rel="shortcut icon" href="./assets/favicon/favicon.ico" type="image/x-icon" />
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript">
 
@@ -64,8 +55,9 @@ function listComment() {
                 var headerCol = $("<div class='col-12'></div>");
                 
                 var regDate = new Date(board.reg_date);
-                var formattedRegDate = regDate.toLocaleString();
-                headerCol.append("<span class='fs-xs text-muted'>" + board.nick + " " + formattedRegDate + "</span>");
+                var formattedDateTime = regDate.toLocaleString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' });
+
+                headerCol.append("<span class='fs-xs text-muted'>" + board.nick + " " + formattedDateTime + "</span>");
                 headerRow.append(headerCol);
                 
                 var text = $("<p class='text-gray-500'>" + board.conts + "</p>");
@@ -302,8 +294,15 @@ function listComment() {
  <!--댓글작성-->
 <c:choose>
     <c:when test="${empty sessionScope.user_num}">
-        <p><p>
-        <h5>댓글을 작성하실 분은 로그인을 해주세요!</h5>
+    <section class="pt-9 pb-8" id="reviews">
+    <div class="container">
+       <div class="row">
+          <div class="col-12" align="center">
+  			게시판 댓글을 확인하시려면 로그인을 해주세요!
+  		  </div>
+  	   </div>	  	
+  	</div>	
+  	</section>	
     </c:when>
     
     <c:otherwise> 
@@ -358,7 +357,3 @@ function listComment() {
 		<ul class="list-group list-group-flush" id="commentList"> 
 		</ul>
 		</div>
-
-    
-</body>
-</html>

@@ -14,4 +14,10 @@
 	<update id="userExpUpdate" parameterType="User1">
 		UPDATE user1 SET user_exp = #{user_exp} WHERE user_num = #{user_num}
 	</update>
+	
+	<select id="mainUserSelectByUserId" parameterType="User1" resultType="User1">
+		SELECT 	* 
+		FROM 	user1 
+		WHERE 	user_id = #{user_id}
+	</select>
 </mapper>

@@ -1,9 +1,13 @@
 package com.oracle.S202350102.dao.jkDao;
 
+import java.util.Map;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.oracle.S202350102.dto.Following;
 import com.oracle.S202350102.dto.User1;
+import com.oracle.S202350102.dto.UserLevel;
 
 import lombok.RequiredArgsConstructor;
 
@@ -51,6 +55,22 @@ public class JkUserDaoImpl implements JkUser1Dao {
 	    }
 	    return result;
 	}
+
+	@Override
+	public Map<String, Integer> followingCnt(int user_num) {
+		Map<String, Integer> followingCnt = null;
+		try {
+			followingCnt = session.selectOne("followingCnt",user_num);
+			System.out.println(followingCnt);
+		} catch (Exception e) {
+			System.out.println("followingCnt exception->"+e.getMessage());
+		}
+		
+		return followingCnt;
+	}
+
+
+
 	}
 
 	

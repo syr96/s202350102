@@ -15,7 +15,7 @@ public interface ChBoardService {
 	void 		noticeViewUp(int brd_num);
 	List<Board> popBoardList();
 	int 		noticeCount(int brd_md);
-	List<Board> popShareList();
+	List<Board> popShareList(int user_num);
 	List<BoardReChk> alarmchk(int user_num);
 	int 		readAlarm(BoardReChk brc);
 	int 		moveToNewCmt(BoardReChk brc);

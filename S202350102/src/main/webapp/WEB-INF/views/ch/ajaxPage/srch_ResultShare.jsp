@@ -34,7 +34,7 @@ function likePost(brd_num) {
 		</c:if>
 	    <c:forEach var="board" items="${srch_ShareResult}">
 	    
-	        <div class="col-6 col-md-4" style="padding-left: 8px; padding-right: 8px;">
+	        <div class="col-6 col-md-4" style="padding-left: 8px; padding-right: 8px; max-width: 250px;">
 	            <div class="card mb-7">
 	                <div class="card-img">
 	    

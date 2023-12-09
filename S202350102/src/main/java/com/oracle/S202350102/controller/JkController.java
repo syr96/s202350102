@@ -41,9 +41,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oracle.S202350102.dto.Board;
 import com.oracle.S202350102.dto.BoardLike;
-import com.oracle.S202350102.dto.ChallengPick;
+
 import com.oracle.S202350102.dto.Challenge;
+import com.oracle.S202350102.dto.Level1;
 import com.oracle.S202350102.dto.SearchHistory;
+import com.oracle.S202350102.dto.SharingList;
 import com.oracle.S202350102.dto.User1;
 import com.oracle.S202350102.service.chService.ChSearchService;
 import com.oracle.S202350102.service.hbService.Paging;
@@ -52,8 +54,6 @@ import com.oracle.S202350102.service.jkService.JkMypageService;
 import com.oracle.S202350102.service.jkService.JkUserService;
 import com.oracle.S202350102.service.main.Level1Service;
 import com.oracle.S202350102.service.main.UserService;
-import com.oracle.S202350102.service.thService.ThChgService;
-import com.oracle.S202350102.service.yaService.Paging2;
 import com.oracle.S202350102.service.yaService.YaCommunityService;
 import com.oracle.S202350102.service.yrService.YrBoardLikeService;
 
@@ -134,7 +134,7 @@ public class JkController {
 	      model.addAttribute("totalSharing", totalSharing);
 	      System.out.println("JkController Ya totalSharing->"+totalSharing);
 	      
-	      Paging2 sharBoardPage = new Paging2(totalSharing, currentPage);
+	      Paging sharBoardPage = new Paging(totalSharing, currentPage,9);
 	      
 	      board.setStart(sharBoardPage.getStart());
 	      board.setEnd(sharBoardPage.getEnd());
@@ -186,11 +186,16 @@ public class JkController {
 		
 		board.setReplyCount(replyCount);
 		board.setBrd_group(board.getBrd_group());
-		
+			
 		int user_num = 0;
 		if(session.getAttribute("user_num") != null) {
 			user_num = (int) session.getAttribute("user_num");
 		}
+		
+		//연아 추가사항 쉐어링 참가중복 방지용 sharingList user_num 조회 
+		List<SharingList> sharingChk = ycs.sharingChk(brd_num); 
+		model.addAttribute("sharingChk",sharingChk);
+		System.out.println("sharingChk:" + sharingChk);
 		
 		int upViewCnt = 0;
 		ycs.upViewCnt(brd_num);
@@ -216,58 +221,105 @@ public class JkController {
 				
 	}
 	
-	// 쉐어링 내가 쓴 글
-		@RequestMapping("/mySharing")
-		public String mySharing(Board board, Model model, HttpSession session) {
-			System.out.println("JkController mySharing start...");
-			
-			int user_num = 0;
-			if(session.getAttribute("user_num") != null) {
-				user_num = (int) session.getAttribute("user_num");
-			}
-			else {
-				model.addAttribute("msg", "로그인한 사용자만 이용할 수 있는 페이지입니다.");
-				return "redirect:/loginForm";
-			}
-			
-			List<Board> mySharing = jbs.sharing(board);
-			System.out.println("JkController list mySharing.size()?" + mySharing.size());
-			
+	// 쉐어링 내가 쓴 글 (연아)-------------------------
+	@RequestMapping("/mySharing")
+	public String mySharing(Board board, Model model, HttpSession session,String currentPage) {
+		System.out.println("JkController mySharing start...");
 		
+		int user_num = 0;
+		if(session.getAttribute("user_num") != null) {
+			user_num = (int) session.getAttribute("user_num");
 			User1 user1 = jbs.userSelect(user_num);
 			System.out.println("usernum"+user_num);
 			model.addAttribute("user1", user1);
-			model.addAttribute("mySharing", mySharing);
-			
-				return "jk/mySharing";
-			}
+		}
+					
+		/*
+		 * else { model.addAttribute("msg", "로그인한 사용자만 이용할 수 있는 페이지입니다."); return
+		 * "redirect:/loginForm"; }
+		 */
+		 			
+		 //y쉐어링 내가 쓴글 전체 게시글 총 수, 페이징 처리 작업 
+		int totalMyUploadsharing =0;
+		totalMyUploadsharing =ycs.totalMyUploadsharing(user_num);
+		model.addAttribute("totalMyUploadSharing", totalMyUploadsharing);
+		System.out.println("YaController totalMyUploadShairng->"+totalMyUploadsharing);
 		
-	// 쉐어링 찜한 목록
-		@RequestMapping("/myLikeSharing")
-		public String myLikeSharing(Board board, Model model, HttpSession session) {
-			System.out.println("JkController myLikeSharing start...");
-			
-			int user_num = 0;
-			if(session.getAttribute("user_num") != null) {
-				user_num = (int) session.getAttribute("user_num");
-			}
-			else {
-				model.addAttribute("msg", "로그인한 사용자만 이용할 수 있는 페이지입니다.");
-				return "redirect:/loginForm";
-			}
-			
-			List<Board> mySharing = jbs.sharing(board);
-			System.out.println("JkController list mySharing.size()?" + mySharing.size());
-			
+	      // yr 작성
+	      // 쉐어링 찜 여부 판단용
+	      board.setB_user_num(user_num);
+				      
+		//페이징처리 
+		Paging mySharingPaging = new Paging(totalMyUploadsharing, currentPage, 9);
+		board.setUser_num((int) session.getAttribute("user_num"));
+		board.setStart(mySharingPaging.getStart());
+		board.setEnd(mySharingPaging.getEnd());
+		model.addAttribute("mySharingPaging", mySharingPaging);
+		System.out.println("JkController mySharingPaging start?"+mySharingPaging.getStart());
+		System.out.println(" JkControlle mySharingPaging total?"+mySharingPaging.getTotal());
+		System.out.println("mySharingPaging End?"+mySharingPaging.getEnd());
 		
+		//myUploadShairngList 
+		List<Board> 	 myUploadSharingList  = ycs.myUploadSharingList(board);
+		System.out.println("JkControlle sharingManagement.size()?"+myUploadSharingList.size());
+		model.addAttribute("myUploadSharingList", myUploadSharingList);								
+		System.out.println("JkController myUploadSharingList.size()?" + myUploadSharingList.size());
+		
+		return "jk/mySharing";
+		}
+	
+//  쉐어링 찜한 목록 조회 (연아)----------------------
+	@RequestMapping("/myLikeSharing")
+	public String myLikeSharing(Board board, Model model, HttpSession session, String currentPage, String sortOption) {
+		System.out.println("JkController myLikeSharing start...");
+		
+		int user_num = 0;
+		if(session.getAttribute("user_num") != null) {
+			user_num = (int) session.getAttribute("user_num");
 			User1 user1 = jbs.userSelect(user_num);
 			System.out.println("usernum"+user_num);
 			model.addAttribute("user1", user1);
-			model.addAttribute("mySharing", mySharing);
-			
-				return "jk/myLikeSharing";
-			}	
-	//쉐어링 내가 쓴 글 상세
+		}
+					
+		 // else { model.addAttribute("msg", "로그인한 사용자만 이용할 수 있는 페이지입니다."); return
+		 // "redirect:/loginForm"; }
+		
+		 //찜한 쉐어링 전체 게시글 총 수, 페이징 처리 작업 
+		int likeSharingCnt =0;
+		likeSharingCnt =ycs.likeSharingCnt(user_num);
+		model.addAttribute("likeSharingCnt", likeSharingCnt);
+		System.out.println("likeSharingCnt->"+likeSharingCnt);
+		
+	      // yr 작성
+	      // 쉐어링 찜 여부 판단용
+	      board.setB_user_num(user_num);
+	      
+	      
+		  board.setUser_num(board.getB_user_num());		
+		  board.setBrd_num(board.getBrd_num());
+		
+		  //페이징처리 
+		Paging mylikeSharingPaging = new Paging(likeSharingCnt,currentPage,9);
+		/* board.setUser_num((int) session.getAttribute("user_num")); */
+		board.setStart(mylikeSharingPaging.getStart());
+		board.setEnd(mylikeSharingPaging.getEnd());
+		model.addAttribute("mylikeSharingPaging" ,mylikeSharingPaging);
+		System.out.println("board user_num?"+user_num);
+		System.out.println("mylikeSharingPaging start?"+mylikeSharingPaging.getStart());
+		System.out.println("mylikeSharingPaging total?"+mylikeSharingPaging.getTotal());
+		System.out.println("mylikeSharingPaging  End?"+mylikeSharingPaging.getEnd());
+		
+		
+		//mylikeSharingList
+		List<Board> likeSharingList  = ycs.likeSharingList(board);
+		model.addAttribute("likeSharingList", likeSharingList);								
+		System.out.println("JkController likeSharingList.size()?" + likeSharingList.size());
+
+		
+			return "jk/myLikeSharing";
+		}	
+	
+	//쉐어링 내가 쓴 글 상세 
 	@GetMapping(value="/myDetailSharing")
 	public String myDetailSharing(int brd_num, Model model, HttpSession session) {
 		System.out.println("JkController detailSharing Start...");
@@ -529,8 +581,24 @@ public class JkController {
 	}
 
 	@RequestMapping(value="/challengeManagement")
-	public String challengeManagement(Integer user_num, Model model ) {
+	public String challengeManagement(HttpSession session, Model model, User1 user1, Challenge chg) {
 		System.out.println("JkController challengeManagement Start... ");
+		
+		int user_num = 0;
+	    if (session.getAttribute("user_num") != null) {
+	        user_num = (int) session.getAttribute("user_num");
+	        chcont.myConts(session, model, null);  // 메서드 실행, return void
+	    }
+	    user1.setUser_num(user_num);
+	    List<Challenge> myChgList = jms.myChgList(chg);
+	    User1 user1FromDB = us.userSelect(user_num);
+	    
+	    
+	    user1.setUser_num(user_num);
+	    model.addAttribute("level1List",ls.level1List());
+	    model.addAttribute("user1", user1FromDB);
+	    
+	    System.out.println("JkController myChgList.size() --> " + myChgList.size());
 		
 		return "jk/challengeManagement";	
 	}
@@ -563,7 +631,8 @@ public class JkController {
 
 		// 회원정보 수정
 		@PostMapping("/updateUser1")
-		public String updateUser(User1 user1, Model model, @RequestParam("birth_year") String birth_year, @RequestParam("birth_month") String birth_month, @RequestParam("birth_date") String birth_date) {
+		public String updateUser(User1 user1, Model model, @RequestParam("birth_year") String birth_year, @RequestParam("birth_month") String birth_month, @RequestParam("birth_date") String birth_date
+								,HttpSession session) {
 		    System.out.println("JkController updateUser start...");
 
 		    // 생년월일을 문자열로 합침
@@ -580,42 +649,21 @@ public class JkController {
 		    }
 		    user1.setBirth(strToDate);
 			
-		     int updateResult = jus.updateUser1(user1);
-		     model.addAttribute("updateResult", updateResult);
-		     if (updateResult > 0) {
-		         return "forward:/jk/updateResult.jsp"; // 업데이트 성공 시의 뷰 페이지로 이동
-		     } else {
-		         model.addAttribute("msg", "수정 실패 확인해 보세요");
-		         return "forward:/jk/mypage.jsp"; // 업데이트 실패 시의 뷰 페이지로 이동
-		     }
+			int updateResult = jus.updateUser1(user1);
+			model.addAttribute("updateResult", updateResult);
+			int user_num = (int)session.getAttribute("user_num");
+			User1 user2 = us.userSelect(user_num);
+			
+			if (updateResult > 0) {
+				session.setAttribute("nick", user2.getNick());
+			return "jk/updateResult"; // 업데이트 성공 시의 뷰 페이지로 이동
+			} else {
+			    model.addAttribute("msg", "수정 실패 확인해 보세요");
+			return "mypage"; // 업데이트 실패 시의 뷰 페이지로 이동
+			}
 		 }
 	
 
-	@GetMapping("/mypage")
-	public String mypage(HttpSession session, User1 user1, Challenge chg, Board board, Model model) {
-	    System.out.println("JkController mypage start...");
-	    System.out.println("session.getAttribute(\"user_num\") --> " + session.getAttribute("user_num"));
-
-	    int user_num = 0;
-	    if (session.getAttribute("user_num") != null) {
-	        user_num = (int) session.getAttribute("user_num");
-	        chcont.myConts(session, model, null);  // 메서드 실행, return void
-	    }
-	    user1.setUser_num(user_num);
-	    List<Challenge> myChgList = jms.myChgList(chg);
-	    User1 user1FromDB = us.userSelect(user_num);
-	    
-	    
-	    user1.setUser_num(user_num);
-	    model.addAttribute("level1List",ls.level1List());
-	    model.addAttribute("user1", user1FromDB);
-	    
-	    System.out.println("JkController myChgList.size() --> " + myChgList.size());
-
-
-	    
-	    return user_num != 0 ? "mypage" : "redirect:/loginForm";
-	}
 	
 	@PostMapping("/updateProfile")
 	@ResponseBody
@@ -733,6 +781,70 @@ public class JkController {
 
 		    return resultMap;
 	}
-	}
-   
 	
+	@GetMapping("/mypage")
+	public String mypage(HttpSession session, User1 user1, Challenge chg, Board board, Model model) {
+	    System.out.println("JkController mypage start...");
+	    System.out.println("session.getAttribute(\"user_num\") --> " + session.getAttribute("user_num"));
+
+	    int user_num = 0;
+	    if (session.getAttribute("user_num") != null) {
+	        user_num = (int) session.getAttribute("user_num");
+	        chcont.myConts(session, model, null);  // 메서드 실행, return void
+	    }
+	    user1.setUser_num(user_num);
+	    List<Challenge> myChgList = jms.myChgList(chg);
+	    User1 user1FromDB = us.userSelect(user_num);
+	    
+	    
+	    user1.setUser_num(user_num);
+	    model.addAttribute("level1List",ls.level1List());
+	    model.addAttribute("user1", user1FromDB);
+	    
+	    System.out.println("JkController myChgList.size() --> " + myChgList.size());
+
+
+	    
+	    return user_num != 0 ? "mypage" : "redirect:/loginForm";
+	}
+	
+	@GetMapping("/mypageMenu")
+	@ResponseBody
+	public String mypageMenu(HttpSession session, User1 user1, Board board, Model model) {
+	    System.out.println("JkController mypageMenu start...");
+
+	    int user_num = 0;
+	    if (session.getAttribute("user_num") != null) {
+	        user_num = (int) session.getAttribute("user_num");
+	     	    }
+	    user1.setUser_num(user_num);
+	    User1 user1FromDB = us.userSelect(user_num);
+	    List<Level1> level1List = ls.level1List();
+	    int myBoard = jbs.myBoard(user_num);
+	    
+	    Map<String, Integer> followCnt = jus.followingCnt(user_num);
+	    System.out.println("followCnt: " + followCnt);
+	    
+	    model.addAttribute("level1List",ls.level1List());
+	    model.addAttribute("user1", user1FromDB);
+	    model.addAttribute("followCnt", followCnt);
+	    model.addAttribute("myBoard", myBoard);
+
+	    ObjectMapper objectMapper = new ObjectMapper();
+	    try {
+	 
+	        Map<String, Object> responseData = new HashMap<>();
+	        responseData.put("user1", user1FromDB);
+	        responseData.put("level1List", level1List);
+	        responseData.put("followCnt", followCnt);
+	        responseData.put("myBoard", myBoard);
+
+	        String jsonData = objectMapper.writeValueAsString(responseData);
+	        return jsonData;
+	    } catch (JsonProcessingException e) {
+	        e.printStackTrace();
+	        return "Error occurred while processing JSON";
+	    }
+	}
+}
+	  

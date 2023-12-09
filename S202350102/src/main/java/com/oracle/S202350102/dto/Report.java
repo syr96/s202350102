@@ -1,6 +1,9 @@
 package com.oracle.S202350102.dto;
 
+import java.time.LocalDate;
 import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
 
@@ -21,4 +24,29 @@ public class Report {
 	
 	// 과거 신고 여부 조회
 	private int burningRecord;
+	
+	// 페이징 조회용 & 검색
+	private int start;
+	private int end;
+	private String keyword;
+	private String searchType;
+	private String startDate;
+	private String endDate;
+	
+   // 리스트 조회용
+   private String reported_name;
+   private String reported_id;
+   private String reported_nick;
+   private String reporter_name;
+   private String reporter_id;
+   private String reporter_nick;
+   private String ctn;
+   private String title;
+   private String user_img;
+   
+   // 모달창 용 -> 시간이 될 때 map 방식도
+   private String	img;
+   private Date		reg_date;
+   private String	conts;
+
 }

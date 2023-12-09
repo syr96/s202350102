@@ -7,15 +7,11 @@
         <div class="col-12 col-md-10 col-lg-8 col-xl-6">
 
           <!-- Heading -->
-          <h5 class="mb-7 text-center text-white">Want style Ideas and Treats?</h5>
+          <h5 class="mb-7 text-center text-white">멤버쉽 회원이 되면 다양한 혜택을 누릴 수 있습니다!</h5>
 
           <!-- Form -->
           <form class="mb-11" action="thkakaoPayForm">
-            <div class="row gx-5 align-items-start">
-              <div class="col">
-                <input type="email" class="form-control form-control-gray-700 form-control-lg"
-                  placeholder="Enter Email *">
-              </div>
+            <div class="row gx-5 align-items-start d-flex justify-content-center">
               <div class="col-auto">
                 <button type="submit" class="btn btn-gray-500 btn-lg">구독하기</button>
               </div>
@@ -28,58 +24,41 @@
         <div class="col-12 col-md-3">
 
           <!-- Heading -->
-          <h4 class="mb-6 text-white">Shopper.</h4>
-
-          <!-- Social -->
-          <ul class="list-unstyled list-inline mb-7 mb-md-0">
-            <li class="list-inline-item">
-              <a href="#!" class="text-gray-350">
-                <i class="fab fa-facebook-f"></i>
-              </a>
-            </li>
-            <li class="list-inline-item">
-              <a href="#!" class="text-gray-350">
-                <i class="fab fa-youtube"></i>
-              </a>
-            </li>
-            <li class="list-inline-item">
-              <a href="#!" class="text-gray-350">
-                <i class="fab fa-twitter"></i>
-              </a>
-            </li>
-            <li class="list-inline-item">
-              <a href="#!" class="text-gray-350">
-                <i class="fab fa-instagram"></i>
-              </a>
-            </li>
-            <li class="list-inline-item">
-              <a href="#!" class="text-gray-350">
-                <i class="fab fa-medium"></i>
-              </a>
-            </li>
-          </ul>
+          <h4 class="mb-6 text-white"><img src="assets/img/logo01.png" alt="logo"></h4>
 
         </div>
         <div class="col-6 col-sm">
 
           <!-- Heading -->
           <h6 class="heading-xxs mb-4 text-white">
-            Support
+           	조원
           </h6>
 
           <!-- Links -->
           <ul class="list-unstyled mb-7 mb-sm-0">
             <li>
-              <a class="text-gray-300" href="./contact-us.html">Contact Us</a>
+              <span class="text-gray-300">석유림</span>
             </li>
             <li>
-              <a class="text-gray-300" href="./faq.html">FAQs</a>
+              <span class="text-gray-300">박진기</span>
             </li>
             <li>
-              <a class="text-gray-300" data-bs-toggle="modal" href="#modalSizeChart">Size Guide</a>
+              <span class="text-gray-300">유연아</span>
             </li>
             <li>
-              <a class="text-gray-300" href="./shipping-and-returns.html">Shipping & Returns</a>
+              <span class="text-gray-300">민지혜</span>
+            </li>
+            <li>
+              <span class="text-gray-300">노보경</span>
+            </li>
+            <li>
+              <span class="text-gray-300">김찬하</span>
+            </li>
+            <li>
+              <span class="text-gray-300">강한빛</span>
+            </li>
+            <li>
+              <span class="text-gray-300">김태현</span>
             </li>
           </ul>
 
@@ -88,23 +67,68 @@
 
           <!-- Heading -->
           <h6 class="heading-xxs mb-4 text-white">
-            Shop
+            메뉴
           </h6>
 
           <!-- Links -->
           <ul class="list-unstyled mb-7 mb-sm-0">
-            <li>
-              <a class="text-gray-300" href="./shop.html">Men's Shopping</a>
+			<li>
+              <span> 
+	              <a class="text-gray-300" href="/thChgList"> 
+	                	챌린지 
+	              </a> 
+              </span> 
+            </li> 
+            <li> 
+              <span> 
+              	<a class="text-gray-300" href="/nearbySharing"> 
+                	내주변 쉐어 
+              	</a> 
+              </span> 
+            </li> 
+            <li> 
+              <span> 
+              	<a class="text-gray-300" href="/sharing"> 
+              		쉐어링 
+              	</a> 
+              </span> 
+            </li> 
+            <li> 
+              <span> 
+              	<a class="text-gray-300" href="/listCommunity"> 
+              		자유게시판 
+              	</a> 
+              </span> 
+            </li> 
+            <li> 
+              <span> 
+              	<a class="text-gray-300" href="/notice?brd_md=105"> 
+              		공지 
+              	</a> 
+              </span> 
+            </li> 
+            <li> 
+              <span> 
+              	<a class="text-gray-300" href="/notice?brd_md=106"> 
+              		이벤트 
+              	</a> 
+              </span> 
+            </li> 
+            <li> 
+              <span> 
+              	<a class="text-gray-300" href="/qBoardList"> 
+              		문의 
+              	</a> 
+              </span> 
+            </li> 
+            <li> 
+              <span> 
+              	<a class="text-gray-300" href="/introduce"> 
+              		서비스 소개 
+              	</a> 
+              </span> 
             </li>
-            <li>
-              <a class="text-gray-300" href="./shop.html">Women's Shopping</a>
-            </li>
-            <li>
-              <a class="text-gray-300" href="./shop.html">Kids' Shopping</a>
-            </li>
-            <li>
-              <a class="text-gray-300" href="./shop.html">Discounts</a>
-            </li>
+            
           </ul>
 
         </div>
@@ -112,22 +136,16 @@
 
           <!-- Heading -->
           <h6 class="heading-xxs mb-4 text-white">
-            Company
+           	위치
           </h6>
 
           <!-- Links -->
           <ul class="list-unstyled mb-0">
             <li>
-              <a class="text-gray-300" href="./about.html">Our Story</a>
+              <span class="text-gray-300">서울시 마포구 신촌로 176</span>
             </li>
             <li>
-              <a class="text-gray-300" href="#!">Careers</a>
-            </li>
-            <li>
-              <a class="text-gray-300" href="#!">Terms & Conditions</a>
-            </li>
-            <li>
-              <a class="text-gray-300" href="#!">Privacy & Cookie policy</a>
+              <span class="text-gray-300">중앙빌딩 5층</span>
             </li>
           </ul>
 
@@ -141,14 +159,14 @@
 
           <!-- Links -->
           <ul class="list-unstyled mb-0">
-            <li>
-              <a class="text-gray-300" href="#!">1-202-555-0105</a>
+     		<li>
+              <span class="text-gray-300">전화:02-313-1711</span>
             </li>
             <li>
-              <a class="text-gray-300" href="#!">1-202-555-0106</a>
+              <span class="text-gray-300">팩스:02-393-9218</span>
             </li>
             <li>
-              <a class="text-gray-300" href="#!">help@shopper.com</a>
+              <span class="text-gray-300">teamssj02@gmail.com</span>
             </li>
           </ul>
 
@@ -163,19 +181,15 @@
 
           <!-- Copyright -->
           <p class="mb-3 mb-md-0 fs-xxs text-muted">
-            © 2019 All rights reserved. Designed by Unvab.
+            © 2023 All rights reserved. Designed by J.JSAUSAGE.
           </p>
 
         </div>
         <div class="col-auto">
 
           <!-- Payment methods -->
-          <img class="footer-payment" src="./assets/img/payment/mastercard.svg" alt="...">
-          <img class="footer-payment" src="./assets/img/payment/visa.svg" alt="...">
-          <img class="footer-payment" src="./assets/img/payment/amex.svg" alt="...">
-          <img class="footer-payment" src="./assets/img/payment/paypal.svg" alt="...">
-          <img class="footer-payment" src="./assets/img/payment/maestro.svg" alt="...">
-          <img class="footer-payment" src="./assets/img/payment/klarna.svg" alt="...">
+          <img class="footer-payment" src="images/th/kakaoPay.png" alt="kakaoPay.png">
+ 
 
         </div>
       </div>

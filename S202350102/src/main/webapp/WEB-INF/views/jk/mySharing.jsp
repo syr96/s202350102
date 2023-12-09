@@ -1,32 +1,37 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="../header4.jsp" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ include file="/WEB-INF/views/topBar.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
 <!--  CSS  -->
-<link rel="shortcut icon" href="./assets/favicon/favicon.ico" type="image/x-icon" />
-<link rel="stylesheet" href="./assets/css/libs.bundle.css" />
-<link rel="stylesheet" href="./assets/css/theme.bundle.css" />
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
  <meta charset="UTF-8">
 <title>Insert title here</title>
-<style type="text/css">
-@import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css); 
-    	body{
-    	font-family: 'Noto Sans KR', sans-serif;} 
-			
-    </style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+ $(document).ready(function() {
+	function likePost(brd_num) {
+	  
+		$.ajax({
+		    type: 'POST',
+		    url: '/board/' + brd_num + '/like', // 좋아요 업데이트를 처리할 서버 엔드포인트
+		    data: { brd_num : brd_num }, // 업데이트할 게시물의 ID를 전송
+		    success: function (response) {
+		        // 성공 시 수행할 작업
+		    },
+		    error: function (error) {
+		        // 오류 발생 시 수행할 작업
+		    }
+		});
+	}
 
 </script>
 </head>
 <body>
    <section class="pt-7 pb-12">
-      <div class="container">
+      <div class="container section-mt">
         <div class="row">
           <div class="col-12 text-center">
 
@@ -64,13 +69,17 @@
             <div class="d-flex justify-content-between mb-3">
                 <!-- 공간을 벌리기 위해 클래스 추가 -->
             </div>
-            
+			<div class="d-flex justify-content-end mb-3">
+			    총  ${totalMyUploadSharing}건의 게시글이 존재합니다.
+			</div>
             </div>
   <div class="row">
-  	<c:set var="usernum" value="${sessionScope.user_num}" />
-	<c:set var="mySharingList" value="${mySharing}" />
-    <c:forEach var="board" items="${mySharing}">
-  	<c:if test = "${board.user_num eq usernum}">
+  <%-- 	<c:set var="usernum" value="${sessionScope.user_num}" /> --%>
+  <c:set var="mySharingList" value="${mySharing}" />
+  <input type="hidden" name="brd_num" value="${board.brd_num}"> 
+  <input type="hidden" value="${sessionScope.user_num} ">
+    <c:forEach var="board" items="${myUploadSharingList}"> <!--연아 서비스 껄로 변경-->
+  	<c:if test = "${board.user_num == sessionScope.user_num}">
         <div class="col-6 col-md-4" style="padding-left: 8px; padding-right: 8px;">
             <div class="card mb-7">
                 <div class="card-img">
@@ -81,12 +90,14 @@
 
                   <img class="card-img-top" src="${pageContext.request.contextPath}/upload/${board.img}" alt="..." style="width: 100%; height: 200;">
 					 </div>
-                <div class="card-body fw-bold text-center">
-                    <a class="text-body" href="detailSharing?user_num=${board.user_num}&brd_num=${board.brd_num}">
-                        ${board.title}
-                    </a><p>
-                    <a class="text-primary" href="detailSharing?user_num=${board.user_num}&brd_num=${board.brd_num}">
-                        ${board.price}원</a><p>
+                <div class="card-body fw-bold text-left"> <!--text-center  -->
+                <input type="hidden" value="${board.user_num }"> <input type="hidden" value="${board.brd_num }">
+                    <a class="text-body" href="myDetailSharing?user_num=${board.user_num}&brd_num=${board.brd_num}">
+                        ${board.title} 
+                        <p> ${board.applicants}명 모집 | ${board.participants}명  참가중
+                    </a>
+                    <a class="text-primary" href="myDetailSharing?user_num=${board.user_num}&brd_num=${board.brd_num}">
+                          <fmt:formatNumber value= "${board.price}"  pattern="#,###"/>원</a>    <p>
                     <a class="text-primary"><i class="fas fa-heart me-1"></i> ${board.like_cnt}</a>
                     						<i class="fe fe-eye me-1 mb-1" style="margin-left: 30px;"></i> ${board.view_cnt}
                     						<i class="fas fa-comment text-secondary me-1" style="margin-left: 20px;"></i>${board.replyCount}
@@ -98,6 +109,33 @@
     </c:if>
     </c:forEach>
     </div>
+    <!--YA페이징 추가  -->
+     <div class="container text-center">
+    <ul class="pagination pagination-sm justify-content-center">
+        <c:if test="${mySharingPaging.startPage > mySharingPaging.pageBlock}">
+            <li class="page-item">
+                <a class="page-link page-link-arrow" href="mySharing?currentPage=${mySharingPaging.startPage-mySharingPaging.pageBlock}">
+                    <i class="fa fa-caret-left"></i>
+                </a>
+            </li>
+        </c:if>
+
+        <c:forEach var="i" begin="${mySharingPaging.startPage}" end="${mySharingPaging.endPage}">
+            <li class="page-item <c:if test='${mySharingPaging.currentPage == i}'>active</c:if>">
+                <a class="page-link" href="mySharing?currentPage=${i}">${i}</a>
+            </li>
+        </c:forEach>
+
+        <c:if test="${mySharingPaging.endPage < mySharingPaging.totalPage}">
+            <li class="page-item">
+                <a class="page-link page-link-arrow" href="mySharing?currentPage=${mySharingPaging.startPage+mySharingPaging.pageBlock}">
+                    <i class="fa fa-caret-right"></i>
+                </a>
+            </li>
+        </c:if>
+    </ul>
+</div> 
+    
 </div>
 
 

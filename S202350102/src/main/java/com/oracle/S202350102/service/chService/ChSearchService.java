@@ -16,7 +16,7 @@ public interface ChSearchService {
 	List<Board> 		shareSearching(Board board);
 	List<SearchHistory> sHistoryList(int user_num);
 	void 				updateHistory(SearchHistory sh);
-	void 				deleteHis(SearchHistory sh);
+	int 				deleteHis(SearchHistory sh);
 	int 				chgSrchTot(Board board);
 	int 				chgSrchBTot(Board board);	
 }

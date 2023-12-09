@@ -134,4 +134,58 @@ public class UserServiceImpl implements UserService {
 		
 	}
 	
+	// 유저 테이블에 대한 경험치 정보를 불러오고 싶을 때 사용
+	@Override
+	public List<User1> userLevelList(List<User1> userInfoList) {
+		List<UserLevel> userLevelInfoList = ud.userLevelInfoList();
+		List<Level1> level1Info = ld.level1List();
+		String icon = "";
+		int user_level, user_num, user_exp = 0;
+		for (int i = 0; i < userInfoList.size(); i++) {
+			user_num = userInfoList.get(i).getUser_num();
+			for (int j = 0; j < userLevelInfoList.size(); j++) {
+				if ( user_num == userLevelInfoList.get(j).getUser_num() ) {
+				icon = userLevelInfoList.get(j).getLv_name();
+				user_level = userLevelInfoList.get(j).getUser_level();
+				user_exp = userLevelInfoList.get(j).getUser_exp();
+				userInfoList.get(i).setIcon(icon);
+				userInfoList.get(i).setUser_level(user_level);
+				userInfoList.get(i).setUser_exp(user_exp);
+				}
+			}
+		}
+		int tot_exp, req_exp, percentage = 0;
+		float data1, data2, data3 = 0;
+		
+		for (int i = 0; i < userInfoList.size(); i++) {
+			for (int j = 0; j < level1Info.size(); j++) {
+				if ( userInfoList.get(i).getUser_level() == level1Info.get(j).getUser_level() ) {
+					tot_exp = level1Info.get(j).getTot_exp();
+					req_exp = level1Info.get(j).getReq_exp();
+					data1 = (float)(userInfoList.get(i).getUser_exp() - tot_exp );
+					data2 = (float)(req_exp+100);
+					data3 = (float)(data1/data2);
+					percentage  = (int)(data3*100);
+					if ( userInfoList.get(i).getUser_level() == 11) {
+						userInfoList.get(i).setPercentage(100);
+					} else {
+						userInfoList.get(i).setPercentage(percentage);
+					}
+					
+				}
+			}
+		}
+		
+		return userInfoList;
+	}
+
+	@Override
+	public User1 userSelect(User1 user1) {
+		System.out.println("UserServiceImpl userSelect start...");
+		User1 userResult = ud.userSelect(user1);
+		return userResult;
+	}
+	
+	
+	
 }

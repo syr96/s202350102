@@ -2,7 +2,11 @@ package com.oracle.S202350102.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,13 +16,16 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +41,7 @@ import com.oracle.S202350102.dto.User1;
 import com.oracle.S202350102.service.bgService.BgBoardService;
 import com.oracle.S202350102.service.bgService.BgReportService;
 import com.oracle.S202350102.service.hbService.Paging;
+import com.oracle.S202350102.service.main.Level1Service;
 import com.oracle.S202350102.service.main.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -44,10 +52,11 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class BgController {
 
-	private final BgBoardService bBoardD;
-	private final BgReportService bReportD;
+	private final BgBoardService bBoardS;
+	private final BgReportService bReportS;
 	private final UserService userService;
 	private final JavaMailSender mailSender;
+	private final Level1Service ls;
 
 		// 이 코드를 쓰려면 지금은 ?chg_id=1 를 bgChgDetail.jsp 페이지에서 주소창에 넣어줘야 함
 //	  @RequestMapping(value = "/bgChgDetail") public String
@@ -138,7 +147,7 @@ public class BgController {
 		List<Board> boardCert = null;
 
 		try {
-			boardCert = bBoardD.boardCert(board);
+			boardCert = bBoardS.boardCert(board);
 			result.put("status", "OK");
 			result.put("boardCert", boardCert);
 		} catch (Exception e) {
@@ -211,11 +220,15 @@ public class BgController {
 
 		try {
 			System.out.println("BgController writeCertBrd board -> "+board);
-			insertResult = bBoardD.insertCertBrd(board);
+			insertResult = bBoardS.insertCertBrd(board);
 			// if (insertResult > 0) boardList = bs.boardCert(board);
 
 			if (insertResult > 0) {
+				
 				rtnStr1 = "1"; // 입력성공
+				// 					700 100 -> 인증게시판 카테고리 번호
+				ls.userExp(userNum, 700, 100);
+				ls.userLevelCheck(userNum);
 
 			} else {
 				rtnStr1 = "2";  // 입력실패
@@ -264,6 +277,7 @@ public class BgController {
 	@PostMapping(value = "updateCertBrd")
 	public String updateCertBrd(Board board, Model model, HttpServletRequest request,
 								@RequestParam("chg_id") int chg_id,
+								@RequestParam("currentPage") int currentPage,
 								@RequestParam(value = "editFile", required = false) MultipartFile editFile) 
 										throws IOException {
 		log.info("updateCertBrd Start...");
@@ -283,18 +297,18 @@ public class BgController {
 		System.out.println("realPath -> "+realPath);
 		System.out.println("board.getImg() -> "+board.getImg());
 		
-		int updateCount = bBoardD.updateCertBrd(board);
+		int updateCount = bBoardS.updateCertBrd(board);
 		System.out.println("BgController bs.updateCertBrd updateCount -> "+updateCount);
 		
 		model.addAttribute("uptCnt", updateCount);
 		model.addAttribute("kk3", "Message Test");
 		
-		return "redirect:chgDetail?chg_id="+chg_id;
+		return "redirect:chgDetail?chg_id="+chg_id+"&currentPage="+currentPage;
 	}
 	
 	
-	
-	@RequestMapping(value = "deleteCertBrd")
+	// 보류
+	@RequestMapping(value = "temporaryDeleteCertBrd")
 	public String deleteCertBrd(int brd_num, Model model) {
 		System.out.println("BgController Start delete...");
 		//int result = bs.deleteCertBrd(brd_num);
@@ -304,7 +318,7 @@ public class BgController {
 	
 	
 	
-	// ajax로 인증 게시판 삭제하기		deleteCertBrd
+	// ajax로 인증 게시판 원글 및 댓글 삭제하기		deleteCertBrd
 	@ResponseBody
 	@RequestMapping(value = "/brdNumDelete")
 	public String brdNumDelete( Board board,
@@ -314,7 +328,7 @@ public class BgController {
 		System.out.println("BgController brdNumDelete getImg -> "+board.getImg());
 		System.out.println("BgController brdNumDelete getBrd_group -> "+board.getBrd_group());
 		
-		int delStatus = bBoardD.deleteCertBrd(board);
+		int delStatus = bBoardS.deleteCertBrd(board);
 		
 		if (delStatus > 0 && board.getImg() != null ) {
 			
@@ -378,10 +392,12 @@ public class BgController {
 	
 	
 	// 찌르기 - 메일 보내기
+	@ResponseBody
 	@RequestMapping(value = "sendMail", method = RequestMethod.POST)
 	public String sendMail(@RequestParam("ssjUserNum")			String ssjUserNum,
 						   @RequestParam("sendMailUser_num") 	String user_num, 
 						   @RequestParam("cheerUpMsg")			String cheerUpMsg, 
+						   
 								Model model) {
 		System.out.println("mailSending...");
 		
@@ -420,6 +436,8 @@ public class BgController {
 		System.out.println("sendMail title -> "+title);
 		System.out.println("sendMail cheerUpMsg -> "+cheerUpMsg);
 		
+		int result = 0;
+		
 		try {
 			// Mime 전자 우편 Internet 표준 Format
 			MimeMessage msg = mailSender.createMimeMessage();
@@ -430,15 +448,19 @@ public class BgController {
 			msgHelper.setText(cheerUpMsg); 	// 메일 내용
 			
 			mailSender.send(msg);
-			model.addAttribute("check", 1);		// 정상 전달
+			result = 1;		// 정상 전달
 			
 		} catch (Exception e) {
 			System.out.println("e.getMessage() -> "+e.getMessage());
-			model.addAttribute("check", 2);		// 메일 전달 실패
+			result = 2;		// 메일 전달 실패
 		}
 		
+		System.out.println("sendMail result -> " +result);
+		System.out.println("sendMail String.valueOf(result) -> " +String.valueOf(result));
+		
+		
 		// 챌린지 메인 페이지 만들어야 제대로 넣을 수 있음
-		return "redirect:chgDetail";
+		return	String.valueOf(result);
 	}
 	
 	
@@ -450,7 +472,7 @@ public class BgController {
 		System.out.println("BgController commentInsert Start...");
 		System.out.println("BgController commentInsert chg_id -> "+chg_id);
 		
-		bBoardD.commentInsert(board);
+		bBoardS.commentInsert(board);
 		
 		return "redirect:chgDetail?chg_id="+chg_id;
 	}
@@ -471,7 +493,7 @@ public class BgController {
 		
 		
 		// mapper key: srchCrtBdCnt		 검색 결과 counting 후, 페이징 작업
-		int searchCnt = bBoardD.srchCrtBdCnt(board);
+		int searchCnt = bBoardS.srchCrtBdCnt(board);
 		System.out.println("BgController searchCrtBd searchCnt -> "+searchCnt);
 		
 		Paging page = new Paging(searchCnt, currentPage);
@@ -479,7 +501,7 @@ public class BgController {
 		board.setEnd(page.getEnd());		// 시작 시 10
 		
 		// mapper key: searchCrtBd		 검색 결과 리스트 R
-		List<Board> srchResult = bBoardD.searchCrtBd(board);
+		List<Board> srchResult = bBoardS.searchCrtBd(board);
 		System.out.println("BgController searchCrtBd srchResult.size() -> "+srchResult.size());
 		
 		model.addAttribute("certTotal", searchCnt);
@@ -491,7 +513,7 @@ public class BgController {
 	
 	
 	
-	// 태우기 (신고) 버튼 작동 Ajax
+	// Report 테이블의 cnt U: 인증 게시판에 있는 태우기 (신고) 버튼 작동 Ajax
 	@ResponseBody
 	@RequestMapping(value = "Burning")
 	public Map<String, Object> Burning(@RequestParam("brd_num") int brd_num
@@ -502,19 +524,101 @@ public class BgController {
 		int user_num = 0;
 		if (session.getAttribute("user_num") != null) {
 			user_num = (int) session.getAttribute("user_num");
-			System.out.println("BgController Burning brd_num -> "+user_num);
+			System.out.println("BgController Burning user_num -> "+user_num);
 		}
 		
 		Report burning = new Report();
 		burning.setBrd_num(brd_num);
 		burning.setUser_num(user_num);
 		
+		System.out.println("BgController burning.getBrd_num() -> "+burning.getBrd_num());
+		System.out.println("BgController burning.getUser_num() -> "+burning.getUser_num());
+		
+		int result = bReportS.burning(burning);
+		System.out.println("BgController burning result -> "+result);
+		
 		Map<String, Object> burningResult = new HashMap<>();
-		int result = bReportD.burning(burning);
-		System.out.println("BgController Burning result -> "+result);
 		burningResult.put("result", result);
 		
 		return burningResult;
+	}
+	
+	
+	
+	// 신고게시판 R
+	@RequestMapping(value = "reportListAdmin")
+	public String reportList(Report report, String currentPage, Model model) {
+		
+		
+		System.out.println("BgController reportList Start...");
+		
+		System.out.println("report.getSearchType() -> " + report.getSearchType());
+		System.out.println("report.getKeyword() -> " + report.getKeyword());
+		System.out.println("report.getStartDate() -> " + report.getStartDate());
+		System.out.println("report.getEndDate() -> " + report.getEndDate());
+		
+		String keyword = report.getKeyword();
+		String searchType = report.getSearchType();
+		
+		int totalReport = 0;
+		
+		if (searchType == null) {
+			
+			// 카운팅		mapper key:	reportTotal
+			totalReport = bReportS.totalReport();
+			System.out.println("BgController reportList totalReport -> " + totalReport);
+		} else {
+			
+			// 카운팅		mapper key:	totalSearchReport
+			totalReport = bReportS.totalSearchReport(report);
+			System.out.println("BgController reportList totalReport -> " + totalReport);
+		} 
+		
+		
+		// 페이징
+		Paging page = new Paging(totalReport, currentPage);
+		
+		report.setStart(page.getStart());	// 시작 시 1	// 페이지의 시작 위치를 설정	(기본적으로 1p)
+		report.setEnd(page.getEnd());		// 시작 시 10	// 페이지의 끝 위치 설정	(기본적으로 10p)
+		System.out.println("BgController reportList report.getStart() -> "+report.getStart());
+		System.out.println("BgController reportList report.getEnd() -> "+report.getEnd());
+		
+		
+		// 리스트 가져오기
+		System.out.println("BgController reportList ");
+		List<Report> listReport = bReportS.listReport(report);	// 설정된 페이지에 해당하는 신고 목록을 가져옵니다
+		System.out.println("BgController reportList listReport.size() -> "+listReport.size());
+
+		model.addAttribute("totalReport", totalReport);		// 화면에 전체 신고 수를 전달
+		model.addAttribute("listReport", listReport);		// 화면에 현재 페이지의 신고 목록을 전달
+		model.addAttribute("page", page);					// 화면에 페이징 정보를 전달
+		model.addAttribute("searchType", report.getSearchType());
+		model.addAttribute("keyword", report.getKeyword());
+		model.addAttribute("startDate", report.getStartDate());
+		model.addAttribute("endDate", report.getEndDate());
+		
+		return "bg/reportListAdmin";
+				// jsp 파일 위치
+	}
+	
+	
+	
+	// 신고 게시판 U:	체크박스 체크된 행들 cnt 수정
+	@ResponseBody
+	@PostMapping("/resetReportCnts")
+	// public Map<String, Object> empListUpdate(@RequestBody @Valid List<Emp> listEmp) {
+
+	public String resetReportCnts(@RequestBody  @Valid  List<Report> selectedReports) {
+		
+		System.out.println("BgController resetReportCnts Start...");
+		System.out.println("BgController resetReportCnts selectedReports.size() -> "+selectedReports.size());
+		
+		
+		int result = bReportS.resetReportCnts(selectedReports);
+		System.out.println("BgController resetReportCnts result -> "+result);
+		
+		// ajax 성공했을 때 부분 수정하기
+		return String.valueOf(result);
 	}
 	
 	

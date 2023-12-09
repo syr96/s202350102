@@ -1,32 +1,40 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/views/header4.jsp" %>    
-<%@ include file="/WEB-INF/views/topBar.jsp" %>
+
 <!DOCTYPE html>
 <html>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-<head>
-<!-- CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<style type="text/css">
+.form-group input.form-control.form-control-sm {
+  background-color: transparent; 
+}
+.form-group textarea.form-control.form-control-sm {
+  background-color: transparent;
+}
+
+
+</style>
 <meta charset="UTF-8">
 <title>게시글 상세내용</title>
 </head>
 <body>
 <section class="pt-7 pb-12">
-      <div class="container">
+      <div class="container section-mt">
        <!-- Heading -->
         <div class="row">
           <div class="col-12 text-center"> 
             <h3 class="mb-10"> 게시글 상세내용 </h3>
           </div>
         </div>
-        
 	   <!--form  -->
-      <div class="col-12 col-md-9 col-lg-8 offset-lg-1">        	
+      <div class="col-12 col-md-9 col-lg-10 offset-lg-1">        	
 		<input type="hidden" name="brd_step" value="${board.brd_step}"> 
 		<input type="hidden" name="brd_group" value="${board.brd_group}"> 
 		            <input type=hidden  value="${board.user_num }">
-		
+		<div class="button-container" style="text-align: right;" > 
+       <a href="listCommunity?" class="btn btn-dark btn-xs">목록</a> 
+        </div>
 		<c:choose>
     		<c:when test="${board.brd_step == 0}">
   			Reviews : ${board.replyCount}
@@ -50,23 +58,34 @@
 		    		<!-- 작성일자 -->
                     <div class="form-group mb-7">                       
                            <label class="form-label" for="reg_date">등록일자</label>
-                           <input class="form-control form-control-sm" id="reg_date" name="reg_date" type="text" value="${board.reg_date}" readonly>
+                           <fmt:formatDate value="${board.reg_date}" pattern="yyyy-MM-dd" var="formattedDate" />
+						  <input class="form-control form-control-sm" id="reg_date" name="reg_date" type="text" value="${formattedDate}"  readonly>
+                         
           	   	    </div>
 		
 					<!-- 상세내용 -->       
 					<div class="form-group mb-7">
     					<label class="form-label" for="conts">내용</label>
     					<div class="d-flex align-items-start" style="margin-top: 10px;">
-      					 	 <textarea class="form-control form-control-sm"  rows="12"  readonly >${board.conts}</textarea>
+      					 	 <textarea class="form-control form-control-sm" rows="12"  style="height: 200px; overflow-y: auto; font-size: 16px;" readonly >${board.conts}</textarea>
   						</div>
 					</div>       
                     <!-- 이미지 업로드 -->	
-					<div class="form-group mb-7">
-						<label class="form-label" for="file">이미지 </label>
-						<a href="${pageContext.request.contextPath}/upload/${board.img}">
-                            <img src="${pageContext.request.contextPath}/upload/${board.img}" alt="..." class="card-img-top">
-                        </a>
-					</div>   	
+<div class="form-group mb-7">
+    <label class="form-label" for="file">이미지 </label>
+    <c:if test="${not empty board.img}">
+        <div class="image-container">
+            <img src="${pageContext.request.contextPath}/upload/${board.img}" alt="..." class="card-img-top" style="width: 300;height: 400;">
+        </div>
+    </c:if>
+    <c:if test="${empty board.img}">
+        <!-- 이미지가 비어있을 경우 아무것도 보이지 않도록 설정 -->
+        <div class="image-container" style="display: none;">
+            <img src="#" alt="..." class="card-img-top" style="width: 250;height: 300;">
+        </div>
+    </c:if>
+</div>
+
 		 	</c:when>
 		</c:choose>					
 

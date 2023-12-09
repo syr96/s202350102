@@ -35,19 +35,24 @@ public class ThOrder1ServiceImpl implements ThOrder1Service {
 	}
 
 	@Override
-	public int updateOrderSucess(int order_num) {
-		System.out.println("ThOrder1ServiceImpl updateOrderSucess Start...");
-		int	updateResult = od1.updateOrderSucess(order_num);
-		System.out.println("ThOrder1ServiceImpl updateOrderSucess updateResult --> " + updateResult);
-		return updateResult;
-	}
-
-
-	@Override
 	public Order1 selectOrderSucess(int user_num) {
 		System.out.println("ThOrder1ServiceImpl selectOrderSucess Start...");
 		Order1 order1 = od1.selectOrderSucess(user_num);
 		return order1;
+	}
+
+	@Override
+	public int transactionOrderInsertUpdate(String tid, int user_num) {
+		System.out.println("ThOrder1ServiceImpl transactionOrderInsertUpdate Start...");
+		int updateOrderUserResult 	= od1.transactionOrderInsertUpdate(tid,user_num);
+		return updateOrderUserResult;
+	}
+
+	@Override
+	public int tranxOrdUsrUptSuc(int order_num, int user_num) {
+		System.out.println("ThOrder1ServiceImpl tranxOrdUsrUptSuc Start...");
+		int updateOrderUserResult = od1.tranxOrdUsrUptSuc(order_num,user_num);
+		return updateOrderUserResult;
 	}
 
 }

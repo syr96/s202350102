@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ include file="/WEB-INF/views/header4.jsp" %>   
-<%@ include file="/WEB-INF/views/topBar.jsp" %>    
+<%@ include file="/WEB-INF/views/header4.jsp" %>    
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,14 +8,12 @@
 <title>전체 자유게시판 게시글 조회</title>
 </head>
 <body>
-<section class="py-11">
- <div class="container" style=" margin-left: 300px;">            
+<section class="pt-7 pb-12">
+ <div class="container section-mt">            <!-- style=" margin-left: 300px;"  -->
         <div class="row">
           <div class="col-12 text-center">			
-            <!-- Heading -->
-            <div class="pt-10 pb-5">          
+            <!-- Heading -->  
             	<h3 class="mb-10">쉐어링게시판 관리</h3>
-            </div>
           </div>
         </div>        
                
@@ -29,8 +26,8 @@
         <!-- 게시판리스트    user_id에 회원정보 상세보기 링크 걸어두기 -->
             <div class="col-12">	
              <c:set var="num" value="${sharBoardPage.total - sharBoardPage.start+1 }"></c:set> 
-                <table class="table table-bordered table-sm mb-0" style="width:1200px">
-                    <thead>
+                <table class="table table-bordered table-sm mb-0" ><!--  style="width:1200px" -->
+                    <thead class="table-dark">
                         <tr class="p-2 text-center">
                             <th scope="col" class="th-num">번호</th>
                             <th scope="col" class="th-title">제목</th>         
@@ -38,7 +35,6 @@
                             <th scope="col" class="th-nick">닉네임</th>
                             <th scope="col" class="th-date">등록일</th>
                             <th scope="col" class="th-view_cnt">조회수</th>
-                            <th scope="col" class="th-replyCount">댓글수</th>
                             <th scope="col" class="th-applicants">모집인원</th>
                             <th scope="col" class="th-participants">참가인원</th>
                             <th scope="col"  class="text-center">삭제처리</th>
@@ -53,7 +49,6 @@
                                 <td>${board.nick}</td>
                                 <td><fmt:formatDate value="${board.reg_date}" pattern="yy-MM-dd"/></td>
                                 <td>${board.view_cnt}</td>
-				         		<td>${board.replyCount}</td>
 				         		<td>${board.applicants}명</td>
 				         		<td>${board.participants}명</td>
 				         		<td class="justify-content-center">

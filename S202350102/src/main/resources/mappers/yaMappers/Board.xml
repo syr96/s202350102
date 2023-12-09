@@ -37,7 +37,7 @@
 	
     <insert id="YaBoardInsert" parameterType="Board">
     	INSERT INTO board ( brd_num, user_num, brd_lg, brd_md, title, conts, img, reg_Date, brd_group, brd_step)
-    	VALUES          ( BRD_NUM_SEQ.nextval, #{user_num}, 700, 103, #{title}, #{conts}, #{img}, sysdate, BRD_NUM_SEQ.nextval,0)
+    	VALUES          ( BRD_NUM_SEQ.nextval, #{user_num}, 700, 103, #{title}, #{conts}, #{img}, sysdate + interval '9' hour, BRD_NUM_SEQ.nextval,0)
     </insert>
     
 	<update id="YaBoardUpdate" parameterType="Board">
@@ -56,38 +56,68 @@
     	DELETE FROM board WHERE brd_num = #{brd_num} 
     </delete>
     
-    <select id="YaBoardSearhList" parameterType="String" resultType="Board">
-		SELECT b.brd_num, b.title, b.user_num, u.nick,b.reg_date, b.view_cnt, replyCount(b.brd_num) replyCount
-        FROM board b ,user1 u
+	  <select id="YaBoardSearhList" parameterType="map" resultType="Board">
+		    SELECT *
+		    FROM (
+		        SELECT rownum r, b.*
+		        FROM (
+		          	    SELECT b.brd_num, b.title, b.user_num, u.nick, b.reg_date, b.view_cnt, replyCount(b.brd_num) replyCount
+		           	    FROM board b, user1 u
+		          	    WHERE b.user_num = u.user_num
+		                AND b.brd_lg = 700
+		                AND b.brd_md = 103
+		                AND (b.title LIKE '%' || #{keyword} || '%' OR u.nick LIKE '%' || #{keyword} || '%')
+		                AND b.brd_step = 0
+		            ORDER BY b.reg_date DESC
+		        ) b
+		    )
+		    WHERE r BETWEEN #{start} AND #{end}
+	</select>
+	
+  <select id="countSearch" parameterType="String" resultType="int">
+        SELECT COUNT(*)
+        FROM board b, user1 u
         WHERE b.user_num = u.user_num
         AND b.brd_lg = 700
         AND b.brd_md = 103
-        AND   (b.title like '%' || #{keyword} || '%' 
-        	Or u.nick  like '%' || #{keyword} || '%')
-        AND b.brd_step =0
-        ORDER BY b.reg_date DESC	    
+        AND (b.title LIKE '%' || #{keyword} || '%' OR u.nick LIKE '%' || #{keyword} || '%')
+        AND b.brd_step = 0
     </select>
     
-	 <select id="sortByViewCnt" parameterType="String" resultType="Board">
-	    SELECT b.brd_num, b.title, b.user_num, u.nick,b.reg_date, b.view_cnt, replyCount(b.brd_num) replyCount
-	    FROM board b ,user1 u
-	    WHERE b.user_num = u.user_num
-        AND b.brd_lg = 700
-        AND b.brd_md = 103
-         AND b.brd_step =0
-	    ORDER BY b.view_cnt DESC
-	</select>
-	
-	<select id="sortByRegDate" parameterType="String" resultType="Board">
-	    SELECT b.brd_num, b.title, b.user_num, u.nick,b.reg_date, b.view_cnt,  replyCount(b.brd_num) replyCount
-	    FROM board b ,user1 u
-	    WHERE b.user_num = u.user_num
-        AND b.brd_lg = 700
-        AND b.brd_md = 103
-        AND b.brd_step =0
-	    ORDER BY b.reg_date DESC
-	</select>
-	
+<select id="sortByViewCnt" parameterType="map" resultType="Board">
+    SELECT  *
+    FROM (
+        SELECT rownum r, b.*
+        FROM (
+            SELECT b.brd_num, b.title, b.user_num, u.nick, b.reg_date, b.view_cnt, replyCount(b.brd_num) replyCount
+            FROM board b, user1 u
+            WHERE b.user_num = u.user_num
+            AND b.brd_lg = 700
+            AND b.brd_md = 103
+            AND b.brd_step = 0
+            ORDER BY b.view_cnt DESC
+        ) b
+    )
+    WHERE r BETWEEN #{start} AND #{end}
+</select>
+
+<select id="sortByRegDate" parameterType="map" resultType="Board">
+    SELECT   *
+    FROM (
+        SELECT rownum r, b.*
+        FROM (
+            SELECT b.brd_num, b.title, b.user_num, u.nick, b.reg_date, b.view_cnt, replyCount(b.brd_num) replyCount
+            FROM board b, user1 u
+            WHERE b.user_num = u.user_num
+            AND b.brd_lg = 700
+            AND b.brd_md = 103
+            AND b.brd_step = 0
+            ORDER BY b.reg_date DESC
+        ) b
+    )
+    WHERE r BETWEEN #{start} AND #{end}
+</select>
+
 	<select id="listComment" resultType="Board" parameterType="int">
 		SELECT b.brd_num, b.user_num, b.conts, u.nick, b.reg_date, b.brd_step, b.brd_group, u.img
 		FROM board b, user1 u
@@ -139,13 +169,19 @@
 		AND brd_step = 0
 	</select>
 	
-    <select id="myUploadSharingList" parameterType="int" resultType="Board"> 	
- 		SELECT *
- 		FROM   board b, user1 u 
- 		WHERE  b.user_num = #{user_num} AND u.user_num = #{user_num} 
- 		AND brd_lg = 700
- 		AND brd_md = 102
- 		AND brd_step = 0 
+    <select id="myUploadSharingList" parameterType="Board" resultType="Board"> 	
+		SELECT *
+		FROM (
+		   		 SELECT ROWNUM AS r, a.*
+		   		 FROM (
+				        SELECT b.brd_num, count_like(b.brd_num) as like_cnt, u.user_num, u.user_id, b.title, b.conts, u.nick, b.img, b.view_cnt, b.reg_date, b.price, b.bank_info, b.bank_duedate, b.addr, b.applicants, b.participants, b.user_tel, b.brd_group, b.brd_step, replyCount(b.brd_num) replyCount, b.zipCode
+		                 , likeyn(b.brd_num, #{b_user_num}) AS likeyn
+				        FROM board b, user1 u
+				        WHERE b.user_num = #{user_num} AND u.user_num = #{user_num} 
+				        AND brd_lg = 700 AND brd_md = 102 AND brd_step = 0 
+		    ) a
+		)
+		WHERE r BETWEEN #{start} AND #{end}
     </select>
     
     <update id="YaUpParticipantsCnt" parameterType="int">
@@ -158,12 +194,20 @@
   		WHERE brd_num=#{brd_num}
   	</update>
 	
-	<select id="YaMyConfirmSharingList" parameterType="int" resultType="Board">
-		SELECT s.brd_num, b.title, b.bank_info, b.bank_duedate, b.addr, b.applicants, b.price
-		FROM board b, sharingList s
-		WHERE s.user_num = #{user_num} 
-		AND b.brd_num = s.brd_num
-		AND s.state_md = 101 
+	<select id="YaMyConfirmSharingList" parameterType="Board" resultType="Board">
+		SELECT *
+		FROM (
+		    SELECT ROWNUM AS r, b.*
+		    FROM (
+		        SELECT s.brd_num, b.title, b.bank_info, b.bank_duedate, b.addr, b.applicants, b.price, u.user_name
+		        FROM board b, sharingList s, user1 u
+		        WHERE s.user_num = #{user_num} 
+		        AND u.user_num = b.user_num
+		        AND b.brd_num = s.brd_num
+		        AND s.state_md = 101
+		    ) b
+		)
+		WHERE r BETWEEN #{start} AND #{end}		
 	</select>
 	
 	<select id="YaMyUploadsharing" parameterType="int" resultType="int">
@@ -191,6 +235,71 @@
 		AND brd_step = 0
 	</select>
 	
+	<select id="YaLikeSharingCnt" parameterType="Board" resultType="int">
+	    SELECT count(*) 
+		FROM  board b, board_like bl 
+		WHERE b.brd_num = bl.brd_num
+        AND   bl.user_num = #{user_num}
+		AND   brd_lg = 700 
+		AND   brd_md = 102
+		AND   brd_step = 0 
+	</select>
 	
-
+	<select id="YaLikeSharingList" parameterType="Board" resultType="Board">
+		SELECT *
+		FROM (
+		    SELECT ROWNUM AS r, b.*
+		    FROM (
+		        SELECT b.brd_num, count_like(b.brd_num) as like_cnt, b.title, b.img, b.view_cnt, b.reg_date, b.price, b.applicants, 
+		        b.brd_group, b.brd_step, replyCount(b.brd_num) replyCount, b.zipCode
+		       , likeyn(b.brd_num, #{b_user_num}) AS likeyn
+		        FROM   board b, board_like bl 
+		        WHERE  b.brd_num = bl.brd_num
+		        AND    bl.user_num  = #{user_num}
+		        AND    brd_lg = 700 
+		        AND    brd_md = 102
+				AND    brd_step = 0 
+		    ) b
+		)
+		WHERE r BETWEEN #{start} AND #{end}			
+	</select>
+	
+	<select id="searchSharingCnt" parameterType="String" resultType="int">
+	    SELECT COUNT(*)
+        FROM board b, user1 u
+        WHERE b.user_num = u.user_num
+        AND b.brd_lg = 700
+        AND b.brd_md = 102
+        AND (b.title LIKE '%' || #{keyword} || '%')
+        AND b.brd_step = 0
+	</select>
+	
+     <select id="YaSharingSearchResult" parameterType="Map" resultType="Board">
+          SELECT *
+          FROM (
+              SELECT rownum r, b.*
+              FROM (
+                      SELECT b.brd_num, count_like(b.brd_num) as like_cnt, u.user_num, u.user_id, b.title, b.conts, u.nick, 
+                      b.img, b.view_cnt, b.reg_date, b.price, b.bank_info, b.bank_duedate, b.addr, b.applicants, b.participants, 
+                      b.user_tel, b.brd_group, b.brd_step, replyCount(b.brd_num) replyCount, b.zipCode, likeyn(b.brd_num, #{b_user_num}) AS likeyn
+                             
+                      FROM board b, user1 u       
+                       WHERE b.user_num = u.user_num
+                      AND b.brd_lg = 700
+                      AND b.brd_md = 102
+                      AND (title LIKE '%' || #{keyword} || '%')
+                      AND b.brd_step = 0
+                  ORDER BY
+                  <choose>
+                      <when test="sortOption == 'view_cnt'">
+                          b.view_cnt DESC
+                      </when>
+                      <otherwise>
+                          b.reg_date DESC
+                      </otherwise>
+                  </choose>                  
+              ) b
+          )
+          WHERE r BETWEEN #{start} AND #{end}
+   </select>   
 </mapper>

@@ -2,21 +2,21 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ include file="/WEB-INF/views/header4.jsp" %> 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>문의</title>
 	<script type="text/javascript" src="js/jquery.js"></script>
-	<link rel="stylesheet" href="/css/qBoardList.css">
+	<link rel="stylesheet" href="/css/qBoardList.css?after">
 </head>
 <body>
-	<c:import url="/WEB-INF/views/header4.jsp"/>
-	<div class="mainBody">
+	<div class="mainBody section-mt">
 	  <div class="qe_body">
 	    <div class="qe_box">
 	      <div class="qe_text_box">
-	        <span>문의게시판</span>
+	        <h2>문의게시판</h2>
 	      </div>
 	      <div class="qe_extra_box">
 	      	<div class="qe_select_box">
@@ -34,7 +34,7 @@
 	      	</div>
 	      	<div class="qe_write_box">
 		        <c:if test="${user1.user_id != null }">
-					<a href="qBoardWriteForm"><span>글작성</span></a>
+					<a href="qBoardWriteForm"><span>문의하기</span></a>
 				</c:if>	      	
 	      	</div>
 
@@ -48,7 +48,7 @@
 	                <td>제목</td>
 	                <td>작성자</td>
 	                <td>카테고리</td>
-	                <td>작성일</td>
+	                <td>작성일자</td>
 	                <td>조회수</td>
 	              </tr>
 	          </thead>
@@ -128,7 +128,6 @@
 	    </div>
 	  </div>
 	</div>
-	<c:import url="/WEB-INF/views/footer.jsp"/>
 	
 </body>
 <script type="text/javascript">
@@ -169,7 +168,6 @@
                             str += "<td>" +img+result.nick + "</td>";
                             str += "<td>"+result.category+"</td>";
                             var formatDate = new Date(result.reg_date);
-                            formatDate.setHours(formatDate.getHours()+9);
                             var day = formatDate.getDate();
                             var month = formatDate.getMonth() + 1;
                             var year = formatDate.getFullYear() % 100;
@@ -270,7 +268,6 @@
                         str += "<td>" +img+result.nick + "</td>";
                         str += "<td>"+result.category+"</td>";
                         var formatDate = new Date(result.reg_date);
-                        formatDate.setHours(formatDate.getHours()+9);
                         var day = formatDate.getDate();
                         var month = formatDate.getMonth() + 1;
                         var year = formatDate.getFullYear() % 100;
@@ -319,4 +316,5 @@
     
     
 </script>
+<%@ include file="/WEB-INF/views/footer.jsp" %>
 </html>

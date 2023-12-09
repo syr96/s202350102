@@ -100,10 +100,10 @@ public class ChBoardServiceImpl implements ChBoardService {
 	}
 
 	@Override
-	public List<Board> popShareList() {
+	public List<Board> popShareList(int user_num) {
 		System.out.println("chBoardServiceImpl popBoardList Start...");
 		
-		List<Board> popShareList = chBoardDao.popShareList();
+		List<Board> popShareList = chBoardDao.popShareList(user_num);
 		
 		System.out.println("chBoardServiceImpl popShareList->" + popShareList.size());
 		return popShareList;

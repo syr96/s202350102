@@ -71,7 +71,7 @@
             
           <div style="text-align: center;">
 	            <button class="btn w-100 btn-primary mb-2" onclick="location.href='/chgApplicationForm'" style="margin-top: 26px;">
-	 				챌린지 신청하기 <i class="fe fe-arrow-right ms-2"></i>
+	 				챌린지 개설 신청하기 <i class="fe fe-arrow-right ms-2"></i>
 				</button>
 		  </div>
 			

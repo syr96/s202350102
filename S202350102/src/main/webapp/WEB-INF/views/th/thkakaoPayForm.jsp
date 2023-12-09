@@ -31,8 +31,8 @@
 	<!--     {{> misc/promo}} -->
 
 	<!-- HEADER -->
-	<div class="pt-10">
-		<div class="container">
+	<div>
+		<div class="container section-mt">
 			<div class="row">
 				<div class="col-12">
 

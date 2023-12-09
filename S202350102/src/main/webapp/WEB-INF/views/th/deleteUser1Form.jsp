@@ -18,10 +18,9 @@
 	}
 </script>
 <body>
-<c:import url="/WEB-INF/views/header4.jsp"/>
 <!-- CONTENT -->
     <section class="py-12">
-      <div class="container">
+      <div class="container section-mt">
         <div class="row justify-content-center">
           <div class="col-12 col-md-10 col-lg-8 col-xl-6 text-center">
 

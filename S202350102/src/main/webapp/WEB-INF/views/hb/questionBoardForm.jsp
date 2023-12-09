@@ -10,7 +10,7 @@
 <body>
 <c:import url="/WEB-INF/views/header4.jsp"/>
 	<h1>문의게시판</h1>
-	<div id="container">
+	<div id="container section-mt">
 		<table border="1">
 			<thead>
 				<tr><td>번호</td><td>제목</td><td>조회수</td><td>작성일</td></tr>

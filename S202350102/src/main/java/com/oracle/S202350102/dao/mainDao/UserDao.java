@@ -12,5 +12,6 @@ public interface UserDao {
 	void  	  		userExpUp(User1 user1);
 	UserLevel 		userLevelInfo(int user_num);
 	List<UserLevel> userLevelInfoList();
+	User1 			userSelect(User1 user1);
 
 }

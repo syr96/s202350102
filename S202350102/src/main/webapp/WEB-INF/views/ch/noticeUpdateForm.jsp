@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ include file="/WEB-INF/views/topBar.jsp" %>    
+    pageEncoding="UTF-8"%>   
 <%@ include file="/WEB-INF/views/header4.jsp" %>    
 <!DOCTYPE html>
 <html>
@@ -23,13 +22,11 @@
 	function fileUpdate(){
 		var fileInput = document.getElementById('fileInput');
 		if(fileInput.style.display == "none"){
-			fileInput.style.display = "block";
-			fileInput.removeAttribute('disabled');
+			fileInput.style.display = "block";			
 			$("#imgOroot").hide();
 			$("#chgBtn").html("취소");
 		} else{
-			fileInput.style.display = "none";
-			fileInput.setAttribute('disabled', 'true');
+			fileInput.style.display = "none";			
 			$("#imgOroot").show();
 			$("#chgBtn").html("사진 첨부");
 		}
@@ -52,7 +49,7 @@
 
 </head>
 <body>
-	
+<section class="section-mt">	
 	<div class="container">
 		<form action="noticeUpdate" method="post" enctype="multipart/form-data">
 			<div id="qbd-main" class="qbd-main" style="height: auto;">
@@ -81,17 +78,19 @@
 		    			<div class="row border" style="height: auto;">
 		    				<div class="col-8 p-4 mt-4" >
 								<div class="qbd-content">
-									<div class="qbd-content text"  id="test">
-										<c:if test="${not empty noticeConts.img }">
-											<img alt="UpLoad Image" src="${pageContext.request.contextPath}/upload/${noticeConts.img}" id="Img"><p>
-											<input type="hidden" name="img" value="${noticeConts.img}">
-										</c:if>				
+									<div class="qbd-content text"  id="test">													
 										<span>
 											<textarea rows="20" cols="50" name="conts">${noticeConts.conts }</textarea>
 										</span>
+										<div id="imgContanier">
+											<c:if test="${not empty noticeConts.img }">
+												<img alt="UpLoad Image" src="${pageContext.request.contextPath}/upload/${noticeConts.img}" id="Img" style="max-width: 800px"><p>
+												<input type="hidden" name="img" value="${noticeConts.img}">											
+											</c:if>	
+										</div>
 									</div>						
 								</div>						
-								<input type="file" name="file1" style="display: none;" id="fileInput" disabled="disabled">
+								<input type="file" name="file1" style="display: none;" id="fileInput">
 								<c:if test="${not empty noticeConts.img }"><span id="imgOroot">${pageContext.request.contextPath}/upload/${noticeConts.img}</span></c:if><p>
 								<button type="button" onclick="fileUpdate()" id="chgBtn">사진 첨부</button>											
 								<c:if test="${not empty noticeConts.img }">
@@ -110,6 +109,7 @@
 			</div>
 		</form>
 	</div>
+</section>	
 </body>
 <%@ include file="/WEB-INF/views/footer.jsp" %>
 </html>

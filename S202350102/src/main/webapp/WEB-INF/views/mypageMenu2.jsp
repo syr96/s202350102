@@ -1,16 +1,44 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/views/topBar.jsp" %>
 <html>
 <head>
     <meta charset="UTF-8">
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-     <link rel="stylesheet" href="./style.css">
-    <link href='//netdna.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css' rel='stylesheet' type='text/css'/>
-     <link rel="shortcut icon" href="./assets/favicon/favicon.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="./assets/css/libs.bundle.css" />
-    <link rel="stylesheet" href="./assets/css/theme.bundle.css" />
-    <title>Insert title here</title>
+<link rel="stylesheet" href="css/level.css">
+<title>Insert title here</title>
 </head>
 <script>
+$(document).ready(function () {
+    // mypageMenu 엔드포인트로 AJAX 요청
+    $.ajax({
+       type: 'GET',
+       url: '/mypageMenu',
+       success: function (data) {
+          // 응답을 처리 (필요한 경우)
+          console.log(data);
+          
+          var jsonData = JSON.parse(data);
+          var user1 = jsonData.user1;
+          var level1List = jsonData.level1List;
+          var followCnt = jsonData.followCnt;
+          var followerCount = followCnt.FOLLOWER_CNT;
+          var followingCount = followCnt.FOLLOWING_CNT;
+          var myBoard_cnt = jsonData.myBoard; 
+          
+          console.log("Follower Count: " + followerCount);
+          console.log("Following Count: " + followingCount);
+          
+          $('.profile-usertitle-name').text(user1.nick + ' 님');
+          $('.follow').text(followCnt.FOLLOWER_CNT);
+          $('.following').text(followCnt.FOLLOWING_CNT);
+          $('.myBoardCnt').text(myBoard_cnt);
+          
+       },
+       error: function (error) {
+          // 오류 처리
+          console.error(error);
+       }
+    });
+ });
      $(document).ready(function () {
          $('#editImageModalBtn').click(function () {
              $('#editImageModal').modal('show');
@@ -28,7 +56,7 @@
                  success: function (result) {
                      // 서버로부터의 응답을 처리 (예: 성공 메시지 또는 오류 메시지)
                      console.log(result);
-                     // 모달을 닫을 수 있는 코드 추가 (예: $('#editImageModal').modal('hide');)
+                      $('#editImageModal').modal('hide');
                  },
                  error: function (error) {
                      // 오류 처리
@@ -37,7 +65,7 @@
              });
          });
      });
-
+     
      function previewImage(input) {
          var file = input.files[0];
          if (file) {
@@ -49,13 +77,16 @@
              reader.readAsDataURL(file);
          }
      }
+     
+     function confirmGoSub() {
+    	 if(confirm('구독 회원이 아닙니다 \n구독하기 페이지로 이동하시겠습니까?')){
+    		 location.href = 'thkakaoPayForm'
+    	 } else {
+    		 
+    	 }
+    	 
+     }
  </script>
-<style type="text/css">
-@import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css);
-body{
-    font-family: 'Noto Sans KR', sans-serif;
-}
-</style>
 <style>
 
 .profile {
@@ -342,23 +373,79 @@ a, button, code, div, img, input, label, li, p, pre, select, span, svg, table, t
 				<!-- SIDEBAR USER TITLE -->
     
 				<div class="profile-usertitle">
+				<!--  닉네임   -->
 					<div class="profile-usertitle-name">
-						${user1.nick } 님 
 					</div>
+					       	<button id="modalOpenBtn">경험치 정보</button>
+		<div id="modal">
+			<div class="hidden" id="modalContainer">
+				<div id="modalContent">
+					<button id="modalCloseBtn">X</button>
+					<div class="user_info">
+						<div class="userInfoBox1">
+							<img id="user_icon" alt="user_icon" src="images/level/${user1.user_level }.gif">
+							<span id="user_level">
+								<label>${user1.nick }님</label>
+								<label>현재 레벨 : ${user1.user_level }</label> 
+							</span>
+						</div>
+
+						<div class="progress" style="height: 50px">
+							<div class="progress-bar" role="progressbar" style="width: ${user1.percentage}%;">${user1.percentage}%</div>
+						</div>
+						<div class="userInfoBox2">
+							<span class="user_exp">
+								<label>현재 경험치 ${user1.user_exp }</label>
+							</span>
+							<span class="remain_exp">
+								<label>남은 경험치 ${user1.remain_exp }</label>
+							</span>
+						</div>
+
+					</div>
+					<button id="levelInfoBtn">레벨표 보기</button>
+					<div class="hidden" id="level_info_container">
+						<table border="1" style="width:500px;">
+							<thead>
+								<tr>
+									<td style="text-align: center;"><span style="font-family:굴림,Gulim,sans-serif;"><span style="font-size:16px;">레벨</span></span></td>
+									<td style="text-align: center;"><span style="font-family:굴림,Gulim,sans-serif;"><span style="font-size:16px;">아이콘</span></span></td>
+									<td style="text-align: center;"><span style="font-family:굴림,Gulim,sans-serif;"><span style="font-size:16px;">경험치</span></span></td>
+									<td style="text-align: center;"><span style="font-family:굴림,Gulim,sans-serif;"><span style="font-size:16px;">설명</span></span></td>
+								</tr>
+							</thead>	
+							<c:forEach var="level" items="${level1List }">
+								<tbody>
+									<tr>
+										<td style="text-align: center;"><span style="font-family:굴림,Gulim,sans-serif;"><span style="font-size:16px;">${level.user_level }</span></span></td>
+										<td style="text-align: center;"><span style="font-family:굴림,Gulim,sans-serif;"><img alt="${level.user_level }" src="/images/level/${level.lv_name }.gif"></span></td>
+										<td style="text-align: center;"><span style="font-family:굴림,Gulim,sans-serif;"><span style="font-size:16px;">${level.tot_exp }.Exp</span></span></td>
+										<td style="text-align: center;"><span style="font-family:굴림,Gulim,sans-serif;"><span style="font-size:16px;">${level.lv_name }레벨</span></span></td>
+									</tr>
+								</tbody>
+							</c:forEach>
+						</table>			
+					</div>
+				</div>
+			</div>
+		</div>
+					
 					<div class="profile-usertitle-job">
-					level : ${user1.user_level} &nbsp;&nbsp;&nbsp;&nbsp; 누적 경험치 : ${user1.user_exp}exp 
 					</div>
 					<div class="row list-separated profile-stat">
                    <div class="col-md-4 col-sm-4 col-xs-6">
-                       <div class="uppercase profile-stat-title"> 37 </div>
+                       <div class="uppercase profile-stat-title">
+                       <div class="follow"></div></div>
                        <div class="uppercase profile-stat-text"> 팔로우 </div>
                    </div>
                    <div class="col-md-4 col-sm-4 col-xs-6">
-                       <div class="uppercase profile-stat-title"> 51 </div>
+                       <div class="uppercase profile-stat-title">
+                       <div class="following"></div></div>
                        <div class="uppercase profile-stat-text"> 팔로잉 </div>
                    </div>
                    <div class="col-md-4 col-sm-4 col-xs-6">
-                       <div class="uppercase profile-stat-title"> 61 </div>
+                       <div class="uppercase profile-stat-title"> 
+                       <div class="myBoardCnt"></div> </div>
                        <div class="uppercase profile-stat-text"> 내가 쓴 글</div>
                    </div>
                    
@@ -375,7 +462,7 @@ a, button, code, div, img, input, label, li, p, pre, select, span, svg, table, t
                    <!-- Nav -->
                    <nav class="mb-10 mb-md-0" >
                        <div class="list-group list-group-sm list-group-strong list-group-flush-x">
-                           <a class="list-group-item list-group-item-action dropend-toggle " href="/challengeManagement">
+                           <a class="list-group-item list-group-item-action dropend-toggle " href="/mypage">
                                활동정보
                            </a>
                            <a class="list-group-item list-group-item-action dropend-toggle " href="/challengeManagement">
@@ -384,9 +471,24 @@ a, button, code, div, img, input, label, li, p, pre, select, span, svg, table, t
                            <a class="list-group-item list-group-item-action dropend-toggle " href="/followList">
                                팔로우 관리
                            </a>
-                           <a class="list-group-item list-group-item-action dropend-toggle " href="/subscriptionManagement">
-                               구독 관리
-                           </a>
+                           	
+                           <!-- 일반 회원일때 구독하기 페이지로 이동  -->
+                           <c:if test="${user1.status_md == 100 }">
+	                           <a class="list-group-item list-group-item-action dropend-toggle " href="#" onclick="confirmGoSub()">구독 관리</a>
+                           </c:if>
+                           <!-- 구독자일때 구독관리 창 보임  -->
+                           <c:if test="${user1.status_md == 101 }">
+	                           <a class="list-group-item list-group-item-action dropend-toggle " href="/thSubscriptManagement">구독 관리</a>
+                           </c:if>
+                           <!-- 관리자일때 안보임  -->
+                           <c:if test="${user1.status_md == 102 }">
+								
+                           </c:if>
+                           <!-- 블랙리스트일때 안보임  -->
+                            <c:if test="${user1.status_md == 103 }">
+								
+                           </c:if>
+                           
                            <a class="list-group-item list-group-item-action dropend-toggle " href="/sharingManagement">
                                쉐어링 관리
                            </a>
@@ -408,7 +510,7 @@ a, button, code, div, img, input, label, li, p, pre, select, span, svg, table, t
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editImageModalLabel">프로필 편집</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -429,11 +531,36 @@ a, button, code, div, img, input, label, li, p, pre, select, span, svg, table, t
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-dark btn-sm" data-dismiss="modal fade">닫기</button>
+               <button type="button" class="btn btn-dark btn-sm" data-bs-dismiss="modal">닫기</button>
+
                 <button type="button" class="btn btn-dark btn-sm" id="saveBtn">완료</button>
             </div>
         </div>
     </div>
 </div>
+
+
+<script type="text/javascript">
+const modalOpenBtn = document.getElementById('modalOpenBtn');
+const modalCloseBtn = document.getElementById('modalCloseBtn');
+const modal = document.getElementById('modalContainer');
+const levelInfoContainer = document.getElementById('level_info_container');
+
+modalOpenBtn.addEventListener('click', () => {
+    modal.classList.remove('hidden');
+});
+
+modalCloseBtn.addEventListener('click', () => {
+    modal.classList.add('hidden');
+    levelInfoContainer.classList.add('hidden'); // 모달이 닫힐 때 level_info도 숨김
+});
+
+const levelInfoBtn = document.getElementById('levelInfoBtn');
+
+levelInfoBtn.addEventListener('click', () => {
+    levelInfoContainer.classList.toggle('hidden'); // 보이기/숨기기 전환
+});
+
+</script>
 </body>
 </html>

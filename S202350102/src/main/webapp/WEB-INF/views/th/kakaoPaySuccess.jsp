@@ -11,7 +11,7 @@
 <body>
 <!-- CONTENT -->
     <section class="py-12">
-      <div class="container">
+      <div class="container section-mt">
         <div class="row justify-content-center">
           <div class="col-12 col-md-10 col-lg-8 col-xl-6 text-center">
 
@@ -32,7 +32,7 @@
 				&emsp;결제일시:     &emsp;<fmt:formatDate value="${order1.suc_date}" pattern="yyyy년 MM월 dd일, HH시 mm분 ss초"></fmt:formatDate><br/>
 				&emsp;주문번호:     &emsp;${info.partner_order_id}<br/>
 				&emsp;구독상품:     &emsp;${info.item_name}<br/>
-				&emsp;결제금액:     &emsp;${info.amount.total}<br/>
+				&emsp;결제금액:     &emsp;<fmt:formatNumber value="${info.amount.total}" pattern="#,###"/>원<br/>
 				&emsp;결제방법:     &emsp;${order1.pay_type}<br/>
             </p>
 			

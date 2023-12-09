@@ -15,6 +15,10 @@
               SELECT b.brd_num, u.user_num, b.title, u.nick, b.reg_date, b.view_cnt, b.brd_md 
               FROM   board b, user1 u 
               WHERE  b.user_num = u.user_num 
+              <choose>
+              	<when test="status_md != 102">and u.user_num = #{user_num}</when>
+              	<otherwise></otherwise>
+              </choose>
               AND    brd_lg = 400
               AND    brd_step = 0
               order  by b.reg_date desc
@@ -49,7 +53,7 @@
 		INSERT INTO board 
 			(brd_num, brd_lg, brd_md, title, conts, reg_date, user_num, brd_group, brd_step, view_cnt, img) 
 		VALUES
-			(brd_num_seq.nextval, 400, #{brd_md}, #{title}, #{conts}, sysdate, #{user_num}, brd_num_seq.currval, 0, 0, #{img})
+			(brd_num_seq.nextval, 400, #{brd_md}, #{title}, #{conts}, sysdate + interval '9' hour, #{user_num}, brd_num_seq.currval, 0, 0, #{img})
 	</insert>
 	
 	<delete id="qBoardDelete" parameterType="int">

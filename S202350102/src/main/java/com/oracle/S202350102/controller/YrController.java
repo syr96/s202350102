@@ -18,6 +18,8 @@ import com.oracle.S202350102.dto.Challenge;
 import com.oracle.S202350102.dto.Challenger;
 import com.oracle.S202350102.dto.Following;
 import com.oracle.S202350102.dto.User1;
+import com.oracle.S202350102.service.main.Level1Service;
+import com.oracle.S202350102.service.main.UserService;
 import com.oracle.S202350102.service.yrService.YrBoardLikeService;
 import com.oracle.S202350102.service.yrService.YrChallengePickService;
 import com.oracle.S202350102.service.yrService.YrChallengeService;
@@ -36,6 +38,8 @@ public class YrController {
 	private final YrChallengePickService 	ycps;
 	private final YrBoardLikeService		ybls;
 	private final YrChallengeService		ychs;
+	private final UserService us;
+	private final Level1Service ls;
 	
 //	@RequestMapping(value = "checkBoard")
 //	public String checkBoard() {
@@ -120,7 +124,7 @@ public class YrController {
 	
 	// following 리스트
 	@RequestMapping(value = "followList")
-	public String followList(HttpSession session, Model model) {
+	public String followList(HttpSession session, User1 user1, Model model) {
 		
 		// session에 저장된 로그인 정보값 가져오기
 		int userNum = 0;
@@ -129,15 +133,24 @@ public class YrController {
 			System.out.println("YrController followList userNum -> " + userNum);
 		}
 		
+		user1.setUser_num(userNum);
+		User1 user1FromDB = us.userSelect(userNum);
 		// 팔로잉 리스트 출력
 		List<User1> followingList = yfis.followingList(userNum);
-		System.out.println("YrController followingList -> " + followingList);
+		followingList = us.userLevelList(followingList);
 		model.addAttribute("followingList", followingList);
+		model.addAttribute("user1", user1FromDB);
 		
 		// 팔로우 리스트 출력
 		List<User1> followerList = yfis.followerList(userNum);
-		System.out.println("YrController followerList -> " + followerList);
+		followerList = us.userLevelList(followerList);
 		model.addAttribute("followerList", followerList);
+		model.addAttribute("level1List",ls.level1List());
+		
+		// user 정보 가져오기
+		// 없애도 될지도? -> sessionscope로 대체 가능??
+		user1 = us.userSelect(userNum);
+		model.addAttribute("user1", user1);
 		
 		return "jk/followList";
 	}
@@ -263,7 +276,7 @@ public class YrController {
 		int userNum = 0;
 		if(session.getAttribute("user_num") != null) {
 			userNum = (int) session.getAttribute("user_num");
-			System.out.println("YrController followList userNum -> " + userNum);
+			System.out.println("YrController chgPickList userNum -> " + userNum);
 		}
 		
 		List<Challenge> chgPickList = ychs.selectChgPick(userNum);
@@ -271,6 +284,19 @@ public class YrController {
 		model.addAttribute("chgPickList", chgPickList);
 		
 		return "yr/chgPickList";
+	}
+	
+	@RequestMapping(value = "myPickChgManagement")
+	public String myChgPickList(HttpSession session, Model model) {
+		
+		// session에 저장된 로그인 정보값 가져오기
+		int userNum = 0;
+		if(session.getAttribute("user_num") != null) {
+			userNum = (int) session.getAttribute("user_num");
+			System.out.println("YrController myChgPickList userNum -> " + userNum);
+		}
+		
+		return "yr/myPickChgManagement";
 	}
 	
 }

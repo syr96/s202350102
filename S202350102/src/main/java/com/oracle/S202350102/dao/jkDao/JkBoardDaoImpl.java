@@ -223,4 +223,17 @@ public class JkBoardDaoImpl implements JkBoardDao {
 		
 		return sharing2;
 	}
+
+	@Override
+	public int myBoard(int user_num) {
+		int myBoard = 0;
+		try {
+			myBoard = session.selectOne("myBoard", user_num);
+			System.out.println("myboardCnt-->" + myBoard);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("JkBoardDaoImpl myBoard e.getMessage->" + e.getMessage());
+		}
+		return myBoard;
+	}
 }

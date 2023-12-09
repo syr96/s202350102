@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ include file="/WEB-INF/views/topBar.jsp" %>    
+    pageEncoding="UTF-8"%>   
 <%@ include file="/WEB-INF/views/header4.jsp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -98,15 +97,15 @@
 	
 	function appendInput(){		
 		if($("#sample_img").css("display") == "none"){
-			$("#sample_img").show();
+			$("#sample_img").show();			
 		} else {
-			$("#sample_img").hide();
+			$("#sample_img").hide();			
 		}
 	}
 	
 	function thumbUpdate(){
 		if($("#thumb").css("display") == "none"){
-			$("#thumb").show();
+			$("#thumb").show();			
 		} else {
 			$("#thumb").hide();
 		}
@@ -129,7 +128,7 @@
 <title>당신만의 챌린지를 신청하세요</title>
 </head>
 <body>
-<button onclick="location.href='/modify'"></button>
+
  <section class="pt-7 pb-12">
       <div class="container">
         <div class="row">
@@ -142,18 +141,20 @@
         </div>
         
         <div class="row">
-        <!-- 나중에 진짜 사이드바 만들면 추가하기 -->
-         <%@ include file="/WEB-INF/views/chgSidebar.jsp" %>
+        <div class="col-md-3">
+        	<%@ include file="../mypageMenu.jsp" %>
+        	
+		</div>      
          
-          <div class="col-12 col-md-9 col-lg-8 offset-lg-1">
-			<h5>${user.nick }님이 원하시는 챌린지는?</h5>
+          <div class="col-9 col-md-9 col-lg-8 offset-lg-1">
+			<h5>${user1.nick }님이 원하시는 챌린지는?</h5>
 			
 			
 			
 			
             <!-- Form -->
             <form action="chChgUpDate" onsubmit="return chk()" method="post" enctype="multipart/form-data">
-              <input type="hidden" name="user_num" value="${user.user_num}">
+              <input type="hidden" name="user_num" value="${user1.user_num}">
               <input type="hidden" name="chg_id" value="${chg.chg_id}">
               <input type="hidden" name="contextPath" id="contextPath" value="${pageContext.request.contextPath}/upload/">
 <%-- 필요한가
@@ -338,11 +339,10 @@
                   <!-- 인증예시 사진 -->
                   <div class="form-group" id="sampleUpdate">
                     <label class="form-label" for="sample_img">
-                      	인증 예시
-                      	<img alt="이미지 불러오기에 실패했습니다." src="${pageContext.request.contextPath}/upload/${chg.sample_img}">
-                      	<input type="hidden" value="${chg.sample_img}" name="sample_img">
+                      	인증 예시<p>
+                      	<img alt="이미지 불러오기에 실패했습니다." src="${pageContext.request.contextPath}/upload/${chg.sample_img}" style="max-width: 400px"><p>                      	
                     </label>
-                    <button type="button" onclick="appendInput()" id="apply">수정</button>                    
+                    <button type="button" onclick="appendInput()" id="apply">인증 예시 수정</button>                    
                     <input type="file" class="form-control" id="sample_img" name="sampleImgFile" style="display: none;">
                   </div>
 
@@ -357,7 +357,7 @@
                     <label class="form-label">공개 여부</label>
                     <!-- Inputs -->
                     <c:choose>
-                    	<c:when test="${user.status_md == 101}">
+                    	<c:when test="${user1.status_md == 101}">
 	                    	<div>
 		                      <c:choose>
 		                      	<c:when test="${chg.chg_public == 0}">
@@ -425,12 +425,19 @@
                   <!-- 썸네일 -->
                   <div class="form-group">
                     <label class="form-label" for="thumb">
-                      	썸네일
-                      	<img alt="이미지 불러오기에 실패했습니다." src="${pageContext.request.contextPath}/upload/${chg.thumb}" id="thumbImg">
-                      	<input type="hidden" name="thumb" value="${chg.thumb}">
+                      	썸네일<p>
+                      	<c:choose>
+							<c:when test="${chg.thumb == 'assets/img/chgDfaultImg.png'}">		
+							<p>						
+							</c:when>
+						
+							<c:otherwise>
+								<img class="card-img-top thumb-img" src="${pageContext.request.contextPath}/upload/${chg.thumb}" alt="thumb" style="max-width: 400px"><p>
+							</c:otherwise>
+					</c:choose>                     	
                     </label>
-                    <button  type="button" onclick="thumbUpdate()">수정</button>
-                    <button  type="button" onclick="Deletethumb()" id="delBtn">삭제</button>
+                    <button  type="button" onclick="thumbUpdate()">썸네일 수정</button>
+                    <button  type="button" onclick="Deletethumb()" id="delBtn">썸네일 삭제</button><p>
                     <input type="hidden" name="delStatus" value="0" id="delStatus">
 					<input type="file" class="form-control" id="thumb" name="thumbFile" style="display: none;">
                   </div>

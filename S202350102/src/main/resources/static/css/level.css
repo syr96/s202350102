@@ -5,15 +5,12 @@
     font-style: normal;
 }
 
-/* .modal {
-	width: 100%; height: 100%;
-	background-color: gray; opacity: 0.6;
-} */
-
 #modalOpenBtn, #modalCloseBtn {
   cursor: pointer;
 }
-
+.extra_box {
+    display: flex; align-items: center; justify-content: center;
+}
 #modalOpenBtn {
   font-size: 16px;
   color: #59a5d2;
@@ -27,11 +24,11 @@
 }
 
 #modalCloseBtn {
-	display: flex; justify-content: end; align-items: center;
+    border: 0 solid black; position: absolute; top: 10px; right: 20px;
 }	
 
 #modalContainer {
-  z-index: 2;
+  z-index: 5;
   width: 100%;
   height: 100%;
   position: fixed;
@@ -44,11 +41,11 @@
 }
 
 #modalContainer > #modalContent {
-  z-index: 2;
+  z-index: 5;
   position: absolute;
   background-color: #ffffff;
   width: 530px;
-  height: 700px;
+  height: 730px;
   padding: 15px;
 }
 
@@ -69,11 +66,12 @@
 .userInfoBox1{
 	border: 0px solid red; height: 50px;
 	display: flex; justify-content: center; align-items: center;
+    margin-top: 40px;
 }
 
 .userInfoBox2 {
 	height: 50px;
-	border: 0px solid red;
+	border: 0px solid red; text-align: center;
 	display: flex; align-items: center;
 }
 .userInfoBox2 > .user_exp {

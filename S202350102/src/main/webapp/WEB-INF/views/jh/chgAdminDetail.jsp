@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>챌린지 상세 조회 관리자</title>
 <style>
 	/* 왜 적용 안됨? */
 	th {
@@ -25,7 +25,7 @@
 			
 	} */
 	
-	$(document).ready(function() {
+/* 	$(document).ready(function() {
 		var result = ${result}
 		
 		if(result > 0){
@@ -33,7 +33,7 @@
 		}
 			alert("result ->" + result);
 		
-	});
+	}); */
 	
 	function approvReturnFn(pApprovReturn){
 		var approvReturn	= pApprovReturn
@@ -45,7 +45,7 @@
 			var confirmResult = confirm("챌린지를 승인하시겠습니까?");
 			
 			if(confirmResult){
-				location.href = "approvReturn?chg_id="+chg_id+"&state_md="+state_md+"&user_num="+user_num+"&approvReturn="+approvReturn;
+				location.href = "approvReturn?chg_id="+chg_id+"&user_num="+user_num+"&approvReturn="+approvReturn;
 			} 
 		} else{
 			
@@ -53,6 +53,7 @@
 		}
 	}
 	
+	//모달에서 챌린지 반려 버튼 클릭시 확인 함수
 	function chk(){
 /* 		alert("pApprovReturn 반려 -> " + pApprovReturn);
 		var approvReturn	= pApprovReturn
@@ -65,7 +66,7 @@
 		
 		if(confirmResult){
 			//location.href = "approvReturn?chg_id="+chg_id+"&state_md="+state_md+"&return_md="+return_md+"&approvReturn="+approvReturn;
-			
+			//확인 버튼 클릭시 반려 진행
 			return true;
 		} else {
 	        // 취소 버튼을 눌렀을 때 아무 동작도 하지 않고 모달을 열어둠
@@ -73,6 +74,97 @@
 	    }
 		
 	} 
+	
+	//챌린지 삭제시
+	function chgDeleteFn(){
+		var chg_id 		= ${chg.chg_id}
+		var state_md	= ${chg.state_md }
+		var thumb		= '${chg.thumb}'
+		var sample_img	= '${chg.sample_img }'
+		var confirmResult = confirm("챌린지를 삭제 하시겠습니까?");
+		if(confirmResult){
+			location.href='/chgDelete?chg_id='+chg_id+'&state_md='+state_md+'&thumb='+thumb+'&sample_img='+sample_img;    
+		}
+	}
+	
+	//목록 버튼 클릭시
+	function chgAdminList(){
+	    var pageNum  =  ${currentPage}
+		var state_md =  ${state_md}
+	    var chg_md 	 =  ${chg.chg_md}
+	    var sortOpt  = '${sortOpt}'
+	    var chg_lg 	 =  ${chgLg}
+    	var keyword 	=	"${chg.keyword}" // 검색 키워드
+			    
+   	    //검색어 있는 경우
+       	if(keyword !== null && keyword !== ""){
+       		//alert("검색 함")
+		    //진행/종료 챌린지인 경우(필터 있을 때)
+	   	    if(sortOpt !== null){
+		   			//alert("필터 없음")
+			    //카테고리 선택한 경우
+		   		if(chg_lg != 0){
+		   			//alert("필터 없음")
+					location.href = "chgAdminList?state_md="+state_md+"&chg_lg="+chg_lg+"&chg_md="+chg_md+"&sortOpt="+sortOpt+"&currentPage="+pageNum+"&keyword="+keyword;
+		   		//카테고리 선택 안한 경우	
+		   		}else{
+		   			alert("필터 없음")
+					location.href = "chgAdminList?state_md="+state_md+"&sortOpt="+sortOpt+"&currentPage="+pageNum+"&keyword="+keyword;
+		   			
+		   		}
+			//신청/반려 챌린지인 경우
+		   	}else{
+		   		if(chg_lg != 0 ){
+		   			//alert("필터 없음")
+					location.href = "chgAdminList?state_md="+state_md+"&chg_lg="+chg_lg+"&chg_md="+chg_md+"&currentPage="+pageNum+"&keyword="+keyword;
+		   		//카테고리 선택 안한 경우	
+		   		}else{
+		   			//alert("필터 없음")
+					location.href = "chgAdminList?state_md="+state_md+"&currentPage="+pageNum+"&keyword="+keyword;
+		   			
+		   		}
+		   		
+		   	}
+       	} else{
+		    //진행/종료 챌린지인 경우(필터 있을 때)
+	   	    if(sortOpt !== null && sortOpt !== 'null'){
+		   			//alert("검색없음")
+			    //카테고리 선택한 경우
+		   		if(chg_lg != 0){
+		   			//alert("필터있고 카테고리 있음")
+					location.href = "chgAdminList?state_md="+state_md+"&chg_lg="+chg_lg+"&chg_md="+chg_md+"&sortOpt="+sortOpt+"&currentPage="+pageNum;
+		   		//카테고리 선택 안한 경우	
+		   		}else{
+		   			//alert("필터있고 카테고리 없음 " + sortOpt)
+					location.href = "chgAdminList?state_md="+state_md+"&sortOpt="+sortOpt+"&currentPage="+pageNum;
+		   			
+		   		}
+			//신청/반려 챌린지인 경우
+		   	}else{
+		   		if(chg_lg != 0 ){
+		   			//alert("필터 없음 카테고리 유")
+					location.href = "chgAdminList?state_md="+state_md+"&chg_lg="+chg_lg+"&chg_md="+chg_md+"&currentPage="+pageNum;
+		   		//카테고리 선택 안한 경우	
+		   		}else{
+		   			//alert("필터 없음 카테고리 무")
+					location.href = "chgAdminList?state_md="+state_md+"&currentPage="+pageNum;
+		   			
+		   		}
+		   		
+		   	}
+       		
+       	}
+		
+	}
+	
+	//댓글 관리
+	function chgReviewAdminFn(){
+		var chg_id = ${chg.chg_id}
+		var title  = '${chg.title }'	
+		location.href = "chgReviewAdmin?chg_id="+chg_id+"&title="+title;
+		
+	}
+
 	
 </script>
 </head>
@@ -104,13 +196,12 @@
                 </p>
     
                 <!-- Form -->
-                <form action="/approvReturn" onsubmit="return chk()">
+                <form action="/approvReturn" method="post" onsubmit="return chk()">
                   <div class="row gx-5">
                     <div class="col">
                     
     				<input type="hidden" name="approvReturn" value="0">
     				<input type="hidden" name="chg_id" value="${chg.chg_id}">
-    				<input type="hidden" name="state_md" value="${chg.state_md}">
                       <!-- Input -->
                       <select class="form-select" id="return_md" name="return_md" required="required">
                       	<c:forEach var="rtnReason" items="${returnReason }" varStatus="status">
@@ -168,11 +259,22 @@
           </div>
         </div>
         
-        <div class="row">
-        <!--사이드바   -->
-        <%@ include file="adminSidebar.jsp" %>
+        <!--사이드바   관리자인 경우 adminSidebar, 사용자인 경우 mypageMenu  -->
+		<div class="row">
+	        <c:choose>
+				<c:when test="${user1.status_md == 102 }">
+	        		<%@ include file="adminSidebar.jsp" %>
+			        <div class="col-10">
+	        	</c:when>
+	        	<c:otherwise>
+					<div class="col-md-3">
+	        			<%@ include file="/WEB-INF/views/mypageMenu.jsp" %>
+	    		  	</div>
+			        <div class="col-9">
+	        	</c:otherwise>
+	        </c:choose>
+        		
         
-        <div class="col-10">
         
 		<table class="table table-bordered table-sm mb-0">
 			    <tr>
@@ -180,18 +282,21 @@
 			      <td>${chg.title }</td>
 			      <th rowspan="3">썸네일</th>
 				  <td rowspan="3">
-				  <c:choose>
-				  	<c:when test="${chg.thumb !=null }">
-	                  	<img class="card-img-top" src="${pageContext.request.contextPath}/upload/${chg.thumb }" alt="이미지를 불러오는 데 실패했습니다." style="width: 100%; height: 150px; border-radius: 10px;" >
+ 				  <c:choose>
+				  	<c:when test="${chg.thumb == 'assets/img/chgDfaultImg.png' }"> 
+                      	<img alt="챌린지 썸네일" src="${chg.thumb}" id="thumbImg" style="width: 100%; height: 150px; border-radius: 10px;">
+				  	</c:when>
+				  	<c:when test="${chg.thumb == null }"> 
+                      	<img alt="챌린지 썸네일" src="assets/img/chgDfaultImg.png" id="thumbImg" style="width: 100%; height: 150px; border-radius: 10px;">
 				  	</c:when>
 				  	<c:otherwise>
-	                  	<img class="card-img-top" src="assets/img/chgDfaultImg.png" alt="userDfault" style="width: 100%; height: 150px; border-radius: 10px;">
-				  	</c:otherwise>
+                      	<img alt="챌린지 썸네일" src="${pageContext.request.contextPath}/upload/${chg.thumb}" id="thumbImg" style="width: 100%; height: 150px; border-radius: 10px;">
+				  	</c:otherwise> 
 				  </c:choose>
 				  </td>
 			    </tr>
 			    <tr>
-			      <th scope="row">개설자 아이디 / 개설자 닉네임</th>
+			      <th scope="row">개설자 아이디  /<br> 개설자 닉네임</th>
 			      <td>${chg.userId} / ${chg.nick }</td>
 			    </tr>
 			    <tr>
@@ -255,7 +360,7 @@
 			    	<c:when test="${chg.state_md == 104 }">
 				      <th scope="row">챌린지 반려일</th>
 				      <!-- return_date로 바꾸기 -->
-				      <td colspan="3"><fmt:formatDate value="${chg.create_date }" pattern="yyyy년 MM월 dd일"></fmt:formatDate></td>
+				      <td colspan="3"><fmt:formatDate value="${chg.return_date }" pattern="yyyy년 MM월 dd일"></fmt:formatDate></td>
 			    	</c:when>
 			    	<c:otherwise>
 				      <th scope="row">챌린지 개설일</th>
@@ -269,27 +374,49 @@
 			    </tr>
 		</table>
 		<div class="d-flex justify-content-start mt-5">
-			<button class="btn btn-sm btn-dark mx-1" onclick="currentPageMove()">목록</button>
+				<!-- 챌린지 신청완료 땐 승인/반려 활성화 -->
+				<!-- 챌린지 진행중 땐 수정 반려엔 삭제 버튼만 활성화  -->
+				<!-- 관리자인 경우  -->
+		<c:choose>
+			<c:when test="${user1.status_md == 102 }">
+				<button class="btn btn-sm btn-dark mx-1" onclick="chgAdminList()">목록</button>
+				<c:choose>
+					<c:when test="${chg.state_md == 100 }">
+						<button class="btn btn-sm btn-info mx-1" onclick="approvReturnFn(1)" id="approval"  >승인</button>
+						<button class="btn btn-sm btn-danger mx-1" onclick="approvReturnFn(0)" id="return" >반려</button>
+					</c:when>
+					<c:when test="${chg.state_md == 102 }">
+						<button class="btn btn-sm btn-info mx-1" onclick="location.href='/chgAdminDetail?chg_id=${chg.chg_id}&state_md=${state_md}&chgUpdateMode=1'">수정</button>
+					</c:when>
+					<c:when test="${chg.state_md == 104}">
+						<button class="btn btn-sm btn-danger mx-1" onclick="chgDeleteFn()" id="chgDelete">삭제</button>
+					</c:when>
+					<c:when test="${chg.state_md == 103}">
+						<button class="btn btn-sm btn-outline-dark mx-1" onclick="chgReviewAdminFn()" id="chgReviewAdmin">후기 관리하기</button>
+					</c:when>
+				</c:choose>
+			</c:when>
 			
-			<!-- 챌린지 신청완료 땐 승인/반려 활성화 -->
-			<c:choose>
-				<c:when test="${chg.state_md == 100 }">
-					<button class="btn btn-sm btn-dark mx-1" onclick="approvReturnFn(1)" id="approval"  >승인</button>
-					<button class="btn btn-sm btn-dark mx-1" onclick="approvReturnFn(0)" id="return" >반려</button>
-				</c:when>
-			</c:choose>
+			<c:otherwise>
+			    <button class="btn btn-sm btn-dark mx-1" onclick="location.href='/mypage'">목록</button>
+			<!-- 사용자인 경우 -->
+			    <c:if test="${user1.user_num == chg.user_num && (chg.state_md == 100 || chg.state_md == 104)}">
+			        <!-- 수정 버튼 -->
+			        <c:if test="${chg.state_md == 100}">
+			            <button class="btn btn-sm btn-dark mx-1" onclick="location.href='/myChgUpdate?chg_id=${chg.chg_id}'">수정</button>
+			        </c:if>
 			
+			        <!-- 삭제 버튼 -->
+			        <button class="btn btn-sm btn-dark mx-1" onclick="chgDeleteFn()" id="chgDelete">삭제</button>
+			    </c:if>
 			
-			<!-- 챌린지 진행중 땐 수정/삭제, 반려/종료엔 삭제 버튼만 활성화  -->
-			<c:choose>
-				<c:when test="${chg.state_md == 102 }">
-					<button class="btn btn-sm btn-info mx-1" onclick="location.href='/chgAdminDetail?chg_id=${chg.chg_id}&chgUpdateMode=1'">수정</button>
-					<button class="btn btn-sm btn-dark mx-1" onclick="approvReturnFn(0)" id="chgDelete" >삭제</button>
-				</c:when>
-				<c:when test="${chg.state_md == 103 || chg.state_md == 104}">
-					<button class="btn btn-sm btn-dark mx-1" onclick="approvReturnFn(0)" id="chgDelete" >삭제</button>
-				</c:when>
-			</c:choose>
+			    <c:if test="${chg.state_md == 102 || chg.state_md == 103}">
+			        <!-- 챌린지 상세보기 버튼 -->
+			        <button class="btn btn-sm btn-dark mx-1" onclick="location.href='/chgDetail?chg_id=${chg.chg_id}'">챌린지 상세보기</button>
+			    </c:if>
+			</c:otherwise>
+
+		</c:choose>
 
 		</div>	
 		</div>

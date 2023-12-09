@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/views/header4.jsp" %>    
-<%@ include file="/WEB-INF/views/topBar.jsp" %>  
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,28 +9,26 @@
 <title>전체 자유게시판 게시글 조회</title>
 </head>
 <body>
-<section class="py-11">
- <div class="container" style=" margin-left: 300px;">            
+<section class="pt-7 pb-12">
+ <div class="container section-mt"><!--  style=" margin-left: 300px;" -->            
         <div class="row">
           <div class="col-12 text-center">			
-            <!-- Heading -->
-            <div class="pt-10 pb-5">          
-            	<h3 class="mb-10">자유게시판 관리</h3>
-            </div>
+            <!-- Heading -->        
+            	<h3 class="mb-10">자유게시판 관리</h3>       
           </div>
         </div>        
                
         <div class="row">
         <!--사이드바   -->
          <%@ include file="../jh//adminSidebar.jsp" %>
-		<div class="col-md-10 ">	
+		<div class="col-10 ">	
 		<div class="row mb-5">
         </div>
         <!-- 게시판리스트    user_id에 회원정보 상세보기 링크 걸어두기 -->
             <div class="col-12">	
              <c:set var="num" value="${boardPage.total - boardPage.start+1 }"></c:set> 
-                <table class="table table-bordered table-sm mb-0" style="width:1200px">
-                    <thead>
+                <table class="table table-bordered table-sm mb-0" > <!-- style="width:1200px" -->
+                    <thead class="table-dark">
                         <tr class="p-2 text-center">
                             <th scope="col" class="th-num">번호</th>
                             <th scope="col" class="th-title">제목</th>         
@@ -38,7 +36,6 @@
                             <th scope="col" class="th-nick">닉네임</th>
                             <th scope="col" class="th-date">등록일</th>
                             <th scope="col" class="th-view_cnt">조회수</th>
-                            <th scope="col" class="th-replyCount">댓글수</th>
                             <th scope="col"  class="text-center">삭제처리</th>
                         </tr>
                     </thead>                 
@@ -52,7 +49,6 @@
                                 <td>${board.nick}</td>
                                 <td><fmt:formatDate value="${board.reg_date}" pattern="yy-MM-dd"/></td>
                                 <td>${board.view_cnt}</td>
-				         		<td>${board.replyCount}</td>
 				         		<td class="justify-content-center">
 									<button type="button" class="btn btn-secondary btn-xs" onclick="confirmDelete(${board.brd_num})">삭제</button>
 									<%-- <button type="button" class="btn btn-secondary btn-xs"  onclick="location.href='/deleteCommunityAdmin?brd_num=${board.brd_num}'">삭제</button> --%>
@@ -96,10 +92,8 @@
 <script>
     function confirmDelete(brd_num) {
         if (confirm("게시글을 삭제하시겠습니까?")) {
-            // 사용자가 확인을 클릭하면 삭제를 진행합니다.
             location.href = '/deleteCommunityAdmin?brd_num=' + brd_num;
-        } else {
-            // 사용자가 취소를 클릭하면 아무 일도 일어나지 않습니다.
+        } else {     
         }
     }
 </script>

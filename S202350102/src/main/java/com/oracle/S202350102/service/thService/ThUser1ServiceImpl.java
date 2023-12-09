@@ -43,16 +43,6 @@ public class ThUser1ServiceImpl implements ThUser1Service {
 		return deleteUserCnt;
 	}
 
-
-	@Override
-	public int updateUserPrem(int user_num) {
-		System.out.println("ThUser1ServiceImpl updateUserPrem Start...");
-		int updateCount = ud1.updateUserPrem(user_num);
-		System.out.println("ThUser1ServiceImpl updateUserPrem result --> " + updateCount);
-		return updateCount;
-	}
-
-
 	@Override
 	public int user1IdCheck(String user_id) {
 		System.out.println("ThUser1ServiceImpl user1IdCheck Start...");
@@ -131,9 +121,9 @@ public class ThUser1ServiceImpl implements ThUser1Service {
 
 
 	@Override
-	public int totalUser() {
+	public int totalUser(User1 user1) {
 		System.out.println("ThUser1ServiceImpl totalUser Start...");
-		int totUserCnt = ud1.totalUser();
+		int totUserCnt = ud1.totalUser(user1);
 		System.out.println("ThUser1ServiceImpl totalUser totalUserCnt --> " + totUserCnt);
 		return totUserCnt;
 	}
@@ -178,6 +168,14 @@ public class ThUser1ServiceImpl implements ThUser1Service {
 		int updateResult = ud1.updateUserAdmin(user1);
 		System.out.println("ThUser1ServiceImpl updateResult --> " + updateResult);
 		return updateResult;
+	}
+
+
+	@Override
+	public int updateUserNormal(int user_num) {
+		System.out.println("ThUser1ServiceImpl updateUserNormal Start...");
+		int updateUser1Result = ud1.updateUserNormal(user_num);
+		return updateUser1Result;
 	}
 
 

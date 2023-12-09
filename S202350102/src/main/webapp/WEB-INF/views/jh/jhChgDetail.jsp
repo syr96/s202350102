@@ -75,18 +75,26 @@
 			user_num 	= $("#user_num" 	+ index).val();
 			user_nick 	= $("#nick" 		+ index).val();
 			user_img 	= $("#user_img" 	+ index).val();
-//			user_level 	= $("#user_level" 	+ index).val();
-//			user_exp 	= $("#user_exp" 	+ index).val();
-//			percentage 	= $("#percentage" 	+ index).val();
-//			icon 		= $("#icon" 		+ index).val();
-		} else { // tap == '소세지들'
+			user_level 	= $("#user_level" 	+ index).val();
+			user_exp 	= $("#user_exp" 	+ index).val();
+			percentage 	= $("#percentage" 	+ index).val();
+			icon 		= $("#icon" 		+ index).val();
+		} else if(tap == '소세지들') { 
 			user_num 	= $("#ssjUserNum" 	+ index).val();
 			user_nick 	= $("#ssjNick" 		+ index).val();
 			user_img 	= $("#ssjImg" 		+ index).val();
-//			user_level 	= $("#ssjLevel" 	+ index).val();
-//			user_exp 	= $("#ssjExp" 		+ index).val();
-//			percentage 	= $("#ssjPercentage"+ index).val();
-//			icon 		= $("#ssjIcon" 		+ index).val();
+			user_level 	= $("#ssjUserLevel" + index).val();
+			user_exp 	= $("#ssjUserExp" 	+ index).val();
+			percentage 	= $("#ssjPercentage"+ index).val();
+			icon 		= $("#ssjIcon" 		+ index).val();
+		} else {	// tap == '후기'
+			user_num 	= $("#reviewUserNum" 	+ index).val();
+			user_nick 	= $("#reviewNick" 		+ index).val();
+			user_img 	= $("#reviewImg" 		+ index).val();
+			user_level 	= $("#reviewUserLevel"  + index).val();
+			user_exp 	= $("#reviewUserExp" 	+ index).val();
+			percentage 	= $("#reviewPercentage" + index).val();
+			icon 		= $("#reviewIcon" 		+ index).val();
 		}
 		
 		// DB에 있는지 존재 유무 체크
@@ -115,9 +123,8 @@
 		// userShowModal 모달 안의 태그 -> 화면 출력용  <span> <p> -> text
 		$('#displayUserNick').text(user_nick);
 		$('#displayUserImg').attr('src', '${pageContext.request.contextPath}/upload/' + user_img);
-//		$('#displayUserLevel').attr('title', 'Lv.' + user_level + ' | exp.' + user_exp + '(' + percentage + '%)')
-//							  .attr('src', '/images/level/' + icon + '.gif');
-			
+		$('#displayUserLevel').attr('title', 'Lv.' + user_level + ' | exp.' + user_exp + '(' + percentage + '%)').attr('src', '/images/level/' + icon + '.gif');
+		
 		// userShowModal 모달 안의 태그 input Tag -> Form 전달용		<input> -> <val>
 		$('#inputUserNum1').val(user_num);	// following()
 		$('#inputUserNum2').val(user_num);	// sendMessage()
@@ -175,6 +182,7 @@
 					$("#chgPick").removeClass("btn-dark").addClass("btn-outline-dark");
 					alert("찜 취소");
 				}
+				$("#inputPickCnt").text(chgPickResult.chgPickCnt);
 
 			},
 			error : function() {
@@ -264,7 +272,7 @@
 			processData: false,		// 이미지 파일 처리를 위해 false로 설정
 			contentType: false,		// 이미지 파일 처리를 위해 false로 설정
 			success:function(data){
-				alert(".ajax writeCertBrd->"+data); 
+				// alert(".ajax writeCertBrd->"+data); 
 				if (data == '1') {
 					// 성공하면 아래라인 수행 
 					alert("입력성공");
@@ -316,6 +324,7 @@
 		$('#displayReg_date').text(reg_date); 
 		$('#moreReg_date').text(reg_date);
 		
+		// 필요한 코드인지 재확인 필요
 		$('#editImage').text(img);
 		
 		$('#moreTitle').text(title);
@@ -365,7 +374,7 @@
 			return;
 		}
 		
-		alert("type -> " + type);
+		// alert("type -> " + type);
 		// Group 번호 가져오기
 
  	
@@ -391,10 +400,10 @@
 		var brd_num 	= $("#brd_num"+index).val();
 		var img			= $("#img"+index).val();
 		var brd_group	= $("#brd_group"+index).val();
-		alert("brd_num -> " + brd_num);
-		alert("img -> " + img);
+		// alert("brd_num -> " + brd_num);
+		// alert("img -> " + img);
 
-		alert("JSON.stringify(arr)->"+JSON.stringify(arr));
+		// alert("JSON.stringify(arr)->"+JSON.stringify(arr));
 
 		$.ajax({
 			url:"/brdNumDelete",
@@ -406,7 +415,7 @@
 			dataType:'text',
 			
 			success:function(data){
-				alert(".ajax deleteCertBrd data -> "+data);
+				// alert(".ajax deleteCertBrd data -> "+data);
 				
 				if (data > '0') {
 					// id 가 review +index 성공하면 아래 라인 수행
@@ -416,7 +425,7 @@
 						
 						// 원글의 brd_group 가져오기
 						var brd_group = arr[index].brd_group;
-						alert("삭제 대상 brd_num -> "+brd_num);
+						// alert("삭제 대상 brd_num -> "+brd_num);
 						
 						// 댓글 그룹이 동일한 모든 댓글 삭제
 						// 'comment'로 시작하는 모든 div 엘리먼트에 대해 아래의 코드를 실행
@@ -425,7 +434,7 @@
 							if (brd_num == arr[i].brd_group ) {
 								//alert("arr.title2.brd_num->"+ i + " :  "+ arr[i].brd_num);
 								/// alert("arr.title2.brd_group->"+ i + " :  "+ arr[i].brd_group);
-								alert("arr.title2.idx->"+ i + " :  "+ arr[i].idx);
+								// alert("arr.title2.idx->"+ i + " :  "+ arr[i].idx);
 								// 원글인지 댓글인지 판단하여 삭제
 								if (arr[i].brd_num ==  arr[i].brd_group) {
 									$('#review'+arr[i].idx).remove();
@@ -464,11 +473,12 @@
 	 
 	// 찌르기 메일 보내기 
 	function sendMail() { 
+		
 		 
 		// EL값을 JavaScript 변수에 저장 
 		// 실패:  
 		var sendMailUser_num	= ${user.user_num}; 
-		alert("sendMailUser_num -> "+sendMailUser_num); 
+		// alert("sendMailUser_num -> "+sendMailUser_num); 
 		 
 		// 넘겨줄 값을 저장 
 		var ssjUserNum	= $("#ssjUserNum").val(); 
@@ -483,18 +493,22 @@
 				ssjUserNum:	ssjUserNum, 
 				cheerUpMsg:	cheerUpMsg 
 			},
-			success:	function (response) { 
+			dataType:'text',
+			success:	function (result) { 
 				// 성공했을 때의 동작 
-				console.log(response); 
+				alert("메일이 발송되었습니다");
+				if(result == "1") {
+				window.location.href = 'chgDetail?chg_id='+${chg.chg_id}; 
+					
+				}
 			}, 
-			error:		function (error) { 
+			error:		function () { 
 				// 실패했을 때의 동작 
-				console.log(error); 
+				alert("메일이 발송되지 않았습니다")
 			} 
 		}); 
 		 
-		// 다음 동작으로 넘어가는 코드 
-		window.location.href = 'sendMail'; 
+		
 	} 
 	
 	
@@ -535,8 +549,8 @@
 	
 	
 	
+	// 인증 게시판 > 정렬
 	function fn_sortBy() {
-		alert("test");
 		var sortBy		= $('#sortBy').val();
 		var chg_id		= ${chg.chg_id};
 		
@@ -545,40 +559,87 @@
 		var keyword		= '${keyword != null ? keyword : ''}';
 		
 		location.href	= 'chgDetail?chg_id=' + chg_id
-				+	(searchType ? '&searchType=' + searchType : '')
-				+	(keyword ? '&keyword=' + keyword : '')
-				+	'&sortBy=' + sortBy;
+						+	(searchType ? '&searchType=' + searchType : '')
+						+	(keyword ? '&keyword=' + keyword : '')
+						+	'&sortBy=' + sortBy;
 	}
 	
 	
-	// 태우기 버튼 -> 로그인을 해야
+	// 이전 블럭 이동
+	function movePrevBlock() {
+		var sortBy 	= 	$('#sortBy').val()
+		var chg_id		= ${chg.chg_id}
+		
+		// searchType 과 keyword 값이 존재하는 경우에만 추가
+		var searchType	= '${searchType != null ? searchType : ''}';
+		var keyword		= '${keyword != null ? keyword : ''}';
+		var pageNum		=	${certBrdPage.startPage - certBrdPage.pageBlock }
+
+		location.href	= 'chgDetail?chg_id=' + chg_id
+						+	(searchType ? '&searchType=' + searchType : '')
+						+	(keyword ? '&keyword=' + keyword : '')
+						+	'&sortBy=' + sortBy
+						+	'&currentPage=' + pageNum;
+	}
+	
+	// 다음 블럭 이동
+	function moveNextBlock() {
+		var sortBy 	= 	$('#sortBy').val()
+		var chg_id		= ${chg.chg_id}
+		
+ 		// searchType 과 keyword 값이 존재하는 경우에만 추가
+		var searchType	= '${searchType != null ? searchType : ''}';
+		var keyword		= '${keyword != null ? keyword : ''}';
+		var pageNum		=	${certBrdPage.startPage + certBrdPage.pageBlock }
+
+		location.href	= 'chgDetail?chg_id=' + chg_id
+						+	(searchType ? '&searchType=' + searchType : '')
+						+	(keyword ? '&keyword=' + keyword : '')
+						+	'&sortBy=' + sortBy
+						+	'&currentPage=' + pageNum;
+	}
+	
+	
+	// 인증 게시판 > 태우기 버튼 -> 로그인을 해야 (로그인 안했을 때 해라고 alert 창 또는 로그인 창 뜨게 할 지)
 	function Burning(p_index) {
 		
 		
-		var burning_cnt = $('#burning_cnt' + p_index).val();
+		var report_cnt	= $('#report_cnt' + p_index).val();
 		var brd_num		= $('#brd_num' + p_index).val();
+		var myBurning	= $('#myBurning' + p_index).val();
 		
-		var confirmationMsg = "이 글을 신고하시겠습니까?\n\n현재 신고 온도: " + burning_cnt + "°C";
+		// alert("report_cnt -> " + report_cnt);
+		// alert("myBurning -> " + myBurning);
 		
-		var isConfirmed = window.confirm(confirmationMsg);
+		var confirmationMsg = "이 글을 신고하시겠습니까? (+10°C)\n\n현재 신고 온도: " + report_cnt + "°C";
+		var cancelBurningMsg = "신고를 취소하시겠습니까? (-10°C)\n\n현재 신고 온도: " + report_cnt + "°C";
+		
+		var isConfirmed;
+		
+		if (myBurning == 10) {
+			isConfirmed = window.confirm(cancelBurningMsg);
+		} else {
+			isConfirmed = window.confirm(confirmationMsg);
+			
+		}
 		
 		if(isConfirmed) {
 			
-			var jsonData = JSON.stringify({brd_num: brd_num});
 	         
 	         $.ajax({
 	             url:   "/Burning"
 	            ,type:   "POST"
-	            ,data:   jsonData
-	            ,contentType:   'application/json'
+	            ,data:   { brd_num : brd_num}
 	            ,dataType:   'json'
+	            // dataType 이란, 서버로부터 받아올 응답 데이터의 타입
+	            // -> 서버로 데이터를 전송할 때는 영향을 받지 X
 	            ,success:   function (burningResult) {
-	               alert("태우기 성공");
+	               // alert("태우기 성공"); -> 추후 취소 여부에 따라 다르게 alert 가 뜨도록 수정
 	               location.reload();
 	               
 	            },
 	            error:   function() {
-	               alert("태우기 실패하였습니다;")
+	               alert("태우기 실패하였습니다");
 	            }
 	         });
 			
@@ -588,26 +649,30 @@
 		
 	}
 	
+	
+	
+	
+	
 
 	
 	
 </script> 
 </head>
 <body>
-	<input type="button" value="목록" onclick="location.href='/thChgList'" > 
+
     <!-- BREADCRUMB -->
     <nav class="py-5">
-      <div class="container">
+      <div class="container section-mt">
         <div class="row">
           <div class="col-12">
 
             <!-- Breadcrumb -->
             <ol class="breadcrumb mb-0 fs-xs text-gray-400">
               <li class="breadcrumb-item">
-                <a class="text-gray-400" href="index.html">챌린지</a>
+                <a class="text-gray-400" href="/thChgList?state_md=${chg.state_md }">챌린지</a>
               </li>
               <li class="breadcrumb-item">
-                <a class="text-gray-400" href="shop.html">${chg.ctn }</a>
+                <a class="text-gray-400" href="/thChgList?state_md=${chg.state_md }&chg_lg=200&chg_md=${chg.chg_md }">${chg.ctn }</a>
               </li>
               <li class="breadcrumb-item active">${chg.title }
                 	
@@ -630,23 +695,24 @@
                 <!-- Card -->
                 <div class="card">
 
-                  <!-- Badge -->
-                  <div class="badge bg-primary card-badge text-uppercase">
-                                    인기
+					
+                  <!-- 인기 뱃지-->
+                 <c:if test="${chg.pick_cnt >= 10 }">
+			     	<div class="badge bg-primary card-badge text-uppercase">인기</div>
+				 </c:if>
                                     <!-- 찜수  -->
-                  </div>
 
                   <!-- Slider -->
-                  <div class="mb-4" data-flickity='{"draggable": false, "fade": true}' id="productSlider">
+                  <div class="mb-4">
 
 
                     <!-- Item -->
            		    <c:choose>
-					    <c:when test="${empty reviewContent.img}">
-							<img src="assets/img/chgDfaultImg.png" alt="이미지가 없습니다" class="card-img-top" >
+					    <c:when test="${chg.thumb == 'assets/img/chgDfaultImg.png'}">
+							<img src="assets/img/chgDfaultImg.png" alt="챌린지 썸네일" class="card-img-top" >
 					    </c:when>
 					    <c:otherwise>
-							 <img src="${pageContext.request.contextPath}/upload/${chg.thumb}" class="card-img-top" alt="이미지 업로드에 실패했습니다." >
+							 <img src="${pageContext.request.contextPath}/upload/${chg.thumb}" class="card-img-top" alt="챌린지 썸네일" >
 					    </c:otherwise>
 					</c:choose>
              <!--썸네일 처리 해야 함 파일 위치랑 null일 때 뜨게 할 것  -->
@@ -686,13 +752,14 @@
                   </ul>
                   <ul class="list-group list-group-horizontal-sm">
                     <li class="list-group-item">챌린지 찜</li>
-                    <li class="list-group-item">${chg.pick_cnt }</li>
+                    <li class="list-group-item" id="inputPickCnt">${chg.pick_cnt }</li>
                   </ul> 
+               </div>
                
-				<div class="row gx-5 mb-7">
+				<div class="mb-7 d-flex justify-content-start">
 					<!-- 참여하기 -->
 					<!-- YR 작성 -->
-					<div class="col-auto">
+					<div class="mx-1">
 						<c:choose>
 							<c:when test="${chg.stateCtn == '진행중'}">
 					
@@ -770,6 +837,10 @@
 						</c:choose>
 						
 						<!-- 참여완료 YN -->
+						<!-- 실제로 나타나는 버튼은 아님
+							 modal 띄우기 위해 존재하는 버튼
+							 hidden처리 되어있음 
+						-->
 						<button type="button" class="btn btn-danger mb-2" id="chgResultModalClick" data-bs-toggle="modal" data-bs-target="#chgResultModal" hidden>
 							참여완료
 						</button>
@@ -792,7 +863,7 @@
 
 					<!-- 찜하기 -->
 					<!-- YR 작성 -->
-					<div class="col-6">
+					<div>
 
 						<c:choose>
 							<c:when test="${sessionScope.user_num != null}">
@@ -827,7 +898,7 @@
 
 					</div>
 				</div>
-              </div>
+              
             </div>
           </div>
         </div>
@@ -846,7 +917,7 @@
             <!-- Nav -->
             <div class="nav nav-tabs nav-overflow justify-content-start justify-content-md-center border-bottom">
               <a class="nav-link active" id="descriptionNav" data-bs-toggle="tab" href="#descriptionTab">
-               	 챌린지 소개
+               	 챌린지 정보
               </a>
               <a class="nav-link" id="certNav" data-bs-toggle="tab" href="#certBoardTab" >
                              인증 게시판
@@ -865,23 +936,47 @@
             <div class="tab-content">
               <div class="tab-pane fade show active" id="descriptionTab">
                 <div class="row justify-content-center py-9">
-                  <div class="col-12 col-lg-10 col-xl-8">
-                    <div class="row">
-                      <div class="col-12">
+                <div class="col-12 col-lg-10 col-xl-8">
+                <!-- 챌린지 소개 수정 -->
+                 <div class="card mb-7">
 
-                        <!-- Text -->
-                        <p class="text-gray-500">
-                        <!-- 유저닉은 로그인 유지 되는지 확인하기 위한 것 나중에 삭제 예정 -->
-                        	${user.nick} <p>
-							${chg.chg_conts }<p>
-							인증방법 : ${chg.upload }<p>
-							<img alt="인증예시" src="${sample_img }">
-                        </p>
-
-                      </div>
-                      
-                    </div>
-                  </div>
+	            
+	
+	                <!-- Heading -->
+	                <div class="mt-1 mb-4">
+	                	<h5>챌린지 소개</h5>
+	                </div>
+	                
+	                <div>
+		                <!-- Text -->
+		                <p class="mb-8 text-gray-500">
+		                 		${chg.chg_conts }
+		                </p>
+	                </div>
+	                
+		              <!-- Image -->
+		              <img class="card-img-top mb-7" src="${pageContext.request.contextPath}/upload/${chg.sample_img }" alt="인증예시">
+		
+		              <!-- Body -->
+		              <div class="card-body px-0">
+		
+	
+	                <!-- Text -->
+			        <div class="mt-1 mb-4">
+	                	<h5>인증방법</h5>
+	                </div>
+              		 
+	                <p class="mb-0 text-gray-500">
+	                 		 ${chg.upload }
+	                </p>
+	
+	                
+					</div>
+	              </div>
+	
+	            </div>
+                
+                 
                 </div>
               </div>
               
@@ -1071,14 +1166,16 @@
 				            <!-- Header -->
 				            <div class="row align-items-center">
 				            
+				            <c:if test="${user != null }">
 				              <div class="col-12 col-md-auto">
 						        <!-- 필터 조회 -->
 				                <select class="form-select form-select-xs" id="sortBy" onchange="fn_sortBy()"> 
 				                  <option value="newest"	<c:if test="${sortBy eq 'newest' }">	selected="selected"</c:if>>최신 순</option>
 				                  <option value="oldest"	<c:if test="${sortBy eq 'oldest' }">	selected="selected"</c:if>>오래된 순</option>
-				                  <option value="like"		<c:if test="${sortBy eq 'like' }">		selected="selected"</c:if>>좋아요 순</option>
+				                  <%-- 보류 중 <option value="like"		<c:if test="${sortBy eq 'like' }">		selected="selected"</c:if>>좋아요 순</option> --%>
 				                </select>
 				              </div>
+				              </c:if>
 				              
 				              <div class="col-12 col-md text-md-center">
 				                <!-- Count 총 인증 수 -->
@@ -1271,167 +1368,191 @@
 			              	<c:choose>
 			              		<c:when test="${certBoard.brd_step == 0 }">
 			              		<!-- 1. 원글 -->
-					              <div class="review" id="review${status.index}">
-					                <div class="review-body">
-					                  <div class="row" id="certBoard${status.index}">
-					                  	<input type="hidden" id="brd_num${status.index}"		value="${certBoard.brd_num }">
-					                  	<input type="hidden" id="nick${status.index}"			value="${certBoard.nick }">
-					                  	<input type="hidden" id="reg_date${status.index}"		value="${certBoard.reg_date }">
-					                  	<input type="hidden" id="title${status.index}"			value="${certBoard.title }">
-					                  	<input type="hidden" id="conts${status.index}"			value="${certBoard.conts }">
-					                  	<input type="hidden" id="img${status.index}"			value="${certBoard.img }">
-					                  	<input type="hidden" id="brd_step${status.index}"		value="${certBoard.brd_step }">
-                                        <input type="hidden" id="brd_group${status.index}"  	value="${certBoard.brd_group }">
-                                        <input type="hidden" id="user_img${status.index}"		value="${certBoard.user_img}">
-										<input type="hidden" id="user_num${status.index}"		value="${certBoard.user_num}">
-                                        <input type="hidden" id="like_cnt${status.index}"		value="${certBoard.like_cnt}">
-                                        <input type="hidden" id="burning_cnt${status.index}"	value="${certBoard.burning_cnt}">
-                                        <input type="hidden" id="user_level${status.index}"		value="${certBoard.user_level}">
-                                        <input type="hidden" id="user_exp${status.index}"		value="${certBoard.user_exp}">
-                                        <input type="hidden" id="percentage${status.index}"		value="${certBoard.percentage}">
-                                        <input type="hidden" id="icon${status.index}"			value="${certBoard.icon}">
-				   						                  	
-					                  	
-					                  	<div class="col-5 col-md-3 col-xl-2">
-											<!-- 인증샷 Image -->
-					                    	<img src="${pageContext.request.contextPath}/upload/${certBoard.img }" alt="인증샷" class="img-fluid">
-					                    </div>
-					                    
-					                    
-					                    <div class="col-12 col-md">
-					                    
-											<!-- Avatar -->
-											<a href="#" data-bs-toggle="modal" onclick="userInfoModal('인증', ${status.index})">
-						                    	<div class="avatar avatar-lg">
-												  <img src="${pageContext.request.contextPath}/upload/${certBoard.user_img}" alt="profile" class="avatar-img rounded-circle">
-												</div>
-											</a>
-					                    
-					                      <!-- Header -->
-					                      <div class="row mb-6">
-					                        <div class="col-12">
-					                         	<!-- Time -->
-					                         	<span class="fs-xs text-muted">
-													<a href="#" data-bs-toggle="modal" onclick="userInfoModal('인증', ${status.index})">
-														<img title="Lv.${certBoard.user_level } | exp.${certBoard.user_exp}(${certBoard.percentage }%)" src="/images/level/${certBoard.icon}.gif">
-														<span style="color: black;">${certBoard.nick}</span>
-													</a>
-													<time datetime="2019-07-25">${certBoard.reg_date }</time>
-												</span>
-					                        </div>
-					                      </div>
-					                      
-					
-					                      <!-- Title -->
-					                      <p class="mb-2 fs-lg fw-bold">
-					                        ${certBoard.title }
-					                      </p>
-					
-					                      <!-- Text -->
-					                      <p class="text-gray-500">
-					                      	${certBoard.conts }
-					                      </p>
-					                      
-					
-					                      <!-- Footer -->
-					                      <div class="row align-items-center">
-					                      
-					                        <!-- Text -->
-					                        <div class="col-auto me-auto">
-					                        
-						                        <!-- Rate -->
-						                        <div class="rate">
-													
-													<c:choose>
-														<c:when test="${sessionScope.user_num != null }">
-															<!-- 로그인 한 상태 -->
-															<a class="rate-item" data-toggle="vote" role="button" onclick="likePro(${status.index})">
-																좋아요 
+					              <div class="review" id="review${status.index}"><!--  -->
+					              	<div class="review-body"><!--  -->
+					              		<div class="row" id="certBoard${status.index}"><!--  -->
+							              	<c:choose>
+							              		<c:when test="${certBoard.report_cnt >= 100 }">
+				                                   <div class="text-center">
+				                                       <div class="mb-6 fs-1">🔥</div>
+				                                       <p>
+				                                           	다수의 사용자에 의해 다 탄 소시지의 글입니다
+				                                       </p>
+				                                   </div>
+				                                </c:when>
+				                                <c:otherwise>
+				                                	<input type="hidden" id="brd_num${status.index}"		value="${certBoard.brd_num }">
+								                  	<input type="hidden" id="nick${status.index}"			value="${certBoard.nick }">
+								                  	<input type="hidden" id="reg_date${status.index}"		value="${certBoard.reg_date }">
+								                  	<input type="hidden" id="title${status.index}"			value="${certBoard.title }">
+								                  	<input type="hidden" id="conts${status.index}"			value="${certBoard.conts }">
+								                  	<input type="hidden" id="img${status.index}"			value="${certBoard.img }">
+								                  	<input type="hidden" id="brd_step${status.index}"		value="${certBoard.brd_step }">
+			                                        <input type="hidden" id="brd_group${status.index}"  	value="${certBoard.brd_group }">
+			                                        <input type="hidden" id="user_img${status.index}"		value="${certBoard.user_img}">
+													<input type="hidden" id="user_num${status.index}"		value="${certBoard.user_num}">
+			                                        <input type="hidden" id="like_cnt${status.index}"		value="${certBoard.like_cnt}">
+			                                        <input type="hidden" id="report_cnt${status.index}"		value="${certBoard.report_cnt}">
+			                                        <input type="hidden" id="myBurning${status.index}"		value="${certBoard.myBurning}">
+			                                        <input type="hidden" id="user_level${status.index}"		value="${certBoard.user_level}">
+			                                        <input type="hidden" id="user_exp${status.index}"		value="${certBoard.user_exp}">
+			                                        <input type="hidden" id="percentage${status.index}"		value="${certBoard.percentage}">
+			                                        <input type="hidden" id="icon${status.index}"			value="${certBoard.icon}">
+							   						                  	
+								                  	
+								                  	<div class="col-5 col-md-3 col-xl-2">
+														<!-- 인증샷 Image -->
+								                    	<img src="${pageContext.request.contextPath}/upload/${certBoard.img }" alt="인증샷" class="img-fluid">
+								                    </div>
+								                    
+								                    
+								                    <div class="col-12 col-md">
+								                    
+														<!-- Avatar -->
+														<a href="#" data-bs-toggle="modal" onclick="userInfoModal('인증', ${status.index})">
+									                    	<div class="avatar avatar-lg">
+															  <img src="${pageContext.request.contextPath}/upload/${certBoard.user_img}" alt="profile" class="avatar-img rounded-circle">
+															</div>
+														</a>
+								                    
+								                      <!-- Header -->
+								                      <div class="row mb-6">
+								                        <div class="col-12">
+								                         	<!-- Time -->
+								                         	<span class="fs-xs text-muted">
+																<a href="#" data-bs-toggle="modal" onclick="userInfoModal('인증', ${status.index})">
+																	<img title="Lv.${certBoard.user_level } | exp.${certBoard.user_exp}(${certBoard.percentage }%)" src="/images/level/${certBoard.icon}.gif">
+																	<span style="color: black;">${certBoard.nick}</span>
+																</a>
+																<time datetime="2019-07-25">${certBoard.reg_date }</time>
+															</span>
+								                        </div>
+								                      </div>
+								                      
+								
+								                      <!-- Title -->
+								                      <p class="mb-2 fs-lg fw-bold">
+								                        ${certBoard.title }
+								                      </p>
+								
+								                      <!-- Text -->
+								                      <p class="text-gray-500">
+								                      	${certBoard.conts }
+								                      </p>
+								                      
+								
+								                      <!-- Footer -->
+								                      <div class="row align-items-center">
+								                      
+								                        <!-- Text -->
+								                        <div class="col-auto me-auto">
+								                        
+									                        <!-- Rate -->
+									                        <div class="rate">
 																<c:choose>
-																	<c:when test="${certBoard.likeyn > 0}">
-																		<!-- 좋아요 눌렀을 때 -->
-																		<img alt="heart-fill" src="./images/yr/heart-fill.png"
-																			id="likeBtn${status.index }">
+																	<c:when test="${sessionScope.user_num != null }">
+																		<!-- 로그인 한 상태 -->
+																		<a class="rate-item" data-toggle="vote" role="button" onclick="likePro(${status.index})">
+																			좋아요 
+																			<c:choose>
+																				<c:when test="${certBoard.likeyn > 0}">
+																					<!-- 좋아요 눌렀을 때 -->
+																					<img alt="heart-fill" src="./images/yr/heart-fill.png"
+																						id="likeBtn${status.index }">
+																				</c:when>
+																		
+																				<c:otherwise>
+																					<!-- 좋아요 안 눌렀을 때 -->
+																					<img alt="heart" src="./images/yr/heart.png"
+																						id="likeBtn${status.index }">
+																				</c:otherwise>
+																			</c:choose>
+																			<span id="inputLikeCnt${status.index}">${certBoard.like_cnt}</span>
+																		</a>
 																	</c:when>
-														
 																	<c:otherwise>
-																		<!-- 좋아요 안 눌렀을 때 -->
-																		<img alt="heart" src="./images/yr/heart.png"
-																			id="likeBtn${status.index }">
+																		<!-- 로그인 안 한 상태 -->
+																		<a class="rate-item" data-toggle="vote" data-count="${certBoard.like_cnt}" role="button">
+																			좋아요 
+																			<img alt="heart" src="./images/yr/heart.png">
+																		</a>
 																	</c:otherwise>
 																</c:choose>
-																<span id="inputLikeCnt${status.index}">${certBoard.like_cnt}</span>
-															</a>
-														</c:when>
+			
+																<a class="rate-item" data-toggle="vote" data-count="(${certBoard.report_cnt }°C)" href="#" role="button" onclick="Burning(${status.index})">
+																	태워요<i class="fa-solid fa-fire ms-2"></i>
+																</a>
+															</div>
+									                        
+								                        </div>
+								                        
+								                        <div class="col-auto d-none d-lg-block">
+								                          <!-- Text -->
+								                          <p class="mb-0 fs-sm">댓글<i class="fa-regular fa-comments ms-2"></i> (${certBoard.replyCount })</p>
+								                        </div>
+								                        
+								                        <c:choose>
+								                        	<c:when test="${user.user_num == certBoard.user_num }">
+								                        	<!-- 작성자 본인일 경우 -->
+										                        <div class="col-auto">
+										                        
+										                          <!-- comment 버튼을 수정 삭제 버튼으로 바꿈 Button -->
+										                          <a class="btn btn-xs btn-outline-border" 
+										                          	 href="#!" 
+										                          	 id="showModalButton"
+										                          	 onclick="updateModalCall('edit', ${status.index})"
+										                          >
+																	수정
+										                          </a>
+										                          
+										                          <a class="btn btn-xs btn-outline-border" href="#!" onclick="deleteCertBrd('review', ${status.index})">
+																	삭제
+										                          </a>
+										                          
+										                        </div>
+								                        	</c:when>
+								                        	
+								                        	<c:otherwise>
+							                        			<div class="col-auto">
+																	<!-- Button -->	
+																	<a class="btn btn-xs btn-outline-border" href="#!" onclick="updateModalCall('more', ${status.index})">
+																		더보기
+																	</a>
+																	<!-- Button -->
+																	<button class="btn btn-xs btn-outline-border" data-bs-toggle="collapse" data-bs-target="#commentForm${status.index }" aria-expanded="false" aria-controls="commentForm${status.index }">
+																		댓글
+																	</button>
+																</div>
+								                        	</c:otherwise>
+								                        </c:choose>
+								                        
+								                        
+								                      </div>
+								                    </div>
+				                                </c:otherwise>
+							              	</c:choose>
+					              	
+					                  	</div> <!-- <div class="row" id="certBoard${status.index}"> -->
 													
-														<c:otherwise>
-															<!-- 로그인 안 한 상태 -->
-															<a class="rate-item" data-toggle="vote" data-count="${certBoard.like_cnt}" role="button">
-																좋아요 
-																<img alt="heart" src="./images/yr/heart.png">
-															</a>
-														</c:otherwise>
-													
-													</c:choose>
-
-													<a class="rate-item" data-toggle="vote" data-count="(${certBoard.burning_cnt }°C)" role="button" onclick="Burning(${status.index})">
-														태워요 <i class="fa-solid fa-fire"></i>
-													</a>
-												</div>
-						                        
-					                        </div>
-					                        
-					                        <div class="col-auto d-none d-lg-block">
-					                          <!-- Text -->
-					                          <p class="mb-0 fs-sm">Comments (${certBoard.replyCount })</p>
-					                        </div>
-					                        
-					                        <c:choose>
-					                        	<c:when test="${user.user_num == certBoard.user_num }">
-					                        	<!-- 작성자 본인일 경우 -->
-							                        <div class="col-auto">
-							                        
-							                          <!-- comment 버튼을 수정 삭제 버튼으로 바꿈 Button -->
-							                          <a class="btn btn-xs btn-outline-border" 
-							                          	 href="#!" 
-							                          	 id="showModalButton"
-							                          	 onclick="updateModalCall('edit', ${status.index})"
-							                          >
-														수정
-							                          </a>
-							                          
-							                          <a class="btn btn-xs btn-outline-border" href="#!" onclick="deleteCertBrd('review', ${status.index})">
-														삭제
-							                          </a>
-							                          
-							                        </div>
-					                        	</c:when>
-					                        	
-					                        	<c:otherwise>
-				                        			<div class="col-auto">
-														<!-- Button -->	
-														<a class="btn btn-xs btn-outline-border" href="#!" onclick="updateModalCall('more', ${status.index})">
-															더보기
-														</a>
-														<!-- Button -->
-														<button class="btn btn-xs btn-outline-border" data-bs-toggle="collapse" data-bs-target="#commentForm${status.index }" aria-expanded="false" aria-controls="commentForm${status.index }">
-															댓글
-														</button>
-													</div>
-					                        	</c:otherwise>
-					                        </c:choose>
-					                        
-					                        
-					                      </div>
-					                    </div>
-					                  </div>
-					                </div>
-					              </div>
+					                </div><!-- <div class="review-body"> -->
+					                
+					              </div><!-- <div class="review" id="review${status.index}"> -->
+					             
 				              	</c:when>
 			            		<c:otherwise>
 			            		<!-- 2. 댓글 Child review -->
 									<div class="review" id="comment${status.index }">
-		            					<div class="review review-child">
+										<c:choose>
+											<c:when test="${certBoard.report_cnt >= 100 }">
+			                                   <div class="text-center">
+			                                       <div class="mb-6 fs-1">🔥</div>
+			                                       <p>
+			                                           	다수의 사용자에 의해 다 탄 소시지의 댓글입니다
+			                                       </p>
+			                                   </div>
+			                                </c:when>
+			                                <c:otherwise>
+			                                <div class="review review-child">
 						                  <div class="review-body">
 							                  <div class="row" id="certBoard${status.index}">
 							                  	<input type="hidden" id="brd_num${status.index}"	value="${certBoard.brd_num }">
@@ -1443,6 +1564,8 @@
 	                                            <input type="hidden" id="brd_group${status.index}"  value="${certBoard.brd_group }">
 	                                            <input type="hidden" id="user_img${status.index}"	value="${certBoard.user_img}">
 												<input type="hidden" id="user_num${status.index}"	value="${certBoard.user_num}">
+												<input type="hidden" id="report_cnt${status.index}"		value="${certBoard.report_cnt}">
+												<input type="hidden" id="myBurning${status.index}"	value="${certBoard.myBurning}">
 							                  	
 							                  	
 												<div class="col-12 col-md-auto">
@@ -1455,7 +1578,6 @@
 								                        </div>
 							                        </a>
 												</div>
-							                    
 							                    
 							                    
 							                    <div class="col-12 col-md">
@@ -1530,8 +1652,8 @@
 													
 															</c:choose>
 
-															<a class="rate-item" data-toggle="vote" data-count="(30°C)" role="button">
-																태워요 <i class="fa-solid fa-fire"></i>
+															<a class="rate-item" data-toggle="vote" data-count="(${certBoard.report_cnt }°C)" href="#" role="button" onclick="Burning(${status.index})">
+																태워요<i class="fa-solid fa-fire ms-2"></i>
 															</a>
 								                        </div>
 							                      	</div>
@@ -1554,6 +1676,17 @@
 							                  </div>
 							                </div>
 										</div>	
+			                                
+			                                
+			                                
+			                                
+			                                </c:otherwise>
+										</c:choose>
+									
+									
+									
+									
+		            					
 									</div>
 				                </c:otherwise>
 			            	</c:choose>		
@@ -1719,6 +1852,7 @@
 					              <input type="hidden" name="brd_num"	id="editBrd_num">
 					              <input type="hidden" name="nick" 		id="editNick">
 					              <input type="hidden" name="chg_id" 	value="${chg.chg_id }">
+					              <input type="hidden" name="currentPage" 	value="${certBrdPage.currentPage }">
 					                
 									<div class="avatar avatar-xl">
 									  <img src="" alt="profile" class="avatar-img rounded-circle" id="editUserImg">
@@ -1879,32 +2013,33 @@
 		            
 				    <div id="searchResultContainer">
 			            <!-- BG Pagination		임시로 chg_id 넣어둠 -->
-			            <nav class="d-flex justify-content-center mt-9">
-			              <ul class="pagination pagination-sm text-gray-400">
-			              
-			                <li class="page-item">
-				              <c:if test="${certBrdPage.startPage > certBrdPage.pageBlock }">
-				                  <a class="page-link page-link-arrow" href="chgDetail?searchType=${searchType }&keyword=${keyword }&chg_id=${chg.chg_id}&sortBy=${sortBy }&currentPage=${certBrdPage.startPage-certBrdPage.pageBlock }">
-				                    <i class="fa fa-caret-left"></i>
-				                  </a>
-				              </c:if>
-			                </li>
-			              
-				              <c:forEach var="i" begin="${certBrdPage.startPage }" end="${certBrdPage.endPage }">
-				                <li class="page-item active">
-				                  	<a class="page-link" href="chgDetail?searchType=${searchType }&keyword=${keyword }&chg_id=${chg.chg_id}&sortBy=${sortBy }&currentPage=${i}">${i}</a>
-				                </li>
-				              </c:forEach>
-			              
-			                <li class="page-item">
-				              <c:if test="${certBrdPage.endPage < certBrdPage.totalPage }">
-				                  <a class="page-link page-link-arrow" href="chgDetail?searchType=${searchType }&keyword=${keyword }&chg_id=${chg.chg_id}&sortBy=${sortBy }&currentPage=${certBrdPage.startPage+certBrdPage.pageBlock }">
-				                    <i class="fa fa-caret-left"></i>
-				                  </a>
-				              </c:if>
-			                </li>
-			              </ul>
-			            </nav>
+			            <nav class="d-flex justify-content-center justify-content-md-center">
+		      	   		 <ul class="pagination pagination-sm text-gray-400">
+						  	<c:if test="${certBrdPage.startPage > certBrdPage.pageBlock }">
+						  		<li class="page-item">
+									<a class="page-link page-link-arrow" href="#" onclick="movePrevBlock()">
+									<i class="fa fa-caret-left">이전</i></a>
+								</li>
+							</c:if>
+							
+						    <c:forEach var="i" begin="${certBrdPage.startPage }" end="${certBrdPage.endPage }">
+								<li class="page-item">
+									<c:if test="${i == certBrdPage.currentPage }">
+										<a class="page-link" onclick="moveCurrentPage()" href="chgDetail?chg_id=${chg.chg_id}&searchType=${searchType }&keyword=${keyword }&sortBy=${sortBy }&currentPage=${i }" id="moveCurrentPage"><b class="text-primary">${i}</b></a>
+									</c:if>
+									<c:if test="${i != certBrdPage.currentPage }">
+										<a class="page-link" onclick="movePage()" href="chgDetail?chg_id=${chg.chg_id}&searchType=${searchType }&keyword=${keyword }&sortBy=${sortBy }&currentPage=${i }" id="movePage">${i}</a>
+									</c:if>
+								</li>
+							</c:forEach>
+						    <c:if test="${certBrdPage.endPage < certBrdPage.totalPage }">
+						    	<li class="page-item">
+									<a class="page-link page-link-arrow" href="#" onclick="moveNextBlock()">
+									<i class="fa fa-caret-right">다음</i></a>
+								</li>
+							</c:if>
+						 </ul>
+				  		</nav>
 			            
 			            <c:if test="${certTotal != 0 }">
 							<div class="offcanvas-body">
@@ -1954,6 +2089,10 @@
 													<input type="hidden" id="ssjImg${status.index}" 		value="${ssj.img}">
 													<input type="hidden" id="ssjNick${status.index}" 		value="${ssj.nick}">
 													<input type="hidden" id="ssjUserNum${status.index}" 	value="${ssj.user_num}">
+													<input type="hidden" id="ssjUserLevel${status.index}" 	value="${ssj.user_level}">
+													<input type="hidden" id="ssjUserExp${status.index}" 	value="${ssj.user_exp}">
+													<input type="hidden" id="ssjPercentage${status.index}" 	value="${ssj.percentage}">
+													<input type="hidden" id="ssjIcon${status.index}" 		value="${ssj.icon}">
 													
 													<!-- profile & nick -->
 															<!-- profile -->
@@ -1968,6 +2107,7 @@
 															
 															<!-- nick -->
 															<a href="#" data-bs-toggle="modal" onclick="userInfoModal('소세지들', ${status.index})" class="col-5">
+																<img title="Lv.${ssj.user_level } | exp.${ssj.user_exp}(${ssj.percentage }%)" src="/images/level/${ssj.icon}.gif">
 																<span style="color: black;">${ssj.nick}</span>
 															</a>
 				
@@ -2100,7 +2240,7 @@
 														<div class="row">
 															<div class="col-12 text-center">
 																<!-- Button -->
-																<button class="btn btn-dark" type="submit" onclick="sendMail()">메일 보내기</button>
+																<button class="btn btn-dark mb-1" type="submit" onclick="sendMail()">메일 보내기<i class="fe fe-send ms-2"></i></button>
 															</div>
 														</div>
 										
@@ -2121,55 +2261,11 @@
 				
 				</div>
 
-			  	<!-- nick 클릭 시 나타나는 modal -->
-				<!-- 인증게시판, 소세지들 사용 -->
-				<div class="modal fade" id="userShowModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-					<div class="modal-dialog">
-						<div class="modal-content">
-							<div class="modal-body">
-								<div class="col-12 col-md-auto">
-									<div class="avatar avatar-xxl mb-6 mb-md-0">
-										<span class="avatar-title rounded-circle">
-											<img src="" alt="profile" class="avatar-title rounded-circle" id="displayUserImg">
-										</span>
-									</div>
-								</div>
-								
-								<div class="col-12">
-									<p id="displayUserNick"></p>
-								</div>
-								
-								<div class="text-end">
-										<button type="button" class="btn btn-danger btn-xs" name="user_num" onclick="following(${status.index})"
-											id="follow">팔로우</button>
-										
-										<!-- 
-											<button type="button" class="btn btn-info" onclick="sendMessage(${status.index})">쪽지보내기</button>
-											<form id="sendMessageForm">
-												<input type="hidden" id="inputUserNum2" name="user_num">
-											</form>
-										 -->
-										 
-										<button type="button" class="btn btn-secondary btn-xs" data-bs-dismiss="modal" aria-label="Close">닫기</button>
-										
-										<form id="followingForm">
-											<input type="hidden" id="inputUserNum1" name="user_num">
-										</form>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				
-				
-            
-            
             <!-- jh 후기글   -->
             <input type="hidden" name="reviewCurrentPage" id="reviewCurrentPage" value="${tap}">  
             <!-- stateCtn 대신 그냥 공통 코드 103으로 해도 될듯 -->
             <c:choose>
-            	<c:when test="${chg.stateCtn == '종료'}">
+            	<c:when test="${chg.state_md == 103}">
    	              <div class="tab-pane fade" id="reviewTab">
 	                <div class="row justify-content-center py-9">
 	                  <div class="col-12 col-lg-10 col-xl-8">
@@ -2190,7 +2286,7 @@
 							
 							              </div>
 							              
-			   				              <div class="col-12 col-md-auto">
+			   				              <div class="col-12 col-md-auto mb-1">
 							
 							                <!-- Button -->
 							                <a class="btn btn-sm btn-dark" data-bs-toggle="collapse" href="#reviewForm">
@@ -2243,14 +2339,14 @@
 												  <label class="input-group-text" for="inputGroupFile">이미지 업로드</label>
 											  </div>
 							                  
-							                  <div class="col-12 text-center">
+							                  <div class="col-12 text-center mb-5">
 							
 							                    <!-- Button -->
 							                    <button class="btn btn-outline-dark" type="submit">
 							                      	등록
 							                    </button>
 							                    <button class="btn btn-outline-secondary" type="reset">
-							                      	취소
+							                      	다시쓰기
 							                    </button>
 							
 							                  </div>
@@ -2352,7 +2448,7 @@
 							
 							                    <!-- Button -->
 							                    <button class="btn btn-outline-dark" type="submit" disabled>
-							                      Post Review
+							                      	등록
 							                    </button>
 							
 							                  </div>
@@ -2377,13 +2473,22 @@
 									         </tr>
 									       </thead>
 									       <tbody>
-									         <c:forEach var="review" items="${chgReviewList}">
+									         <c:forEach var="review" items="${chgReviewList}" varStatus="status">
+									         <input type="hidden" id="reviewImg${status.index}" 		value="${review.user_img}">
+											 <input type="hidden" id="reviewNick${status.index}" 		value="${review.nick}">
+											 <input type="hidden" id="reviewUserNum${status.index}" 	value="${review.user_num}">
+									         <input type="hidden" id="reviewUserLevel${status.index}" 	value="${review.user_level}">
+											 <input type="hidden" id="reviewUserExp${status.index}" 	value="${review.user_exp}">
+											 <input type="hidden" id="reviewPercentage${status.index}" 	value="${review.percentage}">
+											 <input type="hidden" id="reviewIcon${status.index}" 		value="${review.icon}">
 									          <tr>
 									            <td>${num }</td>
 									            <td><a href="/reviewContent?brd_num=${review.brd_num}&chg_id=${chg.chg_id}">${review.title } [${review.replyCount }]</a></td>
 									            <td>
-									            	<img title="Lv.${review.user_level } | exp.${review.user_exp}(${review.percentage }%)" src="/images/level/${review.icon}.gif">
-													${review.nick }
+									            	<a href="#" data-bs-toggle="modal" onclick="userInfoModal('후기', ${status.index})" class="col-2">
+										            	<img title="Lv.${review.user_level } | exp.${review.user_exp}(${review.percentage }%)" src="/images/level/${review.icon}.gif">
+										            	<span style="color: black;">${review.nick }</span>
+													</a>
 												</td>
 									            <td>${review.view_cnt }</td>
 									            <td><fmt:formatDate value="${review.reg_date }" pattern="yyyy-MM-dd"/></td>
@@ -2395,7 +2500,7 @@
 		                    	</div>
 		                    	
 	   		            		<!-- Pagination -->
-								<nav class="d-flex justify-content-center mt-9">
+								<nav class="d-flex justify-content-center mt-3">
 								  <ul class="pagination pagination-sm text-gray-400">
 								  <c:if test="${reviewPage.startPage > reviewPage.pageBlock}">
 								    <li class="page-item">
@@ -2431,15 +2536,72 @@
             
             	<c:otherwise>
             	<div class="tab-pane fade" id="reviewTab">
-	                <div class="row justify-content-center py-9" >
-	                  <div class="col-12 col-lg-10 col-xl-8">
-            			<h5>챌린지가 종료된 후 후기를 써주세요</h5>
-            		  </div>
-            		</div>
-            	</div>
+	                <section class="py-12">
+				      <div class="container">
+				        <div class="row justify-content-center">
+				          <div class="col-12 col-md-10 col-lg-10 col-xl-10 text-center">
+				
+				            <!-- Icon -->
+				            <div class="mb-7 fs-1">🙁</div>
+				
+				            <!-- Heading -->
+				            <h2 class="mb-5">챌린지가 종료 된 후에 후기를 남겨주세요!</h2>
+				
+				            <!-- Text -->
+				            <p class="mb-7 text-gray-500">
+						              아직 챌린지가 종료되지 않았습니다.<br>
+						              후기 게시판은 챌린지가 종료된 이후에 글을 남길 수 있습니다!<br>
+						              챌린지가 종료되기 전까지 최선을 다 해주세요~!
+				            </p>
+				          </div>
+				        </div>
+				      </div>
+				    </section>
+            	  </div>
             	</c:otherwise>
             </c:choose>
             
+            <!-- yr 작성 -->
+            <!-- nick 클릭 시 나타나는 modal -->
+			<!-- 인증게시판, 소세지들, 후기게시판 사용 -->
+			<div class="modal fade" id="userShowModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-body">
+							<div class="col-12 col-md-auto">
+								<div class="avatar avatar-xxl mb-6 mb-md-0">
+									<span class="avatar-title rounded-circle">
+										<img src="" alt="profile" class="avatar-title rounded-circle" id="displayUserImg">
+									</span>
+								</div>
+							</div>
+							
+							<div class="col-12">
+								<img title="" src="" id="displayUserLevel">
+								<span id="displayUserNick"></span>
+							</div>
+							
+							<div class="text-end">
+									<button type="button" class="btn btn-danger btn-xs" name="user_num" onclick="following(${status.index})"
+										id="follow">팔로우</button>
+									
+									<!-- 
+										<button type="button" class="btn btn-info" onclick="sendMessage(${status.index})">쪽지보내기</button>
+										<form id="sendMessageForm">
+											<input type="hidden" id="inputUserNum2" name="user_num">
+										</form>
+									 -->
+									 
+									<button type="button" class="btn btn-secondary btn-xs" data-bs-dismiss="modal" aria-label="Close">닫기</button>
+									
+									<form id="followingForm">
+										<input type="hidden" id="inputUserNum1" name="user_num">
+									</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 					
             </div>
 

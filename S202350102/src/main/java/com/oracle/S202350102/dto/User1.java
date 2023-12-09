@@ -39,13 +39,19 @@ public class User1 {
 	// 유저 경험치 정보 조회
 	private int remain_exp;
 	private int percentage;
+	private String icon;
 	
 	// following 조회용
 	private int following_id;
 	private int matpal;
+	private int following_cnt;
+	private int follower_cnt;
 	
 	// 페이징 조회용    //검색타입						 //검색 내용
 	private String search;   	private String keyword;
 	private String pageNum;
 	private int start; 		 	private int end;
+	
+	// following 리스트 조회용(로그인한 내 user_num)
+	private int my_user_num;
 }

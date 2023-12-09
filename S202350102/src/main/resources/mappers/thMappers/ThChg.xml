@@ -19,8 +19,8 @@
 		</choose>
 		<!-- keyword 값이 null이 아니고 공백도 아닐때,  -->
 		<if test='keyword != null and keyword != ""'> 
-			AND title   	LIKE '%' || #{keyword} || '%'	
-			OR  chg_conts 	LIKE '%' || #{keyword} || '%'
+			AND (title   	LIKE '%' || #{keyword} || '%'	
+			OR  chg_conts 	LIKE '%' || #{keyword} || '%')
 		</if>
 
 	</select>
@@ -35,8 +35,8 @@
 		</choose>
 		<!-- keyword 값이 null이 아니고 공백도 아닐때,  -->
 		<if test='keyword != null and keyword != ""'> 
-			AND title   	LIKE '%' || #{keyword} || '%'	
-			OR  chg_conts 	LIKE '%' || #{keyword} || '%'
+			AND (title   	LIKE '%' || #{keyword} || '%'	
+			OR  chg_conts 	LIKE '%' || #{keyword} || '%')
 		</if>
 	</select>
 	
@@ -66,21 +66,22 @@
 				 	<when test="chg_lg == 200">		AND c.chg_md = #{chg_md}</when>
 				 </choose>
 				 <if test= "keyword != null and keyword != ''"> 
-					AND title   	LIKE '%' || #{keyword} || '%'	
-					OR  chg_conts 	LIKE '%' || #{keyword} || '%'
+					AND (title   	LIKE '%' || #{keyword} || '%'	
+					OR  chg_conts 	LIKE '%' || #{keyword} || '%')
 				 </if>
 				 
 				 <choose>
-				 	<when test="sortOpt ==  null">			ORDER BY 	c.create_date DESC) a</when>
-				 	<when test="sortOpt == 'create_date'">	ORDER BY 	c.create_date DESC) a</when>
-				 	<when test="sortOpt == 'pick_cnt'">		ORDER BY 	count_pick(chg_id) DESC) a</when>
+				 	<when test="sortOpt ==  null">			ORDER BY 	c.create_date  </when>
+				 	<when test="sortOpt == 'create_date'">	ORDER BY 	c.create_date </when>
+				 	<when test="sortOpt == 'pick_cnt'">		ORDER BY 	count_pick(chg_id)</when>
 				 	<when test="sortOpt == 'participants'">	ORDER BY 	( 
 														                    SELECT      COUNT(cr.chg_id) AS cnt
 														                    FROM        challenger cr
 														                    WHERE       cr.chg_id = c.chg_id
 														                    GROUP BY    cr.chg_id
-															            ) DESC) a</when>
+															            ) </when> 
 				 </choose>
+				 DESC) a
 		) chl
 		WHERE rn BETWEEN #{start} AND #{end}
 	</select>
